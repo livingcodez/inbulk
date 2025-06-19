@@ -40,7 +40,7 @@ export function Tooltip({
   return (
     <TooltipProvider>
       <TooltipRoot delayDuration={delayDuration}>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipTrigger asChild><span>{children}</span></TooltipTrigger>
         <TooltipContent side={side}>{content}</TooltipContent>
       </TooltipRoot>
     </TooltipProvider>
