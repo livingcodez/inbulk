@@ -129,18 +129,21 @@ export function Sidebar() {
             )}
           </div>
 
-          <span
-            className={cn(
-              'truncate transition-all duration-300 ease-in-out ml-3', // Added ml-3 here
-              !isExpanded && 'opacity-0 md:opacity-100 w-0 md:w-auto'
-            )}
-          >
-            {name}
-          </span>
-
-          {/* Badge next to text (for expanded state) */}
-          {showNotificationBadge && isExpanded && ( // Use showNotificationBadge
-            <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
+          {/* Text and expanded badge part - only render if sidebar is expanded */}
+          {isExpanded && (
+            <>
+              <span
+                className={cn(
+                  'truncate transition-opacity duration-200 ease-in-out ml-3', // Simpler class, rely on parent flex for layout
+                  // Opacity and width are handled by isExpanded condition now for rendering
+                )}
+              >
+                {name}
+              </span>
+              {showNotificationBadge && ( // No need for && isExpanded here as this whole block is under isExpanded
+                <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
+              )}
+            </>
           )}
         </Link>
       );
