@@ -9,19 +9,24 @@ import {
   Wallet,
   UserCircle,
   ChevronRight,
+  Mail, // Added for Inbox
+  Settings, // Added for Settings
 } from 'lucide-react'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react' // Ensure useEffect, useState are imported
 import { useSupabase } from '@/contexts/SupabaseProvider'
 import { Tooltip } from '@/components/ui/tooltip'
+import { getUnreadNotificationCount } from '@/lib/supabase/notifications'; // NEW IMPORT
 
 const mainNavItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Shop', href: '/shop', icon: ShoppingBag },
   { name: 'Wallet', href: '/wallet', icon: Wallet },
+  { name: 'Inbox', href: '/inbox', icon: Mail }, // Added Inbox item
 ]
 
 const bottomNavItems = [
   { name: 'Profile', href: '/profile', icon: UserCircle },
+  { name: 'Settings', href: '/settings', icon: Settings }, // Added Settings item
 ]
 
 const SWIPE_THRESHOLD = 50 // minimum distance for swipe
@@ -32,6 +37,29 @@ export function Sidebar() {
   const { profile } = useSupabase()
   const [isExpanded, setIsExpanded] = useState(false)
   const touchStartRef = useRef({ x: 0, y: 0, time: 0 })
+
+  const [unreadCount, setUnreadCount] = useState(0); // NEW STATE
+
+  // useEffect to fetch unread count
+  useEffect(() => {
+    if (profile?.id) {
+      const fetchCount = async () => {
+        try {
+          // console.log(`Sidebar: Fetching count for user ${profile.id}`); // Debug log
+          const count = await getUnreadNotificationCount(profile.id);
+          // console.log(`Sidebar: Fetched count: ${count}`); // Debug log
+          setUnreadCount(count);
+        } catch (error) {
+          console.error("Sidebar: Error calling getUnreadNotificationCount", error);
+          setUnreadCount(0); // Fallback on error
+        }
+      };
+      fetchCount();
+    } else {
+      // console.log("Sidebar: No profile.id, setting unreadCount to 0"); // Debug log
+      setUnreadCount(0); // Reset if profile or profile.id is not available
+    }
+  }, [profile]); // Re-fetch if profile changes
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartRef.current = {
@@ -63,8 +91,14 @@ export function Sidebar() {
   }, [])
 
   const renderNavItem = useCallback(
-    ({ name, href, icon: Icon }: typeof mainNavItems[0]) => {
-      const isActive = pathname.startsWith(href)
+    // ({ name, href, icon: Icon }: typeof mainNavItems[0]) => { // Original typing
+    // Using a more generic type for item to satisfy both main and bottom nav items if their types differ slightly
+    // For now, assuming they share: name: string, href: string, icon: React.ElementType
+    ({ name, href, icon: Icon }: { name: string; href: string; icon: React.ElementType }) => {
+      const isActive = pathname.startsWith(href);
+
+      // Dynamic condition for showing the notification badge
+      const showNotificationBadge = name === 'Inbox' && unreadCount > 0;
 
       const linkContent = (
         <Link
@@ -79,30 +113,42 @@ export function Sidebar() {
           aria-current={isActive ? 'page' : undefined}
           role="menuitem"
         >
-          <Icon
-            className={cn(
-              'mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-150',
-              isActive
-                ? 'text-primary dark:text-primary-light'
-                : 'text-gray-400 group-hover:text-primary dark:text-gray-400 dark:group-hover:text-primary-light'
+          <div className="relative flex-shrink-0"> {/* Wrapper for icon and potential badge on icon */}
+            <Icon
+              className={cn(
+                'h-5 w-5 flex-shrink-0 transition-colors duration-150', // Removed mr-3 from here
+                isActive
+                  ? 'text-primary dark:text-primary-light'
+                  : 'text-gray-400 group-hover:text-primary dark:text-gray-400 dark:group-hover:text-primary-light'
+              )}
+              aria-hidden="true"
+            />
+            {/* Badge on icon (for collapsed state, more subtle) */}
+            {showNotificationBadge && !isExpanded && ( // Use showNotificationBadge
+              <span className="absolute -top-0.5 -right-0.5 block h-2 w-2 rounded-full bg-red-500 ring-1 ring-white dark:ring-gray-900" />
             )}
-            aria-hidden="true"
-          />
+          </div>
+
           <span
             className={cn(
-              'truncate transition-all duration-300 ease-in-out',
+              'truncate transition-all duration-300 ease-in-out ml-3', // Added ml-3 here
               !isExpanded && 'opacity-0 md:opacity-100 w-0 md:w-auto'
             )}
           >
             {name}
           </span>
+
+          {/* Badge next to text (for expanded state) */}
+          {showNotificationBadge && isExpanded && ( // Use showNotificationBadge
+            <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
+          )}
         </Link>
-      )
+      );
 
       return (
         <div key={name} className="relative">
           {!isExpanded ? (
-            <Tooltip content={name} side="right">
+            <Tooltip content={name} side="right" sideOffset={8}> {/* Added sideOffset for better spacing from icon badge */}
               {linkContent}
             </Tooltip>
           ) : (
@@ -111,7 +157,7 @@ export function Sidebar() {
         </div>
       )
     },
-    [pathname, isExpanded]
+    [pathname, isExpanded, unreadCount] // ADD unreadCount to dependency array
   )
 
   return (
