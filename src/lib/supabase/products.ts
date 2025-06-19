@@ -151,8 +151,14 @@ export async function getDistinctCategories(): Promise<string[]> {
   const { data, error } = await supabaseClient.rpc('get_distinct_categories');
 
   if (error) {
-    console.error('Error fetching distinct categories via RPC:', error);
-    throw error;
+  console.error('Error fetching distinct categories via RPC:', {
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+    code: error.code,
+    fullError: error, // Log the full object to see everything
+  });
+  throw new Error(`Failed to fetch categories: ${error.message || JSON.stringify(error)}`);
   }
 
   // The data from RPC might be an array of objects like [{category: 'Electronics'}, {category: 'Books'}]
