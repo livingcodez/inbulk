@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Suspense } from 'react'
 import { ShoppingBag, Search, Filter, Plus, Users, AlertCircle, LayoutGrid } from 'lucide-react' // Added LayoutGrid
 import { Header } from '@/components/layout/Header'
