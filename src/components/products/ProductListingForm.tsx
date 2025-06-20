@@ -1,149 +1,649 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import toast from 'react-hot-toast'; // Import toast
 import { Button } from '@/components/ui/Button'
-import { type Product } from '@/types/database.types'; // Ensure Product type is available
+import { type Product } from '@/types/database.types';
+
+// Define the category structure
+interface CategoryOption {
+  name: string;
+  subcategories: string[];
+}
+
+const PRODUCT_CATEGORIES: CategoryOption[] = [
+  { name: "Electronics", subcategories: ["Computers", "Smartphones", "Audio", "Cameras", "Accessories"] },
+  { name: "Apparel", subcategories: ["Men's", "Women's", "Children's", "Shoes", "Accessories"] },
+  { name: "Services & Subscriptions", subcategories: ["Streaming Services", "Software Subscriptions", "Cloud Storage", "Gaming Subscriptions"] },
+  { name: "Home & Garden", subcategories: ["Furniture", "Decor", "Appliances", "Gardening", "Tools"] },
+  { name: "Collectibles & Art", subcategories: ["Antiques", "Art Prints", "Figurines", "Trading Cards"] },
+  { name: "Other", subcategories: [] }
+];
 
 // Define the specific data structure the form collects and onSubmit expects
 export interface ProductFormData {
-  name: string; // Product title
+  // Basic Product Information
+  name: string; // Renamed from 'title'
   description: string | null;
-  price: number;
-  image_url: string | null;
+
+  // Categorization
   category: string;
-  is_fungible: boolean;
-  min_participants: number | null;
-  max_participants: number | null;
-  end_date: string | null;
+  subcategory: string | null;
+
+  // Conditional Subscription Details
+  subscriptionUsername: string | null;
+  subscriptionPassword: string | null;
+  subscription2FAKey: string | null;
+
+  // Pricing & Cost
+  actualCost: number | null; // New field: Actual Cost of Product/Service ($)
+
+  // Product Visuals
+  image_url: string | null;
+
+  // Delivery Information
+  deliveryTime: string | null; // New field: Delivery Time (e.g., "Instant", "1-3 Business Days")
+  customDeliveryTimeDescription: string | null; // New field: Custom Delivery Time Description
+
+  // Product & Group Type
+  isFungible: boolean; // Renamed from is_fungible
+  autoGroup: boolean; // New field: Enable Automatic Group Creation
+
+  // Auto-Group Settings (Conditional)
+  groupSize: number | null; // New field: Target Group Size (formerly min_participants/max_participants could be re-evaluated)
+  countdownSecs: number | null; // New field: Timed Group Countdown (seconds)
+
+  // Fields to be deprecated or re-evaluated from old interface:
+  // price: number; // This will be calculated: actualCost / groupSize
+  // min_participants: number | null; // Replaced by groupSize for autoGroup, or manual group settings elsewhere
+  // max_participants: number | null; // Replaced by groupSize for autoGroup
+  // end_date: string | null; // This might be covered by countdownSecs for timed groups, or a separate field for non-auto groups
 }
 
 interface ProductListingFormProps {
   onSubmit: (formData: ProductFormData) => Promise<void>;
+  onClose?: () => void; // For closing the modal
   // initialData could be mapped from Product to ProductFormData if needed for an edit form
   initialData?: Partial<ProductFormData>; // Use ProductFormData for consistency if editing
 }
 
-export function ProductListingForm({ onSubmit, initialData }: ProductListingFormProps) {
+export function ProductListingForm({ onSubmit, initialData, onClose }: ProductListingFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
+  const [availableSubcategories, setAvailableSubcategories] = useState<string[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [actualCostInput, setActualCostInput] = useState<string>("");
+  const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>("");
+  const [customDeliveryTimeDesc, setCustomDeliveryTimeDesc] = useState<string>("");
+  const [isFungibleValue, setIsFungibleValue] = useState<boolean>(false);
+  const [autoGroupValue, setAutoGroupValue] = useState<boolean>(true);
+  const [groupSizeInput, setGroupSizeInput] = useState<string>('5');
+  const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400');
+
+
+  const DELIVERY_TIME_OPTIONS = ["Instant", "1-3 Business Days", "3-7 Business Days", "1-2 Weeks", "Custom (Specify below)"];
+
+  useEffect(() => {
+    // Initialize all relevant states from initialData
+    const cat = initialData?.category || "";
+    const subCat = initialData?.subcategory || "";
+    setSelectedCategory(cat);
+    setSelectedSubcategory(subCat);
+    setActualCostInput(initialData?.actualCost?.toString() || "");
+    setIsFungibleValue(initialData?.isFungible ?? false);
+    setAutoGroupValue(initialData?.autoGroup ?? true);
+    setGroupSizeInput(initialData?.groupSize?.toString() ?? '5');
+    setCountdownSecsInput(initialData?.countdownSecs?.toString() ?? '86400');
+
+
+    const isSoftwareSubInit = cat === "Services & Subscriptions" && subCat === "Software Subscriptions";
+    if (isSoftwareSubInit) {
+      setSelectedDeliveryTime("Instant");
+      setCustomDeliveryTimeDesc("");
+    } else {
+      const initialDeliveryTime = initialData?.deliveryTime || "";
+      setSelectedDeliveryTime(initialDeliveryTime);
+      if (initialDeliveryTime === "Custom (Specify below)") {
+        setCustomDeliveryTimeDesc(initialData?.customDeliveryTimeDescription || "");
+      } else {
+        setCustomDeliveryTimeDesc("");
+      }
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    // Update available subcategories when category changes
+    const currentCategoryData = PRODUCT_CATEGORIES.find(cat => cat.name === selectedCategory);
+    if (currentCategoryData && currentCategoryData.subcategories.length > 0) {
+      setAvailableSubcategories(currentCategoryData.subcategories);
+    } else {
+      setAvailableSubcategories([]);
+    }
+
+    // Logic for Software Subscription affecting Delivery Time
+    const isSoftwareSub = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+    if (isSoftwareSub) {
+      setSelectedDeliveryTime("Instant");
+      setCustomDeliveryTimeDesc("");
+    } else {
+      // If category/subcategory changes *away* from software subscription,
+      // and delivery time was 'Instant' (possibly due to auto-set), reset it.
+      // User might need to re-select. Or, we could try to restore previous state if stored.
+      // For now, simple reset if it was forced to "Instant".
+      if (selectedDeliveryTime === "Instant" && (initialData?.deliveryTime !== "Instant" || !initialData?.deliveryTime) ) {
+         // Avoid resetting if "Instant" was the original initialData.deliveryTime
+        if(!(initialData?.category === selectedCategory && initialData?.subcategory === selectedSubcategory && initialData?.deliveryTime === "Instant")){
+            setSelectedDeliveryTime(""); // Reset to prompt user selection
+        }
+      }
+    }
+  }, [selectedCategory, selectedSubcategory, initialData?.deliveryTime, initialData?.category, initialData?.subcategory]);
+
+
+  useEffect(() => {
+    // Clear custom description if delivery time is not "Custom"
+    if (selectedDeliveryTime !== "Custom (Specify below)") {
+      setCustomDeliveryTimeDesc("");
+    }
+  }, [selectedDeliveryTime]);
+
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newCategory = e.target.value;
+    setSelectedCategory(newCategory);
+    setSelectedSubcategory(""); // Reset subcategory
+  };
+
+  const handleDeliveryTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newDeliveryTime = e.target.value;
+    setSelectedDeliveryTime(newDeliveryTime);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const formData = new FormData(e.currentTarget);
+    // --- Step 1: Data Collection from Form Elements & State ---
+    const formElements = e.currentTarget.elements;
+    const formName = (formElements.namedItem('name') as HTMLInputElement)?.value.trim() || "";
+    const formDescription = (formElements.namedItem('description') as HTMLTextAreaElement)?.value.trim() || "";
+    const formImageUrl = (formElements.namedItem('image_url') as HTMLInputElement)?.value.trim() || null;
+
+    const parsedActualCost = parseFloat(actualCostInput); // actualCostInput is from state
+    const finalActualCost = isNaN(parsedActualCost) || parsedActualCost <=0 ? null : parsedActualCost; // Ensure positive
+
+    let formSubUsername = null;
+    let formSubPassword = null;
+    let formSub2FAKey = null;
+    const currentIsSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+
+    if (currentIsSoftwareSubscription) {
+      formSubUsername = (formElements.namedItem('subscriptionUsername') as HTMLInputElement)?.value.trim() || null;
+      formSubPassword = (formElements.namedItem('subscriptionPassword') as HTMLInputElement)?.value || null;
+      formSub2FAKey = (formElements.namedItem('subscription2FAKey') as HTMLInputElement)?.value.trim() || null;
+    }
+
+    let finalGroupSize: number | null = null;
+    let finalCountdownSecs: number | null = null;
+
+    if (autoGroupValue) { // autoGroupValue is from state
+      const parsedGroupSize = parseInt(groupSizeInput, 10); // groupSizeInput is from state
+      if (!isNaN(parsedGroupSize) && parsedGroupSize >= 1) {
+        finalGroupSize = parsedGroupSize;
+      }
+
+      if (countdownSecsInput.trim() === "") { // countdownSecsInput is from state
+        finalCountdownSecs = 86400; // Default if blank
+      } else {
+        const parsedCountdownSecs = parseInt(countdownSecsInput, 10);
+        if (!isNaN(parsedCountdownSecs) && parsedCountdownSecs >= 1) {
+          finalCountdownSecs = parsedCountdownSecs;
+        }
+        // If invalid and not blank, finalCountdownSecs remains null for validation later
+      }
+    }
+
+    // --- Step 2: Validation ---
+    if (formName.length < 3) {
+      setError("Product Name must be at least 3 characters long.");
+      setLoading(false);
+      return;
+    }
+    if (formDescription.length < 10) {
+      setError("Description must be at least 10 characters long.");
+      setLoading(false);
+      return;
+    }
+    if (!selectedCategory) {
+      setError("Please select a Category.");
+      setLoading(false);
+      return;
+    }
+    if (finalActualCost === null || finalActualCost <= 0) {
+      setError("Actual Cost must be a positive number.");
+      setLoading(false);
+      return;
+    }
+    if (!selectedDeliveryTime) {
+      setError("Please select a Delivery Time.");
+      setLoading(false);
+      return;
+    }
+    if (selectedDeliveryTime === "Custom (Specify below)" && (!customDeliveryTimeDesc || customDeliveryTimeDesc.trim() === "")) {
+      setError("Please provide a Custom Delivery Time Description when 'Custom' is selected.");
+      setLoading(false);
+      return;
+    }
+    if (currentIsSoftwareSubscription) {
+      if (!formSubUsername) {
+        setError("Subscription Username is required for Software Subscriptions.");
+        setLoading(false);
+        return;
+      }
+      if (!formSubPassword) {
+        setError("Subscription Password is required for Software Subscriptions.");
+        setLoading(false);
+        return;
+      }
+    }
+    if (autoGroupValue) {
+      if (finalGroupSize === null) {
+        setError("Target Group Size must be a valid number (at least 1) when automatic group creation is enabled.");
+        setLoading(false);
+        return;
+      }
+      if (countdownSecsInput.trim() !== "" && finalCountdownSecs === null) {
+        setError("Timed Group Countdown must be a valid positive number if provided, or left blank for default.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // --- Construct final data object ---
     const data: ProductFormData = {
-      name: formData.get('title') as string, // Map 'title' from form to 'name'
-      description: formData.get('description') as string || null,
-      price: parseFloat(formData.get('price') as string),
-      image_url: formData.get('image_url') as string || null,
-      category: formData.get('category') as string, // New field
-      is_fungible: (formData.get('is_fungible') === 'on' || formData.get('is_fungible') === 'true'), // New field
-      min_participants: parseInt(formData.get('min_participants') as string) || null, // Ensure null if empty
-      max_participants: parseInt(formData.get('max_participants') as string) || null, // Ensure null if empty
-      end_date: formData.get('end_date') as string || null,
+      name: formName,
+      description: formDescription,
+      category: selectedCategory,
+      subcategory: selectedSubcategory || null,
+      subscriptionUsername: currentIsSoftwareSubscription ? formSubUsername : null,
+      subscriptionPassword: currentIsSoftwareSubscription ? formSubPassword : null,
+      subscription2FAKey: currentIsSoftwareSubscription ? formSub2FAKey : null,
+      actualCost: finalActualCost,
+      image_url: formImageUrl,
+      deliveryTime: selectedDeliveryTime,
+      customDeliveryTimeDescription: (selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription) ? (customDeliveryTimeDesc.trim() || null) : null,
+      isFungible: isFungibleValue,
+      autoGroup: autoGroupValue,
+      groupSize: autoGroupValue ? finalGroupSize : null,
+      countdownSecs: autoGroupValue ? finalCountdownSecs : null,
     };
-
-    // Basic validation example (can be expanded)
-    if (!data.name || !data.category || isNaN(data.price) || data.price <= 0) {
-        setError("Please fill in all required fields: Title, Category, and a valid Price.");
-        setLoading(false);
-        return;
-    }
-    if (data.min_participants && data.min_participants < 1) {
-        setError("Minimum participants must be at least 1.");
-        setLoading(false);
-        return;
-    }
-    if (data.max_participants && data.min_participants && data.max_participants < data.min_participants) {
-        setError("Maximum participants cannot be less than minimum participants.");
-        setLoading(false);
-        return;
-    }
-
 
     try {
       await onSubmit(data);
-      // If onSubmit resolves, it's successful. The modal will handle closing.
-      // If editing, form could be reset here: e.currentTarget.reset();
+      toast.success(initialData ? "Listing updated successfully!" : "Listing created successfully!");
+      if (onClose) onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Submission failed. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      setError(errorMessage);
+      toast.error(initialData ? `Error updating listing: ${errorMessage}` : `Error creating listing: ${errorMessage}`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
+  const isSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+  const showCustomDeliveryInput = selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription;
+  const showAutoGroupSettings = autoGroupValue;
+
+  const calculatedPriceData = useMemo(() => {
+    const cost = parseFloat(actualCostInput);
+    const size = parseInt(groupSizeInput, 10);
+    if (autoGroupValue && cost > 0 && size > 0) {
+      return {
+        price: (cost / size).toFixed(2),
+        cost: cost.toFixed(2),
+        size: size.toString(),
+      };
+    }
+    return null;
+  }, [actualCostInput, groupSizeInput, autoGroupValue]);
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-3">
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-        </div>
+    <div className="relative p-4 sm:p-6"> {/* Added padding, relative positioning for close button */}
+      {onClose && (
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+          aria-label="Close"
+        >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       )}
 
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Product Title</label>
-          <input type="text" name="title" id="title" required defaultValue={initialData?.name} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
+      <div className="mb-6 text-center"> {/* Centered header text, added margin-bottom */}
+        {/* Assuming Quicksand font would be configured in tailwind.config.js as font-quicksand */}
+        {/* Using font-semibold for heading as 'Regular 400' might be too light for a large heading */}
+        <h2 className="text-4xl lg:text-5xl font-semibold font-sans text-primary dark:text-primary-dark">
+          Create New Product Listing
+        </h2>
+        <p className="mt-2 text-sm sm:text-base font-sans text-gray-600 dark:text-neutral-400">
+          Fill in the details for your new product. Auto-group settings will help buyers join groups easily.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-3">
+            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Product Name</label>
+          <input type="text" name="name" id="name" required placeholder="e.g., Premium Laptop Stand" defaultValue={initialData?.name} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
         </div>
-        {/* Add Category input */}
-        <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Category</label>
-          <input type="text" name="category" id="category" required defaultValue={initialData?.category} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
-        </div>
-        {/* ... (description, price, end_date, min_participants, max_participants, image_url inputs - add dark mode classes) ... */}
-        {/* Example for description with dark mode */}
+
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Description</label>
-          <textarea name="description" id="description" rows={3} defaultValue={initialData?.description || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
+          <textarea name="description" id="description" rows={3} required placeholder="Detailed description of your product..." defaultValue={initialData?.description || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
         </div>
-        {/* Add other inputs similarly, ensuring dark mode classes for inputs: dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50 */}
 
-        {/* Example for price input with dark mode */}
-        <div className="grid grid-cols-2 gap-4">
-            <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Price ($)</label>
-                <input type="number" name="price" id="price" required min="0.01" step="0.01" defaultValue={initialData?.price} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
-            </div>
-            {/* ... end_date ... */}
-             <div>
-                <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Group End Date (Optional)</label>
-                <input type="datetime-local" name="end_date" id="end_date" defaultValue={initialData?.end_date || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
-            </div>
+        {/* Category and Subcategory */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Category</label>
+            <select
+              id="category"
+              name="category"
+              required
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+            >
+              <option value="" disabled>Select a category</option>
+              {PRODUCT_CATEGORIES.map(cat => (
+                <option key={cat.name} value={cat.name}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Subcategory</label>
+            <select
+              id="subcategory"
+              name="subcategory"
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              disabled={!selectedCategory || availableSubcategories.length === 0}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm disabled:bg-gray-100 dark:disabled:bg-neutral-800 dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+            >
+              {!selectedCategory ? (
+                <option value="" disabled>Select category first</option>
+              ) : availableSubcategories.length === 0 ? (
+                <option value="" disabled>No subcategories available</option>
+              ) : (
+                <>
+                  <option value="">Select a subcategory (optional)</option>
+                  {availableSubcategories.map(sub => (
+                    <option key={sub} value={sub}>{sub}</option>
+                  ))}
+                </>
+              )}
+            </select>
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+
+        {/* Conditional Subscription Details Section */}
+        {isSoftwareSubscription && (
+          <div className="my-6 p-4 bg-gray-50 dark:bg-neutral-800/50 rounded-md border border-dashed border-gray-300 dark:border-neutral-700 space-y-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-neutral-100 mb-3">
+              Subscription Details
+            </h3>
+            {/* Subscription Username */}
             <div>
-                <label htmlFor="min_participants" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Min. Participants (Optional)</label>
-                <input type="number" name="min_participants" id="min_participants" min="1" defaultValue={initialData?.min_participants ?? 1} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
+              <label htmlFor="subscriptionUsername" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Subscription Username</label>
+              <input
+                type="text"
+                name="subscriptionUsername"
+                id="subscriptionUsername"
+                required={isSoftwareSubscription}
+                defaultValue={initialData?.subscriptionUsername || ''}
+                placeholder="Enter username for the subscription"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+              />
             </div>
+            {/* Subscription Password */}
             <div>
-                <label htmlFor="max_participants" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Max. Participants (Optional)</label>
-                <input type="number" name="max_participants" id="max_participants" min="1" defaultValue={initialData?.max_participants || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
+              <label htmlFor="subscriptionPassword" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Subscription Password</label>
+              <div className="relative mt-1">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="subscriptionPassword"
+                  id="subscriptionPassword"
+                  required={isSoftwareSubscription}
+                  defaultValue={initialData?.subscriptionPassword || ''}
+                  placeholder="Enter password for the subscription"
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark rounded-md"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" clipRule="evenodd" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clipRule="evenodd" /></svg>
+                  )}
+                </button>
+              </div>
             </div>
+            {/* Subscription 2FA Key */}
+            <div>
+              <label htmlFor="subscription2FAKey" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Subscription 2FA Key (Optional)</label>
+              <input
+                type="text"
+                name="subscription2FAKey"
+                id="subscription2FAKey"
+                defaultValue={initialData?.subscription2FAKey || ''}
+                placeholder="Enter 2FA backup key if applicable"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+                If the subscription uses Two-Factor Authentication, provide a backup/recovery key.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Actual Cost */}
+        <div>
+          <label htmlFor="actualCost" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Actual Cost of Product/Service ($)</label>
+          <input
+            type="number"
+            name="actualCost"
+            id="actualCost"
+            required
+            value={actualCostInput}
+            onChange={(e) => setActualCostInput(e.target.value)}
+            min="0.01"
+            step="0.01"
+            placeholder="e.g., 200.00"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+          />
+          <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+            The total cost for you to acquire/fulfill this product/service for a group.
+          </p>
         </div>
+
          <div>
           <label htmlFor="image_url" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Image URL (Optional)</label>
-          <input type="url" name="image_url" id="image_url" defaultValue={initialData?.image_url || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
+          <input
+            type="url"
+            name="image_url"
+            id="image_url"
+            placeholder="https://placehold.co/600x400.png"
+            defaultValue={initialData?.image_url || ''}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+          />
+          <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+            Provide a URL for the product image. If blank, a placeholder will be used.
+          </p>
         </div>
 
-        {/* Add Is Fungible checkbox */}
-        <div className="flex items-start">
-          <div className="flex h-5 items-center">
-            <input id="is_fungible" name="is_fungible" type="checkbox" defaultChecked={initialData?.is_fungible ?? false} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary dark:bg-neutral-700 dark:border-neutral-600 dark:checked:bg-primary" />
+        {/* Delivery Information Section */}
+        <div className="space-y-2">
+          <label htmlFor="deliveryTime" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Delivery Time</label>
+          <select
+            id="deliveryTime"
+            name="deliveryTime"
+            required
+            value={selectedDeliveryTime}
+            onChange={handleDeliveryTimeChange}
+            disabled={isSoftwareSubscription}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50 disabled:bg-gray-100 dark:disabled:bg-neutral-800"
+          >
+            <option value="" disabled>Select delivery timeframe</option>
+            {DELIVERY_TIME_OPTIONS.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+          {isSoftwareSubscription && (
+            <p className="mt-1 text-xs text-green-600 dark:text-green-400">
+              Instant delivery automatically selected for software subscriptions.
+            </p>
+          )}
+        </div>
+
+        {showCustomDeliveryInput && !isSoftwareSubscription && (
+          <div>
+            <label htmlFor="customDeliveryTimeDescription" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Custom Delivery Time Description</label>
+            <input
+              type="text"
+              name="customDeliveryTimeDescription"
+              id="customDeliveryTimeDescription"
+              value={customDeliveryTimeDesc}
+              onChange={(e) => setCustomDeliveryTimeDesc(e.target.value)}
+              required={showCustomDeliveryInput} // Technically, it's required if showCustomDeliveryInput is true
+              placeholder="e.g., Approx. 3 weeks, specific date"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+            />
           </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="is_fungible" className="font-medium text-gray-700 dark:text-neutral-300">Unique/Non-Fungible Item</label>
-            <p className="text-gray-500 dark:text-neutral-400 text-xs">Check if this item is unique (e.g., a specific art print, collectible).</p>
+        )}
+
+        {/* Product & Group Type Section */}
+        <div className="space-y-4 pt-2">
+          {/* Unique Item/Service Instance (isFungible) */}
+          <div className="flex items-center justify-between">
+            <div>
+              <label htmlFor="isFungible" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Unique Item/Service Instance</label>
+              <p className="text-xs text-gray-500 dark:text-neutral-400">Is this a specific, unique instance (e.g., specific account, single art piece)?</p>
+            </div>
+            <label htmlFor="isFungible" className="relative inline-flex items-center cursor-pointer group">
+              <input
+                type="checkbox"
+                id="isFungible"
+                name="isFungible"
+                className="sr-only peer"
+                checked={isFungibleValue}
+                onChange={(e) => setIsFungibleValue(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
+            </label>
+          </div>
+
+          {/* Enable Automatic Group Creation (autoGroup) */}
+          <div className="flex items-center justify-between">
+            <div>
+              <label htmlFor="autoGroup" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Enable Automatic Group Creation</label>
+              <p className="text-xs text-gray-500 dark:text-neutral-400">If enabled, the system will automatically create timed and untimed groups. Requires Group Size.</p>
+            </div>
+            <label htmlFor="autoGroup" className="relative inline-flex items-center cursor-pointer group">
+              <input
+                type="checkbox"
+                id="autoGroup"
+                name="autoGroup"
+                className="sr-only peer"
+                checked={autoGroupValue}
+                onChange={(e) => setAutoGroupValue(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
+            </label>
           </div>
         </div>
+
+        {/* Auto-Group Settings Section */}
+        {showAutoGroupSettings && (
+          <div className="my-4 p-4 bg-gray-50 dark:bg-neutral-800/50 rounded-md border border-dashed border-gray-300 dark:border-neutral-700 space-y-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-neutral-100 mb-3">
+              Auto-Group Settings
+            </h3>
+            {/* Target Group Size */}
+            <div>
+              <label htmlFor="groupSize" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Target Group Size</label>
+              <input
+                type="number"
+                name="groupSize"
+                id="groupSize"
+                value={groupSizeInput}
+                onChange={(e) => setGroupSizeInput(e.target.value)}
+                required={autoGroupValue}
+                min="1"
+                placeholder="e.g., 5 (min. 1)"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+                Number of members required for automatically created groups (e.g., 2-20).
+              </p>
+            </div>
+            {/* Timed Group Countdown */}
+            <div>
+              <label htmlFor="countdownSecs" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Timed Group Countdown (seconds)</label>
+              <input
+                type="number"
+                name="countdownSecs"
+                id="countdownSecs"
+                value={countdownSecsInput}
+                onChange={(e) => setCountdownSecsInput(e.target.value)}
+                min="1"
+                placeholder="e.g., 86400 (for 24 hours)"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+                Duration for automatically created timed groups. Defaults to 24 hours if left blank.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Calculated Price Per Buyer Display */}
+        {calculatedPriceData && (
+          <div className="mt-6 mb-2 p-4 border border-dashed border-blue-500 dark:border-blue-400 rounded-md bg-blue-50 dark:bg-blue-900/20 text-center space-y-1">
+            <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+              CALCULATED PRICE PER BUYER
+            </p>
+            <p className="text-3xl font-bold text-blue-900 dark:text-blue-100">
+              ${calculatedPriceData.price}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-neutral-400">
+              Based on Actual Cost of ${calculatedPriceData.cost} and Group Size of {calculatedPriceData.size}.
+            </p>
+          </div>
+        )}
       </div>
-      {/* ... (submit button) ... */}
-       <div className="flex justify-end">
-        <Button type="submit" disabled={loading} className="dark:bg-primary-dark dark:hover:bg-primary-dark/90">
-          {loading ? 'Saving...' : (initialData ? 'Update Product' : 'Create Product')}
+       <div className="flex justify-end pt-6">
+        <Button type="submit" disabled={loading} className="w-full sm:w-auto dark:bg-primary-dark dark:hover:bg-primary-dark/90">
+          {loading ? 'Saving...' : (initialData ? 'Update Listing' : 'Add Listing')}
         </Button>
       </div>
     </form>
+  </div>
   );
 }
