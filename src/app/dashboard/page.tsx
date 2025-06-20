@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Suspense } from 'react'
 import { ShoppingBag, Search, Filter, Plus, Users, AlertCircle, LayoutGrid } from 'lucide-react' // Added LayoutGrid
 import { Header } from '@/components/layout/Header'
@@ -16,6 +18,8 @@ import { getGroupsByUser } from '@/lib/supabase/groups';
 import { ProductSearchControls } from '@/components/dashboard/ProductSearchControls';
 import { JoinedGroupCard, type JoinedGroupMembership } from '@/components/dashboard/JoinedGroupCard';
 import { VendorActions } from '@/components/dashboard/VendorActions'; // New import
+
+const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
 
 // Assuming DashboardContent is modified to accept searchParams
 async function DashboardContent({ searchParams }: { searchParams?: { mode?: string; tab?: string; q?: string; category?: string; } }) {
