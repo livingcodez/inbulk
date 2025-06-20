@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { NotificationList } from '@/components/notifications/NotificationList'
+import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card'
+import { NotificationList } from '../../components/notifications/NotificationList'
 
 export default function InboxPage() {
   return (
