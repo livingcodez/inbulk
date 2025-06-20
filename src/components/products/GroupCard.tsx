@@ -64,7 +64,7 @@ export function GroupCard({ group, currentUserId }: GroupCardProps) {
     setIsOptimisticallyMember(group.group_members?.some(member => member.user_id === currentUserId) || false);
   }, [group, currentUserId]);
 
-  const targetMembers = group.target_count || group.products?.max_buyers || 5;
+  const targetMembers = group.target_count || group.products?.max_participants || 5; // Changed max_buyers to max_participants
   const memberProgress = optimisticMemberCount && targetMembers ? (optimisticMemberCount / targetMembers) * 100 : 0;
 
   // Assuming group.vote_deadline is the specific 1-hour window end time

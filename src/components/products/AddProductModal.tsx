@@ -33,7 +33,7 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
 
     // Map ProductFormData to the structure expected by createProduct
     const productDataForApi = {
-      name: formData.name,
+      title: formData.name, // Changed from name to title, mapped from formData.name
       description: formData.description,
       // Calculate price if actualCost and groupSize are available, otherwise default or handle as per createProduct's needs
       price: (formData.actualCost && formData.groupSize && formData.groupSize > 0) ? formData.actualCost / formData.groupSize : 0,
@@ -42,9 +42,9 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
       category: formData.category,
       subcategory: formData.subcategory, // Mapped from form
       // min_buyers is removed
-      max_buyers: formData.groupSize,    // Mapped from groupSize
+      max_participants: formData.groupSize, // Changed from max_buyers to max_participants, mapped from formData.groupSize
       actual_cost: formData.actualCost,  // Mapped from form
-      is_fungible: formData.isFungible,  // Mapped from isFungible (form uses isFungible, API expects is_fungible)
+      is_fungible: formData.isFungible,  // Mapped from isFungible
       delivery_time: formData.deliveryTime === "Custom (Specify below)"
                      ? formData.customDeliveryTimeDescription
                      : formData.deliveryTime, // Mapped from form with custom logic

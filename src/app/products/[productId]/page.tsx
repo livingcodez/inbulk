@@ -6,13 +6,13 @@ import { getUserProfile } from '@/lib/supabase/server'; // To get currentUserId
 // Define a basic type for Product for now - consider moving to a types file later
 interface Product {
   id: string;
-  name: string;
+  title: string; // Changed from name
   description: string | null;
   price: number;
   image_url: string | null;
   category: string;
   user_profiles?: { full_name: string | null } | null; // Vendor info
-  max_buyers: number | null; // Target group size
+  max_participants: number | null; // Changed from max_buyers
 }
 
 // Interface for groups awaiting votes
@@ -156,19 +156,19 @@ export default async function ProductDetailsPage({ params }: { params: { product
               {/* Product Image Placeholder: Adjusted aspect ratio and placeholder style */}
               <div className="product-image-placeholder w-full aspect-[4/3] bg-slate-100 flex items-center justify-center rounded-lg overflow-hidden">
                 {product.image_url ? (
-                  <img src={product.image_url} alt={product.name} className="h-full w-full object-cover"/>
+                  <img src={product.image_url} alt={product.title} className="h-full w-full object-cover"/>
                 ) : (
                   <svg className="w-20 h-20 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 )}
               </div>
               <div className="py-2">
-                <h1 className="text-3xl lg:text-4xl font-bold text-primary font-display mb-3">{product.name}</h1>
+                <h1 className="text-3xl lg:text-4xl font-bold text-primary font-display mb-3">{product.title}</h1>
                 <p className="text-3xl font-semibold text-emerald-600 mb-5">${product.price.toFixed(2)}</p>
                 <p className="text-slate-700 mb-6 leading-relaxed">{product.description || "No description available."}</p>
                 <div className="product-attributes text-sm text-slate-600 space-y-2.5">
                   <p><strong className="font-medium text-slate-700">Category:</strong> {product.category}</p>
                   <p><strong className="font-medium text-slate-700">Vendor:</strong> {product.user_profiles?.full_name || 'N/A'}</p>
-                  <p><strong className="font-medium text-slate-700">Target Group Size:</strong> {product.max_buyers ?? 'N/A'}</p>
+                  <p><strong className="font-medium text-slate-700">Target Group Size:</strong> {product.max_participants ?? 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default async function ProductDetailsPage({ params }: { params: { product
                 <h2 className="text-xl font-semibold font-display text-amber-900">Groups Awaiting Votes!</h2>
               </div>
               <p className="mt-2.5 text-sm leading-relaxed">
-                One or more groups for "{product.name}" are full and need member votes to proceed.
+                One or more groups for "{product.title}" are full and need member votes to proceed.
                 Cast your vote if you're a member. The voting window is typically 1 hour from when the group becomes full.
               </p>
               <ul className="list-disc list-inside pl-1 mt-3 space-y-1.5 text-sm">
@@ -204,7 +204,7 @@ export default async function ProductDetailsPage({ params }: { params: { product
             timedGroups={timedGroups}
             untimedGroups={untimedGroups}
             currentUserId={currentUserId}
-            productName={product.name}
+            productName={product.title}
           />
 
           {/* Page-level errors for group loading if GroupTabs itself isn't rendered or they are catastrophic */}

@@ -13,9 +13,9 @@ export async function getLiveProducts(params?: { // Use an object for params for
 
   if (params?.searchQuery && params.searchQuery.trim() !== '') {
     const searchTerm = `%${params.searchQuery.trim()}%`;
-    // Search in product name and description.
+    // Search in product title and description.
     // Using .or() to match if either field contains the search term.
-    query = query.or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`);
+    query = query.or(`title.ilike.${searchTerm},description.ilike.${searchTerm}`);
   }
 
   if (params?.category && params.category.trim() !== '') {
@@ -57,7 +57,7 @@ export async function getVendorProducts(vendorId: string) {
 }
 
 export async function createProduct(product: {
-  name: string
+  title: string // Changed from name
   description: string | null
   price: number
   image_url: string | null
@@ -65,7 +65,7 @@ export async function createProduct(product: {
   category: string
   subcategory: string | null
   // min_buyers removed
-  max_buyers: number | null
+  max_participants: number | null // Changed from max_buyers
   actual_cost: number | null
   is_fungible: boolean
   delivery_time: string | null
@@ -84,14 +84,14 @@ export async function createProduct(product: {
 }
 
 export async function updateProduct(id: string, updates: {
-  name?: string
+  title?: string // Changed from name
   description?: string | null
   price?: number
   image_url?: string | null
   category?: string
   subcategory?: string | null
   // min_buyers removed
-  max_buyers?: number | null
+  max_participants?: number | null // Changed from max_buyers
   actual_cost?: number | null
   is_fungible?: boolean
   delivery_time?: string | null
