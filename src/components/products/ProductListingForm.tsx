@@ -644,5 +644,6 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         </Button>
       </div>
     </form>
+  </div>
   );
 }
