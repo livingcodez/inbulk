@@ -163,7 +163,7 @@ async function DashboardContent({ searchParams }: { searchParams?: { mode?: stri
 													<ProductCard
 														key={product.id}
 														id={product.id}
-														title={product.name}
+														title={product.title} // Changed from product.name
 														description={product.description || ''}
 														price={product.price}
 														category={product.category}
@@ -242,7 +242,7 @@ async function DashboardContent({ searchParams }: { searchParams?: { mode?: stri
 													<ProductCard
 														key={product.id}
 														id={product.id}
-														title={product.name} // From getVendorProducts, assuming 'name' field
+														title={product.title} // Changed from product.name
 														description={product.description || ''}
 														price={product.price}
 														category={product.category}

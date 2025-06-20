@@ -31,21 +31,25 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
     setIsSubmitting(true);
     setSubmissionError(null);
 
+    // Map ProductFormData to the structure expected by createProduct
     const productDataForApi = {
-      name: formData.name,
+      title: formData.name, // Changed from name to title, mapped from formData.name
       description: formData.description,
-      price: formData.price,
+      // Calculate price if actualCost and groupSize are available, otherwise default or handle as per createProduct's needs
+      price: (formData.actualCost && formData.groupSize && formData.groupSize > 0) ? formData.actualCost / formData.groupSize : 0,
       image_url: formData.image_url,
-      category: formData.category,
-      is_fungible: formData.is_fungible,
       vendor_id: profile.id,
-      min_buyers: formData.min_participants, // Map min_participants to min_buyers
-      max_buyers: formData.max_participants, // Map max_participants to max_buyers
-      end_date: formData.end_date, // Pass through end_date if collected
-      // Fields not in ProductFormData but in createProduct's type, set to null or default
-      subcategory: null,
-      actual_cost: null, // Assuming not collected by this form
-      delivery_time: null, // Assuming not collected by this form
+      category: formData.category,
+      subcategory: formData.subcategory, // Mapped from form
+      // min_buyers is removed
+      max_participants: formData.groupSize, // Changed from max_buyers to max_participants, mapped from formData.groupSize
+      actual_cost: formData.actualCost,  // Mapped from form
+      is_fungible: formData.isFungible,  // Mapped from isFungible
+      delivery_time: formData.deliveryTime === "Custom (Specify below)"
+                     ? formData.customDeliveryTimeDescription
+                     : formData.deliveryTime, // Mapped from form with custom logic
+      // end_date is not in ProductFormData, so removed.
+      // status is set to 'draft' by createProduct itself.
     };
 
     try {
