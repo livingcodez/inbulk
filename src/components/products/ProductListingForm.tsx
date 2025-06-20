@@ -178,10 +178,9 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     let formSubUsername = null;
     let formSubPassword = null;
     let formSub2FAKey = null;
-    // Consistent variable name for this check within handleSubmit
-    const isSoftwareSubscriptionCondition = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+    const currentIsSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
 
-    if (isSoftwareSubscriptionCondition) {
+    if (currentIsSoftwareSubscription) {
       formSubUsername = (formElements.namedItem('subscriptionUsername') as HTMLInputElement)?.value.trim() || null;
       formSubPassword = (formElements.namedItem('subscriptionPassword') as HTMLInputElement)?.value || null;
       formSub2FAKey = (formElements.namedItem('subscription2FAKey') as HTMLInputElement)?.value.trim() || null;
@@ -238,7 +237,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       setLoading(false);
       return;
     }
-    if (isSoftwareSubscriptionCondition) {
+    if (currentIsSoftwareSubscription) {
       if (!formSubUsername) {
         setError("Subscription Username is required for Software Subscriptions.");
         setLoading(false);
@@ -269,9 +268,9 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       description: formDescription,
       category: selectedCategory,
       subcategory: selectedSubcategory || null,
-      subscriptionUsername: isSoftwareSubscriptionCondition ? formSubUsername : null,
-      subscriptionPassword: isSoftwareSubscriptionCondition ? formSubPassword : null,
-      subscription2FAKey: isSoftwareSubscriptionCondition ? formSub2FAKey : null,
+      subscriptionUsername: currentIsSoftwareSubscription ? formSubUsername : null,
+      subscriptionPassword: currentIsSoftwareSubscription ? formSubPassword : null,
+      subscription2FAKey: currentIsSoftwareSubscription ? formSub2FAKey : null,
       actualCost: finalActualCost,
       image_url: formImageUrl,
       deliveryTime: selectedDeliveryTime,
