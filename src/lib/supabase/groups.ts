@@ -16,8 +16,7 @@ export interface GroupData {
   vote_deadline: string | null; // For groups in voting, when the short voting window ends
   // For voting UI
   group_members?: Array<{ user_id: string; vote_status: string | null }>; // To check if current user is member & their vote
-  // products: { name: string, price: number }; // Product relation - ensure products table has these if selected
-  products?: { name: string, price: number, min_buyers: number | null, max_buyers: number | null }; // Expanded based on select
+  products?: { name: string, price: number, max_buyers: number | null }; // min_buyers removed
   unanimous_approval_required?: boolean; // Or some other way to determine approval rules
   // Add any other fields that would be useful for the GroupCard
 }
@@ -40,7 +39,7 @@ async function getGroupsByProductAndType(productId: string, groupType?: 'timed' 
       vote_deadline,
       unanimous_approval_required,
       group_members ( user_id, vote_status ),
-      products ( name, price, min_buyers, max_buyers )
+      products ( name, price, max_buyers )
     `)
     .eq('product_id', productId)
     // Only apply group_type filter if it's provided

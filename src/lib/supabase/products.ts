@@ -64,7 +64,7 @@ export async function createProduct(product: {
   vendor_id: string
   category: string
   subcategory: string | null
-  min_buyers: number | null
+  // min_buyers removed
   max_buyers: number | null
   actual_cost: number | null
   is_fungible: boolean
@@ -90,7 +90,7 @@ export async function updateProduct(id: string, updates: {
   image_url?: string | null
   category?: string
   subcategory?: string | null
-  min_buyers?: number | null
+  // min_buyers removed
   max_buyers?: number | null
   actual_cost?: number | null
   is_fungible?: boolean
