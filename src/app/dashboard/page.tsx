@@ -19,6 +19,8 @@ import { ProductSearchControls } from '@/components/dashboard/ProductSearchContr
 import { JoinedGroupCard, type JoinedGroupMembership } from '@/components/dashboard/JoinedGroupCard';
 import { VendorActions } from '@/components/dashboard/VendorActions'; // New import
 
+const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
+
 // Assuming DashboardContent is modified to accept searchParams
 async function DashboardContent({ searchParams }: { searchParams?: { mode?: string; tab?: string; q?: string; category?: string; } }) {
   let productsError: string | null = null; // For product fetching errors
