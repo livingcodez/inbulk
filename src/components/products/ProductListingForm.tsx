@@ -178,9 +178,10 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     let formSubUsername = null;
     let formSubPassword = null;
     let formSub2FAKey = null;
-    const isCurrentlySoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+    // Use the same derived const that JSX uses for consistency in this scope
+    const currentIsSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
 
-    if (isCurrentlySoftwareSubscription) {
+    if (currentIsSoftwareSubscription) { // Use the locally defined const
       formSubUsername = (formElements.namedItem('subscriptionUsername') as HTMLInputElement)?.value.trim() || null;
       formSubPassword = (formElements.namedItem('subscriptionPassword') as HTMLInputElement)?.value || null;
       formSub2FAKey = (formElements.namedItem('subscription2FAKey') as HTMLInputElement)?.value.trim() || null;
