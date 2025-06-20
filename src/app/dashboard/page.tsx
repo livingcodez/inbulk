@@ -22,12 +22,7 @@ import { VendorActions } from '@/components/dashboard/VendorActions'; // New imp
 const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
 
 interface DashboardPageProps {
-  searchParams?: {
-    mode?: string;
-    tab?: string;
-    q?: string;
-    category?: string;
-  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // Assuming DashboardContent is modified to accept searchParams
