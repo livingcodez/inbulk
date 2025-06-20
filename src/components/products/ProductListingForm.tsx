@@ -178,10 +178,10 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     let formSubUsername = null;
     let formSubPassword = null;
     let formSub2FAKey = null;
-    // Use the same derived const that JSX uses for consistency in this scope
-    const currentIsSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
+    // Consistent variable name for this check within handleSubmit
+    const isSoftwareSubscriptionCondition = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
 
-    if (currentIsSoftwareSubscription) { // Use the locally defined const
+    if (isSoftwareSubscriptionCondition) {
       formSubUsername = (formElements.namedItem('subscriptionUsername') as HTMLInputElement)?.value.trim() || null;
       formSubPassword = (formElements.namedItem('subscriptionPassword') as HTMLInputElement)?.value || null;
       formSub2FAKey = (formElements.namedItem('subscription2FAKey') as HTMLInputElement)?.value.trim() || null;
@@ -238,7 +238,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       setLoading(false);
       return;
     }
-    if (isCurrentlySoftwareSubscription) {
+    if (isSoftwareSubscriptionCondition) {
       if (!formSubUsername) {
         setError("Subscription Username is required for Software Subscriptions.");
         setLoading(false);
@@ -269,9 +269,9 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       description: formDescription,
       category: selectedCategory,
       subcategory: selectedSubcategory || null,
-      subscriptionUsername: isCurrentlySoftwareSubscription ? formSubUsername : null,
-      subscriptionPassword: isCurrentlySoftwareSubscription ? formSubPassword : null,
-      subscription2FAKey: isCurrentlySoftwareSubscription ? formSub2FAKey : null,
+      subscriptionUsername: isSoftwareSubscriptionCondition ? formSubUsername : null,
+      subscriptionPassword: isSoftwareSubscriptionCondition ? formSubPassword : null,
+      subscription2FAKey: isSoftwareSubscriptionCondition ? formSub2FAKey : null,
       actualCost: finalActualCost,
       image_url: formImageUrl,
       deliveryTime: selectedDeliveryTime,
@@ -401,7 +401,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         </div>
 
         {/* Conditional Subscription Details Section */}
-        {showSubscriptionDetails && (
+        {isSoftwareSubscription && (
           <div className="my-6 p-4 bg-gray-50 dark:bg-neutral-800/50 rounded-md border border-dashed border-gray-300 dark:border-neutral-700 space-y-4">
             <h3 className="text-lg font-medium text-gray-900 dark:text-neutral-100 mb-3">
               Subscription Details
@@ -413,7 +413,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                 type="text"
                 name="subscriptionUsername"
                 id="subscriptionUsername"
-                required={showSubscriptionDetails}
+                required={isSoftwareSubscription}
                 defaultValue={initialData?.subscriptionUsername || ''}
                 placeholder="Enter username for the subscription"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
@@ -427,7 +427,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                   type={showPassword ? 'text' : 'password'}
                   name="subscriptionPassword"
                   id="subscriptionPassword"
-                  required={showSubscriptionDetails}
+                  required={isSoftwareSubscription}
                   defaultValue={initialData?.subscriptionPassword || ''}
                   placeholder="Enter password for the subscription"
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50 pr-10"
