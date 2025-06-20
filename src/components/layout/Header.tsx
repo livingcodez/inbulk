@@ -19,13 +19,9 @@ export function Header() {
     } catch (error) {
       // The signOut in SupabaseProvider currently doesn't throw errors, but this is for robustness
       console.error('Error during sign out process:', error);
-    } finally {
-      // Redirect to login page regardless of signOut success to ensure a clean state.
-      // The Supabase auth listener in SupabaseProvider should handle session changes and might reload.
-      router.push('/login');
-      // router.refresh(); // Optional: may help if immediate UI update needed beyond what listener does.
-                        // The listener in SupabaseProvider already calls window.location.reload().
     }
+  // The redirect to login page will now be handled by the onAuthStateChange listener
+  // in SupabaseProvider.
   };
 
   const menuItems: DropdownMenuItem[] = [

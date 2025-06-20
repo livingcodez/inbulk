@@ -52,20 +52,23 @@ export default function SupabaseProvider({
     getProfile()
   }, [session, supabase])
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, currentSession: Session | null) => {
-        if (currentSession?.user.id !== session?.user.id) {
-          // Refresh the page on auth changes to ensure proper session state
-          window.location.reload()
-        }
+useEffect(() => {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    async (event: AuthChangeEvent, currentSession: Session | null) => {
+      if (event === 'SIGNED_OUT') {
+        // Explicitly redirect to login page on sign out
+        window.location.href = '/login';
+      } else if (currentSession?.user.id !== session?.user.id) {
+        // Refresh the page on other auth changes to ensure proper session state
+        window.location.reload();
       }
-    )
-
-    return () => {
-      subscription.unsubscribe()
     }
-  }, [session?.user.id, supabase.auth])
+  );
+
+  return () => {
+    subscription.unsubscribe();
+  };
+}, [session?.user.id, supabase.auth, supabase]); // Added supabase to dependency array as it's used in the effect.
 
   const signOut = async () => {
     await supabase.auth.signOut()
