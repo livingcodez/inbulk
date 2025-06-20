@@ -37,30 +37,62 @@ export async function getUserProfile() {
       .eq('id', user.id)
       .single()
 
-    if (error) throw error
+    if (error) { // Error during initial profile fetch
+      console.error('Error fetching existing profile. Full error object:', JSON.stringify(error, null, 2));
+      if (typeof error === 'object' && error !== null) {
+        console.error('Error fetching existing profile code:', (error as any).code);
+        console.error('Error fetching existing profile details:', (error as any).details);
+        console.error('Error fetching existing profile hint:', (error as any).hint);
+      }
+      throw error; // Re-throw to be caught by the outer catch which will log it again but also return null
+    }
 
     // Create profile if it doesn't exist
     if (!profile) {
-      const { data: newProfile, error: createError } = await supabase
-        .from('user_profiles')
-        .insert({
-          id: user.id,
-          full_name: user.user_metadata.full_name,
-          avatar_url: user.user_metadata.avatar_url,
-          role: 'buyer',
-          wallet_balance: 0,
-          holds: 0,
-        })
-        .select()
-        .single()
+      try { // Add a specific try-catch for creation
+        const { data: newProfile, error: createError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: user.id,
+            full_name: user.user_metadata.full_name,
+            avatar_url: user.user_metadata.avatar_url,
+            role: 'buyer', // Ensure this default is okay
+            wallet_balance: 0,
+            holds: 0,
+          })
+          .select()
+          .single()
 
-      if (createError) throw createError
-      return newProfile
+        if (createError) {
+          console.error('Error creating new profile. Full error object:', JSON.stringify(createError, null, 2));
+          if (typeof createError === 'object' && createError !== null) {
+            console.error('Error creating new profile code:', (createError as any).code);
+            console.error('Error creating new profile details:', (createError as any).details);
+            console.error('Error creating new profile hint:', (createError as any).hint);
+          }
+          throw createError; // Re-throw to be caught by the outer catch
+        }
+        return newProfile
+      } catch (creationPhaseError: any) {
+          // This catch is for errors during the creation attempt itself (e.g., network, or if the throw createError is caught here)
+          console.error('Exception during profile creation phase. Full error:', JSON.stringify(creationPhaseError, null, 2));
+          if (typeof creationPhaseError === 'object' && creationPhaseError !== null) {
+            console.error('Exception during profile creation phase code:', creationPhaseError.code);
+            console.error('Exception during profile creation phase message:', creationPhaseError.message);
+          }
+          throw creationPhaseError; // Re-throw to be caught by the outer catch
+      }
     }
 
     return profile
-  } catch (error) {
-    console.error('Profile error:', error)
+  } catch (error: any) { // Add :any to access potential Supabase error properties
+    console.error('Profile error caught in outer catch. Full error object:', JSON.stringify(error, null, 2));
+    if (error && typeof error === 'object') {
+      console.error('Outer catch - Profile error code:', error.code);
+      console.error('Outer catch - Profile error details:', error.details);
+      console.error('Outer catch - Profile error hint:', error.hint);
+      console.error('Outer catch - Profile error message:', error.message);
+    }
     return null
   }
 }
