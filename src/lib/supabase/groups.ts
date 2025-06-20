@@ -1,5 +1,74 @@
 import supabaseClient from './supabaseClient'
 
+// Interface for group data, might need expansion
+export interface GroupData {
+  id: string;
+  name: string | null;
+  product_id: string;
+  status: string; // e.g., 'open', 'waiting_votes', 'closed', 'completed'
+  group_type: 'timed' | 'untimed' | null; // Assuming this field exists
+  member_count: number;
+  target_count: number; // Corresponds to product's max_buyers or a group-specific target
+  waitlist_count?: number; // If tracked directly on group
+  waitlist_max_capacity?: number; // If applicable
+  created_at: string;
+  expires_at: string | null; // For timed groups, when the offer itself expires
+  vote_deadline: string | null; // For groups in voting, when the short voting window ends
+  // For voting UI
+  group_members?: Array<{ user_id: string; vote_status: string | null }>; // To check if current user is member & their vote
+  products?: { title: string, price: number, max_participants: number | null }; // Renamed name to title, max_buyers to max_participants
+  unanimous_approval_required?: boolean; // Or some other way to determine approval rules
+  // Add any other fields that would be useful for the GroupCard
+}
+
+async function getGroupsByProductAndType(productId: string, groupType?: 'timed' | 'untimed'): Promise<GroupData[]> {
+  let query = supabaseClient
+    .from('groups')
+    .select(`
+      id,
+      name,
+      product_id,
+      status,
+      group_type,
+      member_count,
+      target_count,
+      waitlist_count,
+      waitlist_max_capacity,
+      created_at,
+      expires_at,
+      vote_deadline,
+      unanimous_approval_required,
+      group_members ( user_id, vote_status ),
+      products ( title, price, max_participants )
+    `)
+    .eq('product_id', productId)
+    // Only apply group_type filter if it's provided
+    // Also, ensure status is typically 'open' or 'waiting_votes' for active browsing,
+    // but this function is generic for now. Specific filtering can be added in calling functions or here if always needed.
+    .order('created_at', { ascending: false });
+
+  if (groupType) {
+    query = query.eq('group_type', groupType);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error(`Error fetching ${groupType || 'all'} groups for product ${productId}:`, error);
+    throw error;
+  }
+  // Cast to GroupData[] - ensure the select matches this structure
+  return data as GroupData[] || [];
+}
+
+export function getTimedGroupsByProduct(productId: string): Promise<GroupData[]> {
+  return getGroupsByProductAndType(productId, 'timed');
+}
+
+export function getUntimedGroupsByProduct(productId: string): Promise<GroupData[]> {
+  return getGroupsByProductAndType(productId, 'untimed');
+}
+
 export async function getGroupById(id: string) {
   const { data, error } = await supabaseClient
     .from('groups')
@@ -13,6 +82,22 @@ export async function getGroupById(id: string) {
 
   if (error) throw error
   return data
+}
+
+export async function getGroupsAwaitingVotes(productId: string) {
+  const { data, error } = await supabaseClient
+    .from('groups')
+    .select('id, name, vote_deadline') // Select necessary fields. 'name' might not exist, adjust if needed.
+                                      // 'vote_deadline' is assumed to store the end time for voting.
+    .eq('product_id', productId)
+    .eq('status', 'waiting_votes')
+    .order('created_at', { ascending: false }); // Or by vote_deadline
+
+  if (error) {
+    console.error('Error fetching groups awaiting votes:', error);
+    throw error;
+  }
+  return data;
 }
 
 export async function getGroupsByUser(userId: string) {

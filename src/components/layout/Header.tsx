@@ -9,29 +9,19 @@ import { LogOut, UserCircle } from 'lucide-react'; // Example icons
 // import { cn } from '@/lib/utils'; // cn is not used in the final proposed code, can be removed if UserDropdownMenu handles all its internal cn uses.
 
 export function Header() {
-  const { supabase, profile } = useSupabase(); // supabase client for auth
+  const { profile, signOut } = useSupabase(); // Correctly get signOut from context
   const router = useRouter();
 
-  const handleSignOut = async () => {
-    if (!supabase) {
-      console.error('Supabase client not available for sign out.');
-      // Fallback redirect even if supabase client is missing for some reason
-      router.push('/login');
-      return;
-    }
+  // Renamed to avoid confusion with the signOut from context, though it could be the same name if preferred
+  const handlePerformSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error);
-      }
+      await signOut(); // This calls the signOut function from SupabaseProvider context
     } catch (error) {
-      console.error('Unexpected error during sign out:', error);
-    } finally {
-      // Redirect to login page regardless of signOut success to ensure a clean state
-      // Supabase client listeners should handle clearing local session data.
-      router.push('/login');
-      router.refresh(); // To ensure layout re-evaluates auth state
+      // The signOut in SupabaseProvider currently doesn't throw errors, but this is for robustness
+      console.error('Error during sign out process:', error);
     }
+  // The redirect to login page will now be handled by the onAuthStateChange listener
+  // in SupabaseProvider.
   };
 
   const menuItems: DropdownMenuItem[] = [
@@ -43,7 +33,7 @@ export function Header() {
     // { type: 'divider' }, // If dropdown supported dividers
     {
       label: 'Sign out',
-      onClick: handleSignOut,
+      onClick: handlePerformSignOut, // Use the corrected handler
       isDanger: true,
       // icon: <LogOut size={16} className="mr-2" /> // If dropdown supported icons
     },
@@ -52,13 +42,13 @@ export function Header() {
   const userTrigger = (
     <div className="flex items-center gap-2 cursor-pointer p-1 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-md transition-colors">
       <Avatar
-        src={profile?.avatar_url}
+        src={profile?.avatar_url ?? undefined} // Pass undefined if null for Avatar component
         alt={profile?.full_name ?? 'User'}
-        size={32} // existing size
+        size={32}
       />
       {profile?.full_name && (
          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200 hidden md:inline">
-            {profile.full_name.split(' ')[0]} {/* Display only first name */}
+            {profile.full_name.split(' ')[0]}
          </span>
       )}
        {/* Chevron down icon could be nice here if not part of Avatar itself */}
@@ -78,7 +68,7 @@ export function Header() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-neutral-500 dark:text-neutral-400">Balance:</span>
               <span className="font-medium text-primary dark:text-primary-dark">
-                ${profile?.wallet_balance?.toFixed(2) ?? '0.00'}
+                ${typeof profile?.wallet_balance === 'number' ? profile.wallet_balance.toFixed(2) : '0.00'}
               </span>
             </div>
 
