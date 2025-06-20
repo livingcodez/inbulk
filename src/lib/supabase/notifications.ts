@@ -72,3 +72,30 @@ export function subscribeToNotifications(userId: string, callback: (notification
     )
     .subscribe()
 }
+
+export async function getUnreadNotificationCount(userId: string): Promise<number> {
+  if (!userId) {
+    // console.warn('getUnreadNotificationCount called without userId');
+    return 0;
+  }
+
+  try {
+    const { count, error } = await supabaseClient
+      .from('notifications')
+      .select('*', { count: 'exact', head: true }) // Important: head:true makes it not return data, just count
+      .eq('user_id', userId)
+      .eq('read', false);
+
+    if (error) {
+      console.error('Error fetching unread notification count:', error.message);
+      // Depending on desired behavior, could throw error or return 0
+      // For a badge, returning 0 on error might be preferable to breaking UI
+      return 0;
+    }
+
+    return count ?? 0; // count can be null if query fails in a specific way, default to 0
+  } catch (error: any) {
+    console.error('Unexpected error in getUnreadNotificationCount:', error.message);
+    return 0; // Fallback in case of unexpected errors
+  }
+}
