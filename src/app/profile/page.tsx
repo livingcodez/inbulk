@@ -1,5 +1,3 @@
-'use client'
-
 import Header from '@/components/layout/Header'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
