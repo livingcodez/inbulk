@@ -58,7 +58,7 @@ async function getGroupsByProductAndType(productId: string, groupType?: 'timed' 
     throw error;
   }
   // Cast to GroupData[] - ensure the select matches this structure
-  return data as GroupData[] || [];
+  return (data as unknown as GroupData[]) || [];
 }
 
 export function getTimedGroupsByProduct(productId: string): Promise<GroupData[]> {

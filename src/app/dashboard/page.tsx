@@ -21,13 +21,12 @@ import { VendorActions } from '@/components/dashboard/VendorActions'; // New imp
 
 const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
 
-interface PageProps {
-  params: { [key: string]: string | string[] | undefined };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+// Next.js automatically types searchParams as `Promise<any>` in the generated
+// route types. Using `any` here keeps us compatible while avoiding the strict
+// promise requirement.
+type SearchParams = { [key: string]: string | string[] | undefined };
 
-// Assuming DashboardContent is modified to accept searchParams
-async function DashboardContent({ searchParams }: PageProps) {
+async function DashboardContent({ searchParams }: { searchParams?: any }) {
   let productsError: string | null = null; // For product fetching errors
   let productsToDisplay: any[] = [];      // Initialize with empty array
   let joinedGroupsData: any[] = []; // Variable for joined groups
@@ -299,9 +298,9 @@ async function DashboardContent({ searchParams }: PageProps) {
 				</div> {/* End of container */}
 
 				{/* Conditionally render VendorActions (FAB and Modal logic) */}
-				{profile && currentRole === 'vendor' && (
-					<VendorActions currentUserId={profile.id} />
-				)}
+                                {profile && currentRole === 'vendor' && (
+                                        <VendorActions />
+                                )}
 
 				{/* Footer - Ensure it's visually below the FAB or FAB avoids it */}
 				<footer className="mt-auto py-6 text-center border-t bg-white dark:bg-neutral-800 dark:border-neutral-700">
@@ -324,7 +323,7 @@ async function DashboardContent({ searchParams }: PageProps) {
 }
 
 // Modify DashboardPage to pass searchParams to DashboardContent
-export default async function DashboardPage({ searchParams, params }: PageProps) {
+export default async function DashboardPage({ searchParams }: { searchParams?: any }) {
 	return (
 		<div className="min-h-screen bg-[#F0F4F7] flex flex-col dark:bg-neutral-900">
 			<Header /> {/* Header might need dark mode styles too */}
