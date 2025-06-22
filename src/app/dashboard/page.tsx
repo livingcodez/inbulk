@@ -294,9 +294,9 @@ async function DashboardContent({ searchParams }: { searchParams?: { mode?: stri
 				</div> {/* End of container */}
 
 				{/* Conditionally render VendorActions (FAB and Modal logic) */}
-				{profile && currentRole === 'vendor' && (
-					<VendorActions currentUserId={profile.id} />
-				)}
+                                {profile && currentRole === 'vendor' && (
+                                        <VendorActions />
+                                )}
 
 				{/* Footer - Ensure it's visually below the FAB or FAB avoids it */}
 				<footer className="mt-auto py-6 text-center border-t bg-white dark:bg-neutral-800 dark:border-neutral-700">
