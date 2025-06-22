@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint';
 import nextPlugin from '@next/eslint-plugin-next';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import globals from 'globals';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -62,7 +63,16 @@ export default tseslint.config(
         rootDir: __dirname,
       }
     }
+  },
+  // JSX-A11y specific configurations
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'], // Apply to all relevant JSX files
+    plugins: {
+      'jsx-a11y': jsxA11yPlugin,
+    },
+    rules: {
+      ...jsxA11yPlugin.configs.recommended.rules,
+      // You can customize or override jsx-a11y rules here if needed
+    },
   }
-  // Consider adding React specific rules (eslint-plugin-react, eslint-plugin-react-hooks)
-  // if they are not adequately covered by the Next.js configurations.
 );

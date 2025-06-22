@@ -542,11 +542,11 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         <div className="space-y-4 pt-2">
           {/* Unique Item/Service Instance (isFungible) */}
           <div className="flex items-center justify-between">
-            <div>
-              <label htmlFor="isFungible" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Unique Item/Service Instance</label>
+            <label htmlFor="isFungible" className="flex-grow cursor-pointer group">
+              <span className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Unique Item/Service Instance</span>
               <p className="text-xs text-gray-500 dark:text-neutral-400">Is this a specific, unique instance (e.g., specific account, single art piece)?</p>
-            </div>
-            <label htmlFor="isFungible" className="relative inline-flex items-center cursor-pointer group">
+            </label>
+            <div className="relative inline-flex items-center">
               <input
                 type="checkbox"
                 id="isFungible"
@@ -556,16 +556,16 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                 onChange={(e) => setIsFungibleValue(e.target.checked)}
               />
               <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
-            </label>
+            </div>
           </div>
 
           {/* Enable Automatic Group Creation (autoGroup) */}
           <div className="flex items-center justify-between">
-            <div>
-              <label htmlFor="autoGroup" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Enable Automatic Group Creation</label>
+            <label htmlFor="autoGroup" className="flex-grow cursor-pointer group">
+              <span className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Enable Automatic Group Creation</span>
               <p className="text-xs text-gray-500 dark:text-neutral-400">If enabled, the system will automatically create timed and untimed groups. Requires Group Size.</p>
-            </div>
-            <label htmlFor="autoGroup" className="relative inline-flex items-center cursor-pointer group">
+            </label>
+            <div className="relative inline-flex items-center">
               <input
                 type="checkbox"
                 id="autoGroup"
@@ -575,7 +575,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                 onChange={(e) => setAutoGroupValue(e.target.checked)}
               />
               <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
-            </label>
+            </div>
           </div>
         </div>
 

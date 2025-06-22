@@ -21,8 +21,13 @@ import { VendorActions } from '@/components/dashboard/VendorActions'; // New imp
 
 const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
 
+interface PageProps {
+  params: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
 // Assuming DashboardContent is modified to accept searchParams
-async function DashboardContent({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+async function DashboardContent({ searchParams }: PageProps) {
   let productsError: string | null = null; // For product fetching errors
   let productsToDisplay: any[] = [];      // Initialize with empty array
   let joinedGroupsData: any[] = []; // Variable for joined groups
@@ -319,7 +324,7 @@ async function DashboardContent({ searchParams }: { searchParams?: { [key: strin
 }
 
 // Modify DashboardPage to pass searchParams to DashboardContent
-export default async function DashboardPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+export default async function DashboardPage({ searchParams, params }: PageProps) {
 	return (
 		<div className="min-h-screen bg-[#F0F4F7] flex flex-col dark:bg-neutral-900">
 			<Header /> {/* Header might need dark mode styles too */}

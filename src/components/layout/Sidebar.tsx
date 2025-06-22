@@ -108,7 +108,6 @@ export function Sidebar() {
               : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light'
           )}
           aria-current={isActive ? 'page' : undefined}
-          role="menuitem"
         >
           <div className="relative flex-shrink-0"> {/* Wrapper for icon and potential badge on icon */}
             <Icon
@@ -173,7 +172,6 @@ export function Sidebar() {
       onMouseLeave={() => setIsExpanded(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      role="navigation"
       aria-label="Main navigation"
     >
       <div className="flex h-full flex-col py-8">
@@ -197,14 +195,14 @@ export function Sidebar() {
         </button>
 
         {/* Main navigation */}
-        <nav className="flex-1 space-y-1 px-3" role="menu">
+        <nav className="flex-1 space-y-1 px-3" aria-label="Main navigation links">
           {mainNavItems.map(renderNavItem)}
         </nav>
 
         {/* Bottom navigation */}
-        <div className="px-3 mt-auto space-y-1" role="menu">
+        <nav className="px-3 mt-auto space-y-1" aria-label="User navigation links">
           {bottomNavItems.map(renderNavItem)}
-        </div>
+        </nav>
       </div>
     </aside>
   )

@@ -2,10 +2,6 @@
 const path = require('path');
 
 const nextConfig = {
-  devIndicators: {
-    position: 'bottom-right',
-    devIndicators: false,
-  },
   webpack: (config) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     // Suppress Critical dependency warning for @supabase/realtime-js
