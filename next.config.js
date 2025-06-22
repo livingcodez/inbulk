@@ -2,6 +2,11 @@
 const path = require('path');
 
 const nextConfig = {
+  reactStrictMode: true,
+  output: 'standalone',
+  images: {
+    domains: ['via.placeholder.com', 'placehold.co'],
+  },
   webpack: (config) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     // Suppress Critical dependency warning for @supabase/realtime-js
@@ -9,8 +14,8 @@ const nextConfig = {
       ...(config.ignoreWarnings || []),
       {
         module: /@supabase[\\/]realtime-js/,
-        message: /Critical dependency: the request of a dependency is an expression/
-      }
+        message: /Critical dependency: the request of a dependency is an expression/,
+      },
     ];
     return config;
   },
