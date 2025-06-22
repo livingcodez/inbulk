@@ -97,7 +97,7 @@ export function GroupCard({ group, currentUserId }: GroupCardProps) {
       alert('You must be an active member of this group during the voting phase to vote.'); // Replace with toast
       return;
     }
-    if (optimisticVoteStatus === vote && optimisticVoteStatus !== 'pending') return;
+    if (optimisticVoteStatus === vote) return;
 
     setIsLoadingVote(true);
     const previousVoteStatus = optimisticVoteStatus; // Store previous status for accurate count update

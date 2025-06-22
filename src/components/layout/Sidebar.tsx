@@ -147,7 +147,7 @@ export function Sidebar() {
       return (
         <div key={name} className="relative">
           {!isExpanded ? (
-            <Tooltip content={name} side="right" sideOffset={8}> {/* Added sideOffset for better spacing from icon badge */}
+            <Tooltip content={name} side="right">
               {linkContent}
             </Tooltip>
           ) : (

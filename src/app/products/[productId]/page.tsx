@@ -25,7 +25,9 @@ interface GroupAwaitingVote {
 }
 
 // This is a server component, so we can make it async
-export default async function ProductDetailsPage({ params }: { params: { productId: string } }) {
+// `params` comes from Next.js route parameters. Using `any` keeps the
+// component compatible with the generated PageProps type.
+export default async function ProductDetailsPage({ params }: { params: any }) {
   const { productId } = params;
   let product: Product | null = null;
   let errorLoadingProduct: string | null = null;

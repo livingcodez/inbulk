@@ -6,11 +6,7 @@ import { Plus } from 'lucide-react';
 import { AddProductModal } from '@/components/products/AddProductModal';
 import { Button } from '@/components/ui/Button'; // If FAB is a styled Button, though not used in this example
 
-interface VendorActionsProps {
-  currentUserId: string;
-}
-
-export function VendorActions({ currentUserId }: VendorActionsProps) {
+export function VendorActions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
@@ -37,7 +33,6 @@ export function VendorActions({ currentUserId }: VendorActionsProps) {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onProductAdded={handleProductAdded}
-        currentUserId={currentUserId}
       />
     </>
   );

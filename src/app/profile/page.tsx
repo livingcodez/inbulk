@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { Header } from '@/components/layout/Header'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
