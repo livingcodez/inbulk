@@ -31,17 +31,19 @@ export function Tooltip({
   content,
   side = 'right',
   delayDuration = 0,
+  sideOffset = 4,
 }: {
   children: React.ReactNode
   content: React.ReactNode
   side?: 'top' | 'right' | 'bottom' | 'left'
   delayDuration?: number
+  sideOffset?: number
 }) {
   return (
     <TooltipProvider>
       <TooltipRoot delayDuration={delayDuration}>
         <TooltipTrigger asChild><span>{children}</span></TooltipTrigger>
-        <TooltipContent side={side}>{content}</TooltipContent>
+        <TooltipContent side={side} sideOffset={sideOffset}>{content}</TooltipContent>
       </TooltipRoot>
     </TooltipProvider>
   )
