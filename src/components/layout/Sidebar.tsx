@@ -19,14 +19,11 @@ import { getUnreadNotificationCount } from '@/lib/supabase/notifications'; // NE
 
 const mainNavItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Shop', href: '/shop', icon: ShoppingBag },
-  { name: 'Wallet', href: '/wallet', icon: Wallet },
   { name: 'Inbox', href: '/inbox', icon: Mail }, // Added Inbox item
 ]
 
 const bottomNavItems = [
   { name: 'Profile', href: '/profile', icon: UserCircle },
-  { name: 'Settings', href: '/settings', icon: Settings }, // Added Settings item
 ]
 
 const SWIPE_THRESHOLD = 50 // minimum distance for swipe
