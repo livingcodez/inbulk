@@ -13,12 +13,13 @@ export function RoleToggle() {
   const searchParams = useSearchParams()
 
   // Local state to manage the displayed role, influenced by URL/localStorage first
-  const [currentDisplayRole, setCurrentDisplayRole] = useState<Role>(profile?.role || 'buyer');
+  const initialRole: Role = profile?.role === 'vendor' ? 'vendor' : 'buyer'
+  const [currentDisplayRole, setCurrentDisplayRole] = useState<Role>(initialRole);
 
   useEffect(() => {
     const modeFromUrl = searchParams.get('mode') as Role | null
     const roleFromLocalStorage = typeof window !== 'undefined' ? localStorage.getItem('dashboardRole') as Role | null : null;
-    let initialRole: Role = profile?.role || 'buyer'; // Default to profile role or 'buyer'
+    let initialRole: Role = profile?.role === 'vendor' ? 'vendor' : 'buyer';
 
     if (modeFromUrl && ['buyer', 'vendor'].includes(modeFromUrl)) {
       initialRole = modeFromUrl;

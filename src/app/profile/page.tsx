@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { Header } from '@/components/layout/Header'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
@@ -97,8 +98,9 @@ export default async function ProfilePage() {
 
                   <div className="mt-8 grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Full Name</label>
+                      <label htmlFor="fullName" className="text-sm font-medium">Full Name</label>
                       <input
+                        id="fullName"
                         type="text"
                         value={profile?.full_name || ''}
                         className="w-full rounded-lg border bg-background px-3 py-2"
@@ -106,8 +108,9 @@ export default async function ProfilePage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Email</label>
+                      <label htmlFor="email" className="text-sm font-medium">Email</label>
                       <input
+                        id="email"
                         type="email"
                         value={session.user.email || ''} // Use session.user.email as a fallback
                         className="w-full rounded-lg border bg-background px-3 py-2"

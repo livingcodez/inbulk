@@ -39,9 +39,16 @@ export function UserDropdownMenu({ trigger, items, menuWidthClass = 'w-48' }: Us
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      <div onClick={toggleDropdown} className="cursor-pointer">
+      <button
+        type="button"
+        onClick={toggleDropdown}
+        className="cursor-pointer"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        id="menu-button" // Added id for aria-labelledby
+      >
         {trigger}
-      </div>
+      </button>
 
       {isOpen && (
         <div
@@ -51,7 +58,7 @@ export function UserDropdownMenu({ trigger, items, menuWidthClass = 'w-48' }: Us
           )}
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button" // Assuming trigger has an id 'menu-button' or similar
+          aria-labelledby="menu-button"
         >
           <div className="py-1" role="none">
             {items.map((item, index) => (

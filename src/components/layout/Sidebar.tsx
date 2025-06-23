@@ -19,14 +19,11 @@ import { getUnreadNotificationCount } from '@/lib/supabase/notifications'; // NE
 
 const mainNavItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Shop', href: '/shop', icon: ShoppingBag },
-  { name: 'Wallet', href: '/wallet', icon: Wallet },
   { name: 'Inbox', href: '/inbox', icon: Mail }, // Added Inbox item
 ]
 
 const bottomNavItems = [
   { name: 'Profile', href: '/profile', icon: UserCircle },
-  { name: 'Settings', href: '/settings', icon: Settings }, // Added Settings item
 ]
 
 const SWIPE_THRESHOLD = 50 // minimum distance for swipe
@@ -111,7 +108,6 @@ export function Sidebar() {
               : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light'
           )}
           aria-current={isActive ? 'page' : undefined}
-          role="menuitem"
         >
           <div className="relative flex-shrink-0"> {/* Wrapper for icon and potential badge on icon */}
             <Icon
@@ -151,7 +147,7 @@ export function Sidebar() {
       return (
         <div key={name} className="relative">
           {!isExpanded ? (
-            <Tooltip content={name} side="right" sideOffset={8}> {/* Added sideOffset for better spacing from icon badge */}
+            <Tooltip content={name} side="right">
               {linkContent}
             </Tooltip>
           ) : (
@@ -176,7 +172,6 @@ export function Sidebar() {
       onMouseLeave={() => setIsExpanded(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      role="navigation"
       aria-label="Main navigation"
     >
       <div className="flex h-full flex-col py-8">
@@ -200,14 +195,14 @@ export function Sidebar() {
         </button>
 
         {/* Main navigation */}
-        <nav className="flex-1 space-y-1 px-3" role="menu">
+        <nav className="flex-1 space-y-1 px-3" aria-label="Main navigation links">
           {mainNavItems.map(renderNavItem)}
         </nav>
 
         {/* Bottom navigation */}
-        <div className="px-3 mt-auto space-y-1" role="menu">
+        <nav className="px-3 mt-auto space-y-1" aria-label="User navigation links">
           {bottomNavItems.map(renderNavItem)}
-        </div>
+        </nav>
       </div>
     </aside>
   )

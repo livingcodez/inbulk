@@ -71,12 +71,27 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
     return null;
   }
 
+  const handleBackdropKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+      onClick={onClose}
+      onKeyDown={handleBackdropKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label="Close modal" // Added aria-label for clarity
+    >
+      {/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
       <div
         className="bg-white dark:bg-neutral-850 p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()} // Prevent click inside modal from closing it
       >
+      {/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100">Add New Product</h2>
           <button onClick={onClose} className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200">

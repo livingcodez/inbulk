@@ -2,9 +2,10 @@
 const path = require('path');
 
 const nextConfig = {
-  devIndicators: {
-    position: 'bottom-right',
-    devIndicators: false,
+  reactStrictMode: true,
+  output: 'standalone',
+  images: {
+    domains: ['via.placeholder.com', 'placehold.co'],
   },
   webpack: (config) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
@@ -13,8 +14,8 @@ const nextConfig = {
       ...(config.ignoreWarnings || []),
       {
         module: /@supabase[\\/]realtime-js/,
-        message: /Critical dependency: the request of a dependency is an expression/
-      }
+        message: /Critical dependency: the request of a dependency is an expression/,
+      },
     ];
     return config;
   },
