@@ -164,7 +164,7 @@ export function Sidebar() {
       className={cn(
         'fixed left-0 top-0 z-40 h-screen transition-all duration-300 ease-in-out',
         'bg-white border-r dark:bg-gray-900 dark:border-gray-800',
-        'transform will-change-transform',
+         'transform will-change-transform', 'flex flex-col', // Make aside the main flex container
         isExpanded ? 'w-64' : 'w-16',
         !isExpanded && '-translate-x-0'
       )}
@@ -174,36 +174,34 @@ export function Sidebar() {
       onTouchEnd={handleTouchEnd}
       aria-label="Main navigation"
     >
-      <div className="flex h-full flex-col py-8">
-        {/* Toggle button for mobile */}
-        <button
-          className="md:hidden absolute -right-3 top-6 bg-white border rounded-full p-1 shadow-sm"
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsExpanded(!isExpanded)
-          }}
-          aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-          aria-expanded={isExpanded}
-        >
-          <ChevronRight
-            className={cn(
-              'h-4 w-4 text-neutral-500 transition-transform duration-300',
-              isExpanded ? 'rotate-180' : ''
-            )}
-            aria-hidden="true"
-          />
-        </button>
+      {/* Toggle button for mobile - position might need review, but absolute should be fine */}
+      <button
+        className="md:hidden absolute -right-3 top-6 bg-white border rounded-full p-1 shadow-sm"
+        onClick={(e) => {
+          e.stopPropagation()
+          setIsExpanded(!isExpanded)
+        }}
+        aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+        aria-expanded={isExpanded}
+      >
+        <ChevronRight
+          className={cn(
+            'h-4 w-4 text-neutral-500 transition-transform duration-300',
+            isExpanded ? 'rotate-180' : ''
+          )}
+          aria-hidden="true"
+        />
+      </button>
 
-        {/* Main navigation */}
-        <nav className="flex-1 space-y-1 px-3" aria-label="Main navigation links">
-          {mainNavItems.map(renderNavItem)}
-        </nav>
+      {/* Main navigation: scrollable, takes available space, top padding */}
+      <nav className="flex-1 space-y-1 px-3 pt-8 overflow-y-auto" aria-label="Main navigation links">
+        {mainNavItems.map(renderNavItem)}
+      </nav>
 
-        {/* Bottom navigation */}
-        <nav className="px-3 mt-auto space-y-1" aria-label="User navigation links">
-          {bottomNavItems.map(renderNavItem)}
-        </nav>
-      </div>
+      {/* Bottom navigation: fixed at the bottom, bottom padding, separation border */}
+      <nav className="px-3 pb-8 pt-4 border-t dark:border-gray-800" aria-label="User navigation links">
+        {bottomNavItems.map(renderNavItem)}
+      </nav>
     </aside>
   )
 }
