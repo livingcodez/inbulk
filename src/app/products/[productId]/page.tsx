@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import { getProductById } from '@/lib/supabase/products';
 import { getGroupsAwaitingVotes, getTimedGroupsByProduct, getUntimedGroupsByProduct, GroupData } from '@/lib/supabase/groups';
 import { GroupTabs } from '@/components/products/GroupTabs'; // New import!
@@ -23,7 +25,9 @@ interface GroupAwaitingVote {
 }
 
 // This is a server component, so we can make it async
-export default async function ProductDetailsPage({ params }: { params: { productId: string } }) {
+// `params` comes from Next.js route parameters. Using `any` keeps the
+// component compatible with the generated PageProps type.
+export default async function ProductDetailsPage({ params }: { params: any }) {
   const { productId } = params;
   let product: Product | null = null;
   let errorLoadingProduct: string | null = null;
@@ -91,7 +95,7 @@ export default async function ProductDetailsPage({ params }: { params: { product
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-2xl font-bold text-primary mb-4">Error</h1>
         <p className="text-red-500">{errorLoadingProduct}</p>
-        <a href="/" className="mt-4 inline-block bg-primary text-white px-6 py-2 rounded hover:bg-primary/90">Go Home</a>
+        <Link href="/" className="mt-4 inline-block bg-primary text-white px-6 py-2 rounded hover:bg-primary/90">Go Home</Link>
       </div>
     );
   }
@@ -124,11 +128,11 @@ export default async function ProductDetailsPage({ params }: { params: { product
       {/* Header: Adjusted padding, font-display for logo, text colors */}
       <header className="bg-white shadow-md sticky top-0 z-50 font-sans">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <a href="/" className="text-3xl font-bold text-primary hover:text-primary-dark font-display">CrowdCart</a>
+          <Link href="/" className="text-3xl font-bold text-primary hover:text-primary-dark font-display">CrowdCart</Link>
           <nav>
             <ul className="flex items-center space-x-5">
-              <li><a href="/dashboard" className="text-sm font-medium text-slate-700 hover:text-primary">Dashboard</a></li>
-              <li><a href="/inbox" className="text-sm font-medium text-slate-700 hover:text-primary">Inbox</a></li>
+              <li><Link href="/dashboard" className="text-sm font-medium text-slate-700 hover:text-primary">Dashboard</Link></li>
+              <li><Link href="/inbox" className="text-sm font-medium text-slate-700 hover:text-primary">Inbox</Link></li>
               <li className="flex items-center ml-4">
                 <span className="text-sm font-semibold text-primary mr-3">$115.25</span> {/* Placeholder */}
                 <span className="text-sm font-medium text-slate-700 mr-2">Young Fella</span> {/* Placeholder */}
@@ -154,9 +158,9 @@ export default async function ProductDetailsPage({ params }: { params: { product
           <section className="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
             <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 items-start">
               {/* Product Image Placeholder: Adjusted aspect ratio and placeholder style */}
-              <div className="product-image-placeholder w-full aspect-[4/3] bg-slate-100 flex items-center justify-center rounded-lg overflow-hidden">
+              <div className="product-image-placeholder relative w-full aspect-[4/3] bg-slate-100 flex items-center justify-center rounded-lg overflow-hidden">
                 {product.image_url ? (
-                  <img src={product.image_url} alt={product.title} className="h-full w-full object-cover"/>
+                  <Image src={product.image_url} alt={product.title} fill style={{ objectFit: 'cover' }}/>
                 ) : (
                   <svg className="w-20 h-20 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 )}

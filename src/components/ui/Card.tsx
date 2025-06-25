@@ -25,9 +25,12 @@ export function CardHeader({ className, ...props }: CardHeaderProps) {
   )
 }
 
-interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  // children is already part of HTMLAttributes, but can be made explicit if needed
+  // children: React.ReactNode;
+}
 
-export function CardTitle({ className, ...props }: CardTitleProps) {
+export function CardTitle({ className, children, ...props }: CardTitleProps) {
   return (
     <h3
       className={cn(
@@ -35,7 +38,9 @@ export function CardTitle({ className, ...props }: CardTitleProps) {
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </h3>
   )
 }
 
