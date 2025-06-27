@@ -18,7 +18,7 @@ export async function updateUserProfile(userId: string, updates: {
   role?: UserRole
   account_name?: string | null
   account_number?: string | null
-  bank_code?: string | null
+  bank_name?: string | null
   currency?: string | null
 }) {
   const { data, error } = await supabaseClient
@@ -39,7 +39,7 @@ export async function createUserProfile(profile: {
   role: UserRole
   account_name?: string | null
   account_number?: string | null
-  bank_code?: string | null
+  bank_name?: string | null
   currency?: string | null
 }) {
   const { data, error } = await supabaseClient
@@ -50,7 +50,7 @@ export async function createUserProfile(profile: {
       holds: 0,
       account_name: profile.account_name ?? null,
       account_number: profile.account_number ?? null,
-      bank_code: profile.bank_code ?? null,
+      bank_name: profile.bank_name ?? null,
       currency: profile.currency ?? null,
     })
     .select()

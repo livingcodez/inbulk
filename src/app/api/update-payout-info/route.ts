@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const { account_name, account_number, bank_code, currency } = await request.json()
+  const { account_name, account_number, bank_name, currency } = await request.json()
   const supabase = createRouteHandlerClient({ cookies })
   const {
     data: { user },
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   }
   const { error } = await supabase
     .from('user_profiles')
-    .update({ account_name, account_number, bank_code, currency })
+    .update({ account_name, account_number, bank_name, currency })
     .eq('id', user.id)
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
