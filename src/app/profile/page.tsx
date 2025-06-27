@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
 import PayoutInfo from '@/components/profile/PayoutInfo'
+import { WalletCard } from '@/components/profile/WalletCard'
 import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
@@ -130,20 +131,7 @@ export default async function ProfilePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Available Balance</p>
-                      <p className="text-3xl font-bold">${profile?.wallet_balance || '0.00'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Holds</p>
-                      <p className="text-xl font-semibold">${profile?.holds || '0.00'}</p>
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <button className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white">Fund</button>
-                      <button className="rounded-lg bg-muted px-4 py-2 text-sm font-medium">Withdraw</button>
-                    </div>
-                  </div>
+                  <WalletCard balance={profile?.wallet_balance || 0} holds={profile?.holds || 0} />
                 </CardContent>
               </Card>
 
