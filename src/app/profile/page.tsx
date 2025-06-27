@@ -158,7 +158,7 @@ export default async function ProfilePage() {
                   <PayoutInfo
                     account_name={profile?.account_name}
                     account_number={profile?.account_number}
-                    bank_code={profile?.bank_code}
+                    bank_name={profile?.bank_name}
                     currency={profile?.currency}
                   />
                 </CardContent>

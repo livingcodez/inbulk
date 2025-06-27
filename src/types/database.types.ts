@@ -26,7 +26,7 @@ export interface Database {
           holds: number
           account_name: string | null
           account_number: string | null
-          bank_code: string | null
+          bank_name: string | null
           currency: string | null
           created_at: string
           updated_at: string
@@ -40,7 +40,7 @@ export interface Database {
           holds?: number
           account_name?: string | null
           account_number?: string | null
-          bank_code?: string | null
+          bank_name?: string | null
           currency?: string | null
           created_at?: string
           updated_at?: string
@@ -54,7 +54,7 @@ export interface Database {
           holds?: number
           account_name?: string | null
           account_number?: string | null
-          bank_code?: string | null
+          bank_name?: string | null
           currency?: string | null
           created_at?: string
           updated_at?: string
