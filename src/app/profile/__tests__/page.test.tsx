@@ -30,6 +30,14 @@ jest.mock('@/components/layout/Header', () => {
   };
 });
 
+// Mock VendorBankForm to avoid loading client-specific modules
+jest.mock('@/components/profile/VendorBankForm', () => {
+  return {
+    __esModule: true,
+    VendorBankForm: () => <div data-testid="mock-bank-form">Mock Bank Form</div>,
+  };
+});
+
 // Mock Image component
 jest.mock('next/image', () => ({
     __esModule: true,

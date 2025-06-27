@@ -64,7 +64,10 @@ export async function getUserProfile() {
           avatar_url: user.user_metadata?.avatar_url ?? null, // Safe access
           role: 'buyer', // Default role
           wallet_balance: 0,
-            holds: 0,
+          holds: 0,
+          account_number: null,
+          bank_code: null,
+          currency: 'NGN',
           })
           .select()
           .single();
