@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
+import PayoutInfo from '@/components/profile/PayoutInfo'
 import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
@@ -41,7 +42,7 @@ export default async function ProfilePage() {
   }
 
   const { data: profile, error: profileError } = await supabaseClient
-    .from('profiles')
+    .from('user_profiles')
     .select('*')
     .eq('id', session.user.id)
     .single()
@@ -138,7 +139,28 @@ export default async function ProfilePage() {
                       <p className="text-sm text-muted-foreground">Holds</p>
                       <p className="text-xl font-semibold">${profile?.holds || '0.00'}</p>
                     </div>
+                    <div className="flex gap-2 pt-2">
+                      <button className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white">Fund</button>
+                      <button className="rounded-lg bg-muted px-4 py-2 text-sm font-medium">Withdraw</button>
+                    </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Wallet className="h-5 w-5" />
+                    <span>Payout Info</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PayoutInfo
+                    account_name={profile?.account_name}
+                    account_number={profile?.account_number}
+                    bank_code={profile?.bank_code}
+                    currency={profile?.currency}
+                  />
                 </CardContent>
               </Card>
 
