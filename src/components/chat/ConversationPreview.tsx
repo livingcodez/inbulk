@@ -13,22 +13,22 @@ export function ConversationPreview({ conversation }: Props) {
     <Link
       href={`/inbox/${conversation.id}`}
       className={cn(
-        'flex gap-4 rounded-md border p-3 transition-colors hover:bg-gray-50',
-        !conversation.unread_count ? '' : 'bg-blue-50 border-l-4 border-blue-400'
+        'flex gap-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 shadow-sm transition-shadow hover:shadow-md',
+        conversation.unread_count > 0 && 'bg-blue-50 border-l-4 border-blue-400 dark:bg-neutral-800'
       )}
     >
       <Avatar src={conversation.avatar_url ?? undefined} alt={conversation.name} size={48} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex justify-between items-center">
-          <span className="font-medium truncate">{conversation.name}</span>
+        <div className="flex items-center justify-between">
+          <span className="truncate font-medium">{conversation.name}</span>
           {conversation.last_message_at && (
-            <span className="ml-2 text-xs text-gray-500 whitespace-nowrap">
+            <span className="ml-2 whitespace-nowrap text-xs text-gray-500">
               {formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true })}
             </span>
           )}
         </div>
-        <div className="flex justify-between mt-1 items-start">
-          <span className="text-sm text-gray-600 truncate flex-1">{conversation.last_message}</span>
+        <div className="mt-1 flex items-start justify-between">
+          <span className="flex-1 truncate text-sm text-gray-600">{conversation.last_message}</span>
           {conversation.unread_count > 0 && (
             <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs text-white">
               {conversation.unread_count}
