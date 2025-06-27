@@ -7,6 +7,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import { Header } from '@/components/layout/Header'
 
 export default function InboxPage() {
   const { profile } = useSupabase()
@@ -28,8 +29,10 @@ export default function InboxPage() {
   })
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="mx-auto max-w-2xl">
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="container mx-auto flex-1 px-4 py-8">
+        <div className="mx-auto max-w-2xl">
         <Card>
           <CardHeader>
             <CardTitle className="text-3xl">Chats</CardTitle>
@@ -77,6 +80,10 @@ export default function InboxPage() {
           </CardContent>
         </Card>
       </div>
-    </main>
+      </main>
+      <footer className="mt-auto border-t bg-white py-6 text-center dark:bg-neutral-800 dark:border-neutral-700">
+        <p className="text-sm text-neutral-600 dark:text-neutral-300">&copy; 2025 CrowdCart Lite. All rights reserved.</p>
+      </footer>
+    </div>
   )
 }

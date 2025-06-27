@@ -49,7 +49,7 @@ export default function ChatDetailPage() {
   if (!conversation) return null
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-2xl flex-col rounded-md border shadow-sm">
+    <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col rounded-md border shadow-sm">
       <ChatHeader name={conversation.name} avatarUrl={conversation.avatar_url} />
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3" id="messages">
         {messages.map(m => (
