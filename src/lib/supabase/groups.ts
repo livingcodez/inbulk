@@ -1,4 +1,63 @@
 import supabaseClient from './supabaseClient'
+import { createNotification } from './notifications'
+
+async function sendSoftwareSubscriptionCredentials(groupId: string) {
+  const { data: group, error } = await supabaseClient
+    .from('groups')
+    .select(`
+      id,
+      product_id,
+      products (
+        id,
+        title,
+        category,
+        subcategory,
+        subscription_username,
+        subscription_password,
+        subscription_2fa_key,
+        vendor_id,
+        user_profiles(full_name)
+      )
+    `)
+    .eq('id', groupId)
+    .single()
+
+  if (error || !group || !(group as any).products) return
+
+  const product: any = (group as any).products
+
+  if (
+    product.category !== 'Services & Subscriptions' ||
+    product.subcategory !== 'Software Subscriptions'
+  ) {
+    return
+  }
+
+  const { data: members, error: memError } = await supabaseClient
+    .from('group_members')
+    .select('user_id')
+    .eq('group_id', groupId)
+
+  if (memError || !members) return
+
+  let message = `Username: ${product.subscription_username}\nPassword: ${product.subscription_password}`
+  if (product.subscription_2fa_key) {
+    message += `\n2FA: ${product.subscription_2fa_key}`
+  }
+  const vendorName = product.user_profiles?.full_name || 'Vendor'
+
+  await Promise.all(
+    members.map((m: any) =>
+      createNotification({
+        user_id: m.user_id,
+        title: `Access credentials for ${product.title}`,
+        message: `From ${vendorName}:\n${message}`,
+        type: 'info',
+        link: `/products/${product.id}?group_id=${groupId}`,
+      })
+    )
+  )
+}
 
 // Interface for group data, might need expansion
 export interface GroupData {
@@ -203,5 +262,19 @@ export async function updateVoteStatus(groupId: string, userId: string, voteStat
     .single()
 
   if (error) throw error
+  if (voteStatus === 'approved') {
+    const { data: members, error: memError } = await supabaseClient
+      .from('group_members')
+      .select('vote_status')
+      .eq('group_id', groupId)
+
+    if (!memError && members && members.every(m => m.vote_status === 'approved')) {
+      try {
+        await sendSoftwareSubscriptionCredentials(groupId)
+      } catch (e) {
+        console.error('Error sending subscription credentials:', e)
+      }
+    }
+  }
   return data
 }
