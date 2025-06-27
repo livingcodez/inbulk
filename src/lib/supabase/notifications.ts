@@ -11,6 +11,26 @@ export type Notification = {
   created_at: string
 }
 
+export async function createNotification(notification: {
+  user_id: string
+  title: string
+  message: string
+  type?: 'info' | 'success' | 'warning' | 'error'
+  link?: string
+}) {
+  const { data, error } = await supabaseClient
+    .from('notifications')
+    .insert({
+      ...notification,
+      type: notification.type ?? 'info',
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Notification
+}
+
 export async function getNotifications(userId: string) {
   const { data, error } = await supabaseClient
     .from('notifications')
