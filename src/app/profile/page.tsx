@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell, Banknote } from 'lucide-react'
-import { VendorBankForm } from '@/components/profile/VendorBankForm'
+import { BankDetailsToggle } from '@/components/profile/BankDetailsToggle'
 import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
@@ -122,23 +122,21 @@ export default async function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {profile?.role === 'vendor' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Banknote className="h-5 w-5" />
-                      <span>Vendor Payout Details</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <VendorBankForm
-                      initialAccountNumber={profile.account_number || ''}
-                      initialBankCode={profile.bank_code || ''}
-                      initialCurrency={profile.currency || 'NGN'}
-                    />
-                  </CardContent>
-                </Card>
-              )}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Banknote className="h-5 w-5" />
+                    <span>Payout Details</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <BankDetailsToggle
+                    initialAccountNumber={profile.account_number || ''}
+                    initialBankCode={profile.bank_code || ''}
+                    initialCurrency={profile.currency || 'NGN'}
+                  />
+                </CardContent>
+              </Card>
 
               <Card>
                 <CardHeader>

@@ -65,10 +65,7 @@ export async function getUserProfile() {
           role: 'buyer', // Default role
           wallet_balance: 0,
           holds: 0,
-          account_number: null,
-          bank_code: null,
-          currency: 'NGN',
-          })
+        })
           .select()
           .single();
 
