@@ -24,6 +24,10 @@ export interface Database {
           role: UserRole
           wallet_balance: number
           holds: number
+          account_name: string | null
+          account_number: string | null
+          bank_code: string | null
+          currency: string | null
           created_at: string
           updated_at: string
         }
@@ -34,6 +38,10 @@ export interface Database {
           role?: UserRole
           wallet_balance?: number
           holds?: number
+          account_name?: string | null
+          account_number?: string | null
+          bank_code?: string | null
+          currency?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -44,6 +52,10 @@ export interface Database {
           role?: UserRole
           wallet_balance?: number
           holds?: number
+          account_name?: string | null
+          account_number?: string | null
+          bank_code?: string | null
+          currency?: string | null
           created_at?: string
           updated_at?: string
         }
