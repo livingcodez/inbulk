@@ -9,21 +9,22 @@ interface FundWalletModalProps {
 }
 
 export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (isOpen) setAmount(0)
+    if (isOpen) setAmount('')
   }, [isOpen])
 
   const handleSubmit = async () => {
-    if (amount <= 0) return
+    const value = Number(amount)
+    if (value <= 0) return
     setLoading(true)
     try {
       const res = await fetch('/api/fund-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
+        body: JSON.stringify({ amount: value })
       })
       const data = await res.json()
       if (data.paymentUrl) {
@@ -61,7 +62,7 @@ export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
         <input
           type="number"
           value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          onChange={(e) => setAmount(e.target.value)}
           placeholder="Amount"
           className="w-full border rounded px-2 py-1 mb-4"
         />

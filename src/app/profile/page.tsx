@@ -4,7 +4,6 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
-import PayoutInfo from '@/components/profile/PayoutInfo'
 import { WalletCard } from '@/components/profile/WalletCard'
 import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
@@ -131,19 +130,9 @@ export default async function ProfilePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <WalletCard balance={profile?.wallet_balance || 0} holds={profile?.holds || 0} />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Wallet className="h-5 w-5" />
-                    <span>Payout Info</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <PayoutInfo
+                  <WalletCard
+                    balance={profile?.wallet_balance || 0}
+                    holds={profile?.holds || 0}
                     account_name={profile?.account_name}
                     account_number={profile?.account_number}
                     bank_name={profile?.bank_name}
