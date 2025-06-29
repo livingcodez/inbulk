@@ -3,6 +3,13 @@ import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 
 export async function POST(req: Request) {
+  const rawBody = await req.text()
+  const signature = req.headers.get('x-paystack-signature')
+  const secret = process.env.PAYSTACK_WEBHOOK_SECRET || ''
+  const hash = crypto.createHmac('sha512', secret).update(rawBody).digest('hex')
+  if (hash !== signature) {
+    return NextResponse.json({ received: true })
+  }
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.error('Missing Supabase credentials')
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
@@ -11,13 +18,6 @@ export async function POST(req: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
   )
-  const rawBody = await req.text()
-  const signature = req.headers.get('x-paystack-signature')
-  const secret = process.env.PAYSTACK_WEBHOOK_SECRET || ''
-  const hash = crypto.createHmac('sha512', secret).update(rawBody).digest('hex')
-  if (hash !== signature) {
-    return NextResponse.json({ received: true })
-  }
 
   const event = JSON.parse(rawBody)
   if (event.event === 'charge.success') {

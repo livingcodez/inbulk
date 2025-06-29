@@ -1,7 +1,11 @@
 'use client'
 import { useState } from 'react'
 
-export default function DepositForm() {
+interface DepositFormProps {
+  email: string
+}
+
+export default function DepositForm({ email }: DepositFormProps) {
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -17,7 +21,7 @@ export default function DepositForm() {
       const res = await fetch('/api/deposit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: '', amount: value }),
+        body: JSON.stringify({ email, amount: value }),
       })
       const data = await res.json()
       if (res.ok && data.authorization_url) {
