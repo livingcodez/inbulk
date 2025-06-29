@@ -5,9 +5,10 @@ import DepositForm from '../DepositForm'
 interface FundWalletModalProps {
   isOpen: boolean
   onClose: () => void
+  email: string
 }
 
-export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
+export function FundWalletModal({ isOpen, onClose, email }: FundWalletModalProps) {
 
   if (!isOpen) return null
 
@@ -29,7 +30,7 @@ export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
             <X size={20} />
           </button>
         </div>
-        <DepositForm />
+        <DepositForm email={email} />
       </div>
     </div>
   )

@@ -137,6 +137,7 @@ export default async function ProfilePage() {
                     account_number={profile?.account_number}
                     bank_name={profile?.bank_name}
                     currency={profile?.currency}
+                    email={session.user.email || ''}
                   />
                 </CardContent>
               </Card>
