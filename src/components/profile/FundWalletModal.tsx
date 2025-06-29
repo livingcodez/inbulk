@@ -1,43 +1,14 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/Button'
 import { X } from 'lucide-react'
+import DepositForm from '../DepositForm'
 
 interface FundWalletModalProps {
   isOpen: boolean
   onClose: () => void
+  email: string
 }
 
-export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
-  const [amount, setAmount] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (isOpen) setAmount('')
-  }, [isOpen])
-
-  const handleSubmit = async () => {
-    const value = Number(amount)
-    if (value <= 0) return
-    setLoading(true)
-    try {
-      const res = await fetch('/api/fund-wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: value })
-      })
-      const data = await res.json()
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl
-      } else {
-        alert(data.error || 'Failed to initiate payment')
-      }
-    } catch (err) {
-      alert('Failed to initiate payment')
-    } finally {
-      setLoading(false)
-    }
-  }
+export function FundWalletModal({ isOpen, onClose, email }: FundWalletModalProps) {
 
   if (!isOpen) return null
 
@@ -59,16 +30,7 @@ export function FundWalletModal({ isOpen, onClose }: FundWalletModalProps) {
             <X size={20} />
           </button>
         </div>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount"
-          className="w-full border rounded px-2 py-1 mb-4"
-        />
-        <Button className="w-full" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Processing...' : 'Proceed to Paystack'}
-        </Button>
+        <DepositForm email={email} />
       </div>
     </div>
   )

@@ -11,9 +11,10 @@ interface WalletCardProps {
   account_number?: string | null
   bank_name?: string | null
   currency?: string | null
+  email: string
 }
 
-export function WalletCard({ balance, holds, account_name, account_number, bank_name, currency }: WalletCardProps) {
+export function WalletCard({ balance, holds, account_name, account_number, bank_name, currency, email }: WalletCardProps) {
   const [showFundModal, setShowFundModal] = useState(false)
   const [showPayoutModal, setShowPayoutModal] = useState(false)
   const openFundModal = () => setShowFundModal(true)
@@ -36,7 +37,7 @@ export function WalletCard({ balance, holds, account_name, account_number, bank_
         <Button variant="secondary" disabled>Withdraw</Button>
         <Button variant="secondary" onClick={openPayoutModal}>Modify Payout</Button>
       </div>
-      <FundWalletModal isOpen={showFundModal} onClose={closeFundModal} />
+      <FundWalletModal isOpen={showFundModal} onClose={closeFundModal} email={email} />
       <PayoutModal
         isOpen={showPayoutModal}
         onClose={closePayoutModal}
