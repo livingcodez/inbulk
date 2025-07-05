@@ -17,6 +17,7 @@ import { getGroupsByUser } from '@/lib/supabase/groups';
 import { ProductSearchControls } from '@/components/dashboard/ProductSearchControls';
 import { JoinedGroupCard, type JoinedGroupMembership } from '@/components/dashboard/JoinedGroupCard';
 import { VendorActions } from '@/components/dashboard/VendorActions'; // New import
+import { BuyerActions } from '@/components/dashboard/BuyerActions';
 
 const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/150/E0E0E0/909090?text=No+Image';
 
@@ -181,14 +182,6 @@ async function DashboardContent({ searchParams }: { searchParams?: any }) {
 											</div>
 										)}
 
-										{!productsError && (
-												<div className="text-center mt-8">
-													<button className="inline-flex items-center gap-2 px-6 py-3 bg-accent-orange text-white rounded-md font-medium hover:bg-accent-orange/90 transition-colors">
-														<Plus className="h-5 w-5" />
-														Suggest Product
-													</button>
-												</div>
-										)}
 									</>
 								)}
 
@@ -296,7 +289,10 @@ async function DashboardContent({ searchParams }: { searchParams?: any }) {
 					</section>
 				</div> {/* End of container */}
 
-				{/* Conditionally render VendorActions (FAB and Modal logic) */}
+                                {/* Conditionally render BuyerActions and VendorActions */}
+                                {profile && currentRole === 'buyer' && activeTab === 'explore' && (
+                                        <BuyerActions />
+                                )}
                                 {profile && currentRole === 'vendor' && (
                                         <VendorActions />
                                 )}
