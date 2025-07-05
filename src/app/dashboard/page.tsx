@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { Suspense } from 'react'
 import { ShoppingBag, Search, Filter, Plus, Users, AlertCircle, LayoutGrid } from 'lucide-react' // Added LayoutGrid
-import { Header } from '@/components/layout/Header'
 import { RoleToggle } from '@/components/dashboard/RoleToggle'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getUserProfile } from '@/lib/supabase/server'
@@ -325,8 +324,7 @@ async function DashboardContent({ searchParams }: { searchParams?: any }) {
 // Modify DashboardPage to pass searchParams to DashboardContent
 export default async function DashboardPage({ searchParams }: { searchParams?: any }) {
 	return (
-		<div className="min-h-screen bg-[#F0F4F7] flex flex-col dark:bg-neutral-900">
-			<Header /> {/* Header might need dark mode styles too */}
+                <div className="min-h-screen bg-[#F0F4F7] flex flex-col dark:bg-neutral-900">
 			<ErrorBoundary>
 				<Suspense
 					fallback={
