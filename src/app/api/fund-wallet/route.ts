@@ -5,6 +5,10 @@ import axios from 'axios'
 
 export async function POST(request: Request) {
   const { amount } = await request.json()
+  const value = Number(amount)
+  if (isNaN(value) || value < 100) {
+    return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
+  }
   const supabase = createRouteHandlerClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -16,14 +20,14 @@ export async function POST(request: Request) {
   try {
     const res = await axios.post('https://api.paystack.co/transaction/initialize', {
       email: user.email,
-      amount: amount * 100,
+      amount: value * 100,
       reference,
     }, {
       headers: { Authorization: `Bearer ${key}` }
     })
     await supabase.from('transactions').insert({
       user_id: user.id,
-      amount,
+      amount: value,
       type: 'deposit',
       status: 'pending',
       reference_id: reference,

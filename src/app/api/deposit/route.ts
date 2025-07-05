@@ -3,7 +3,8 @@ import axios from 'axios'
 
 export async function POST(req: Request) {
   const { email, amount } = await req.json()
-  if (!email || !amount || amount < 100) {
+  const value = Number(amount)
+  if (!email || isNaN(value) || value < 100) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 })
   }
   const key = process.env.PAYSTACK_SECRET_KEY
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
       'https://api.paystack.co/transaction/initialize',
       {
         email,
-        amount: amount * 100,
+        amount: value * 100,
         callback_url: callbackUrl,
       },
       { headers: { Authorization: `Bearer ${key}` } }
