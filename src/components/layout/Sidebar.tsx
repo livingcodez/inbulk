@@ -164,7 +164,8 @@ export function Sidebar() {
       className={cn(
         'fixed left-0 top-16 z-40 transition-all duration-300 ease-in-out',
         'h-[calc(100vh-4rem)]',
-        'bg-white border-r dark:bg-gray-900 dark:border-gray-800',
+        'bg-white border-r border-t dark:bg-gray-900',
+        'dark:border-r-gray-800 dark:border-t-neutral-700',
         'transform will-change-transform',
         isExpanded ? 'w-64' : 'w-16',
         !isExpanded && '-translate-x-0'
