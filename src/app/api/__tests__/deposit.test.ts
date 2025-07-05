@@ -20,4 +20,14 @@ describe('deposit API', () => {
     const res = await POST(req as any)
     expect(res.status).toBe(500)
   })
+
+  it('rejects invalid amount', async () => {
+    const req = new Request('http://localhost/api/deposit', {
+      method: 'POST',
+      body: JSON.stringify({ email: 'a@test.com', amount: 50 }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const res = await POST(req as any)
+    expect(res.status).toBe(400)
+  })
 })
