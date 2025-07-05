@@ -22,13 +22,14 @@ const mainNavItems = [
     name: 'Dashboard',
     href: '/dashboard',
     icon: LayoutDashboard,
-    description: 'View dashboard',
+    description:
+      "View items you want to group buy or create one if you can\u2019t find what you want",
   },
   {
     name: 'Inbox',
     href: '/inbox',
     icon: Mail, // Added Inbox item
-    description: 'Check messages',
+    description: 'Message other users or view messages from others.',
   },
 ]
 
@@ -37,7 +38,7 @@ const bottomNavItems = [
     name: 'Profile',
     href: '/profile',
     icon: UserCircle,
-    description: 'Manage profile',
+    description: 'Details about your account and wallet services.',
   },
 ]
 
@@ -150,22 +151,11 @@ export function Sidebar() {
             )}
           </div>
 
-          {/* Text and expanded badge part - only render if sidebar is expanded */}
-          {isExpanded && (
-            <>
-              <span
-                className={cn(
-                  'truncate transition-opacity duration-200 ease-in-out ml-3', // Simpler class, rely on parent flex for layout
-                  // Opacity and width are handled by isExpanded condition now for rendering
-                )}
-              >
-                {name}
-              </span>
-              {showNotificationBadge && ( // No need for && isExpanded here as this whole block is under isExpanded
-                <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
-              )}
-            </>
-          )}
+          {/* Expanded state notification badge */}
+          {isExpanded &&
+            showNotificationBadge && (
+              <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
+            )}
         </Link>
       );
 
