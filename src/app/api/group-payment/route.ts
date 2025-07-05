@@ -5,6 +5,10 @@ import axios from 'axios'
 
 export async function POST(request: Request) {
   const { amount } = await request.json()
+  const value = Number(amount)
+  if (isNaN(value) || value < 100) {
+    return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
+  }
   const supabase = createRouteHandlerClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -18,14 +22,14 @@ export async function POST(request: Request) {
   if (error || !profile) {
     return NextResponse.json({ error: 'Failed to load wallet' }, { status: 500 })
   }
-  if (profile.wallet_balance >= amount) {
+  if (profile.wallet_balance >= value) {
     await supabase
       .from('user_profiles')
-      .update({ wallet_balance: profile.wallet_balance - amount })
+      .update({ wallet_balance: profile.wallet_balance - value })
       .eq('id', user.id)
     await supabase.from('transactions').insert({
       user_id: user.id,
-      amount,
+      amount: value,
       type: 'escrow',
       status: 'completed',
       description: 'Group buy payment',
@@ -38,14 +42,14 @@ export async function POST(request: Request) {
   try {
     const res = await axios.post('https://api.paystack.co/transaction/initialize', {
       email: user.email,
-      amount: amount * 100,
+      amount: value * 100,
       reference,
     }, {
       headers: { Authorization: `Bearer ${key}` }
     })
     await supabase.from('transactions').insert({
       user_id: user.id,
-      amount,
+      amount: value,
       type: 'escrow',
       status: 'pending',
       reference_id: reference,
