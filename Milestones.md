@@ -7,3 +7,4 @@
 - **UI-104** - Remove sidebar captions and update descriptions (status: draft)
 - **UI-105** - Prevent sidebar description overflow when expanded (status: draft)
 - **UI-106** - Add captions and truncate sidebar descriptions (status: draft)
+- **UI-107** - Align sidebar icons vertically with descriptions (status: draft)
