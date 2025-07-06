@@ -11,7 +11,7 @@ package "Next.js App" {
 Header --> Main
 Sidebar --> Main
 note right of Sidebar
-  Descriptions wrap within 16rem using
-  Tailwind class `break-words`
+  Icons align left with a caption above a
+  `line-clamp-2` description when expanded
 end note
 @enduml

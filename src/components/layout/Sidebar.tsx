@@ -124,7 +124,7 @@ export function Sidebar() {
         <Link
           href={href}
           className={cn(
-            'group relative flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+            'group relative flex items-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
             'hover:bg-gray-50 dark:hover:bg-gray-800',
             isActive
               ? 'bg-gray-100 text-primary dark:bg-gray-800 dark:text-primary-light'
@@ -132,26 +132,26 @@ export function Sidebar() {
           )}
           aria-current={isActive ? 'page' : undefined}
         >
-          <div className="relative flex flex-col items-center w-full"> {/* Wrapper for icon and potential badge on icon */}
+          <div className="relative flex-shrink-0">
             <Icon
               className={cn(
-                'h-5 w-5 flex-shrink-0 transition-colors duration-150', // Removed mr-3 from here
+                'h-5 w-5 flex-shrink-0 transition-colors duration-150',
                 isActive
                   ? 'text-primary dark:text-primary-light'
                   : 'text-gray-400 group-hover:text-primary dark:text-gray-400 dark:group-hover:text-primary-light'
               )}
               aria-hidden="true"
             />
-            {/* Badge on icon (for collapsed state, more subtle) */}
             {showNotificationBadge && !isExpanded && (
               <span className="absolute -top-0.5 -right-0.5 block h-2 w-2 rounded-full bg-red-500 ring-1 ring-white dark:ring-gray-900" />
             )}
-            {isExpanded && (
-              <span className="mt-1 w-full break-words text-center text-xs text-neutral-500">{description}</span>
-            )}
           </div>
-
-          {/* Expanded state notification badge */}
+          {isExpanded && (
+            <div className="ml-3 flex flex-col w-full overflow-hidden">
+              <span className="text-sm font-semibold">{name}</span>
+              <span className="text-xs text-neutral-500 line-clamp-2">{description}</span>
+            </div>
+          )}
           {isExpanded &&
             showNotificationBadge && (
               <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
