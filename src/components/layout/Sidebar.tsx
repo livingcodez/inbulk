@@ -18,12 +18,28 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { getUnreadNotificationCount } from '@/lib/supabase/notifications'; // NEW IMPORT
 
 const mainNavItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Inbox', href: '/inbox', icon: Mail }, // Added Inbox item
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+    description:
+      "View items you want to group buy or create one if you can\u2019t find what you want",
+  },
+  {
+    name: 'Inbox',
+    href: '/inbox',
+    icon: Mail, // Added Inbox item
+    description: 'Message other users or view messages from others.',
+  },
 ]
 
 const bottomNavItems = [
-  { name: 'Profile', href: '/profile', icon: UserCircle },
+  {
+    name: 'Profile',
+    href: '/profile',
+    icon: UserCircle,
+    description: 'Details about your account and wallet services.',
+  },
 ]
 
 const SWIPE_THRESHOLD = 50 // minimum distance for swipe
@@ -88,10 +104,17 @@ export function Sidebar() {
   }, [])
 
   const renderNavItem = useCallback(
-    // ({ name, href, icon: Icon }: typeof mainNavItems[0]) => { // Original typing
-    // Using a more generic type for item to satisfy both main and bottom nav items if their types differ slightly
-    // For now, assuming they share: name: string, href: string, icon: React.ElementType
-    ({ name, href, icon: Icon }: { name: string; href: string; icon: React.ElementType }) => {
+    ({
+      name,
+      href,
+      icon: Icon,
+      description,
+    }: {
+      name: string
+      href: string
+      icon: React.ElementType
+      description: string
+    }) => {
       const isActive = pathname.startsWith(href);
 
       // Dynamic condition for showing the notification badge
@@ -109,7 +132,7 @@ export function Sidebar() {
           )}
           aria-current={isActive ? 'page' : undefined}
         >
-          <div className="relative flex-shrink-0"> {/* Wrapper for icon and potential badge on icon */}
+          <div className="relative flex-shrink-0 flex flex-col items-center"> {/* Wrapper for icon and potential badge on icon */}
             <Icon
               className={cn(
                 'h-5 w-5 flex-shrink-0 transition-colors duration-150', // Removed mr-3 from here
@@ -120,27 +143,19 @@ export function Sidebar() {
               aria-hidden="true"
             />
             {/* Badge on icon (for collapsed state, more subtle) */}
-            {showNotificationBadge && !isExpanded && ( // Use showNotificationBadge
+            {showNotificationBadge && !isExpanded && (
               <span className="absolute -top-0.5 -right-0.5 block h-2 w-2 rounded-full bg-red-500 ring-1 ring-white dark:ring-gray-900" />
+            )}
+            {isExpanded && (
+              <span className="text-xs text-neutral-500 mt-1">{description}</span>
             )}
           </div>
 
-          {/* Text and expanded badge part - only render if sidebar is expanded */}
-          {isExpanded && (
-            <>
-              <span
-                className={cn(
-                  'truncate transition-opacity duration-200 ease-in-out ml-3', // Simpler class, rely on parent flex for layout
-                  // Opacity and width are handled by isExpanded condition now for rendering
-                )}
-              >
-                {name}
-              </span>
-              {showNotificationBadge && ( // No need for && isExpanded here as this whole block is under isExpanded
-                <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
-              )}
-            </>
-          )}
+          {/* Expanded state notification badge */}
+          {isExpanded &&
+            showNotificationBadge && (
+              <span className="ml-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500" />
+            )}
         </Link>
       );
 
