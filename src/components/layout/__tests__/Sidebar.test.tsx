@@ -27,15 +27,24 @@ describe('Sidebar component', () => {
     expect(aside.className).toContain('dark:border-t-neutral-700');
   });
 
-  it('shows description text when expanded', async () => {
+  it('renders caption and clamped description only when expanded', async () => {
     render(<Sidebar />);
     const aside = screen.getByLabelText('Main navigation');
+
+    // collapsed state should hide caption and description
+    expect(within(aside).queryByText('Dashboard')).toBeNull();
+
     fireEvent.mouseEnter(aside);
+
+    const caption = await screen.findByText('Dashboard');
+    expect(caption).toBeInTheDocument();
     const desc = await screen.findByText(
       "View items you want to group buy or create one if you can\u2019t find what you want"
     );
     expect(desc).toBeInTheDocument();
-    expect(desc.className).toContain('break-words');
+    expect(desc.className).toContain('line-clamp-2');
+
+    fireEvent.mouseLeave(aside);
     expect(within(aside).queryByText('Dashboard')).toBeNull();
   });
 });
