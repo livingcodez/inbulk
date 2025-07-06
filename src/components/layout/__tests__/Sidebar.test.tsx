@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { Sidebar } from '../Sidebar';
 
 // Mock next/navigation to provide a path for usePathname
@@ -25,5 +25,17 @@ describe('Sidebar component', () => {
     const aside = screen.getByLabelText('Main navigation');
     expect(aside.className).toContain('border-t');
     expect(aside.className).toContain('dark:border-t-neutral-700');
+  });
+
+  it('shows description text when expanded', async () => {
+    render(<Sidebar />);
+    const aside = screen.getByLabelText('Main navigation');
+    fireEvent.mouseEnter(aside);
+    expect(
+      await screen.findByText(
+        "View items you want to group buy or create one if you can\u2019t find what you want"
+      )
+    ).toBeInTheDocument();
+    expect(within(aside).queryByText('Dashboard')).toBeNull();
   });
 });
