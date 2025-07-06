@@ -31,11 +31,11 @@ describe('Sidebar component', () => {
     render(<Sidebar />);
     const aside = screen.getByLabelText('Main navigation');
     fireEvent.mouseEnter(aside);
-    expect(
-      await screen.findByText(
-        "View items you want to group buy or create one if you can\u2019t find what you want"
-      )
-    ).toBeInTheDocument();
+    const desc = await screen.findByText(
+      "View items you want to group buy or create one if you can\u2019t find what you want"
+    );
+    expect(desc).toBeInTheDocument();
+    expect(desc.className).toContain('break-words');
     expect(within(aside).queryByText('Dashboard')).toBeNull();
   });
 });
