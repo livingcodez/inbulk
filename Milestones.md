@@ -6,3 +6,4 @@
 - **UI-103** - Add descriptive labels below sidebar icons (status: draft)
 - **UI-104** - Remove sidebar captions and update descriptions (status: draft)
 - **UI-105** - Prevent sidebar description overflow when expanded (status: draft)
+- **UI-106** - Add captions and truncate sidebar descriptions (status: draft)
