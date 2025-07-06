@@ -124,7 +124,7 @@ export function Sidebar() {
         <Link
           href={href}
           className={cn(
-            'group relative flex items-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+            'group relative flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
             'hover:bg-gray-50 dark:hover:bg-gray-800',
             isActive
               ? 'bg-gray-100 text-primary dark:bg-gray-800 dark:text-primary-light'

@@ -16,7 +16,7 @@ jest.mock('@/lib/supabase/notifications', () => ({
 
 // Mock next/link to simply render anchors during test
 jest.mock('next/link', () => {
-  return ({ children, href }: any) => <a href={href}>{children}</a>;
+  return ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>;
 });
 
 describe('Sidebar component', () => {
@@ -46,5 +46,13 @@ describe('Sidebar component', () => {
 
     fireEvent.mouseLeave(aside);
     expect(within(aside).queryByText('Dashboard')).toBeNull();
+  });
+
+  it('aligns icons centrally with descriptions', async () => {
+    render(<Sidebar />);
+    const aside = screen.getByLabelText('Main navigation');
+    fireEvent.mouseEnter(aside);
+    const dashboardLink = await screen.findByRole('link', { name: /dashboard/i });
+    expect(dashboardLink.className).toContain('items-center');
   });
 });
