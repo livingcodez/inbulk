@@ -132,7 +132,7 @@ export function Sidebar() {
           )}
           aria-current={isActive ? 'page' : undefined}
         >
-          <div className="relative flex-shrink-0 flex flex-col items-center"> {/* Wrapper for icon and potential badge on icon */}
+          <div className="relative flex flex-col items-center w-full"> {/* Wrapper for icon and potential badge on icon */}
             <Icon
               className={cn(
                 'h-5 w-5 flex-shrink-0 transition-colors duration-150', // Removed mr-3 from here
@@ -147,7 +147,7 @@ export function Sidebar() {
               <span className="absolute -top-0.5 -right-0.5 block h-2 w-2 rounded-full bg-red-500 ring-1 ring-white dark:ring-gray-900" />
             )}
             {isExpanded && (
-              <span className="text-xs text-neutral-500 mt-1">{description}</span>
+              <span className="mt-1 w-full break-words text-center text-xs text-neutral-500">{description}</span>
             )}
           </div>
 

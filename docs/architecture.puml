@@ -1,0 +1,17 @@
+@startuml
+!define AWSPUML https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v14.0/LATEST/AWSCommon.puml
+!includeurl AWSPUML
+
+' Simple architecture diagram showing Sidebar wrapping
+package "Next.js App" {
+  [Header]
+  [Sidebar]
+  [Main]
+}
+Header --> Main
+Sidebar --> Main
+note right of Sidebar
+  Descriptions wrap within 16rem using
+  Tailwind class `break-words`
+end note
+@enduml
