@@ -18,5 +18,6 @@ end note
 note bottom of Sidebar
   Divider separates bottom navigation icons
   from the main navigation links
+  Logout button appears below the Profile icon
 end note
 @enduml
