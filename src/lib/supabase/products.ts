@@ -1,5 +1,6 @@
 import { type ProductStatus } from '@/types/database.types' // Assuming this is used or useful
 import supabaseClient from './supabaseClient'
+import { createGroup } from './groups' // Import createGroup
 
 export async function getLiveProducts(params?: { // Use an object for params for better extensibility
   searchQuery?: string;
@@ -68,19 +69,74 @@ export async function createProduct(product: {
   max_participants: number | null // Changed from max_buyers
   actual_cost: number | null
   is_fungible: boolean
-  delivery_time: string | null
+  delivery_time: string | null;
+
+  // Parameters for automatic group creation
+  price: number; // Added to function parameters, expected from AddProductModal
+  createTimedGroup: boolean;
+  groupSize: number;
+  countdownSecs: number | null;
 }) {
-  const { data, error } = await supabaseClient
+  // Destructure to separate product fields from group creation params
+  const {
+    createTimedGroup: shouldCreateTimedGroup,
+    groupSize: initialGroupSize,
+    countdownSecs: initialCountdownSecs,
+    price: productPrice, // Use for escrow_amount
+    vendor_id,
+    ...productCoreData
+  } = product;
+
+  const { data: newProduct, error: productError } = await supabaseClient
     .from('products')
     .insert({
-      ...product,
+      ...productCoreData, // Insert core product data
+      vendor_id: vendor_id, // Ensure vendor_id is part of the insert payload
+      price: productPrice, // Ensure price is part of the insert payload
       status: 'draft' as ProductStatus,
     })
     .select()
-    .single()
+    .single();
 
-  if (error) throw error
-  return data
+  if (productError) {
+    console.error('Error creating product:', productError);
+    throw productError;
+  }
+
+  if (!newProduct) {
+    // This case should ideally not happen if productError is not thrown and insert is successful
+    throw new Error('Product creation did not return data.');
+  }
+
+  // Now, create the initial group
+  try {
+    let expires_at: string | null = null;
+    if (shouldCreateTimedGroup && initialCountdownSecs && initialCountdownSecs > 0) {
+      expires_at = new Date(Date.now() + initialCountdownSecs * 1000).toISOString();
+    }
+
+    if (typeof productPrice !== 'number' || productPrice <= 0) {
+      console.warn(`Invalid product price (${productPrice}) for escrow_amount. Group creation might use a default or fail.`);
+      // Potentially use newProduct.actual_cost / initialGroupSize if available and makes sense
+      // For now, proceeding with potentially invalid price, createGroup might handle it or error out.
+    }
+
+    await createGroup({
+      product_id: newProduct.id,
+      escrow_amount: productPrice,
+      target_count: initialGroupSize,
+      vendor_id: newProduct.vendor_id, // or vendor_id from input if preferred, newProduct.vendor_id should be reliable
+      expires_at: expires_at,
+      // vote_deadline and unanimous_required can be omitted for default behavior from createGroup
+    });
+    // console.log('Initial group created successfully for product:', newProduct.id);
+  } catch (groupError) {
+    console.error(`Error creating initial group for product ${newProduct.id}:`, groupError);
+    // Do not re-throw, allowing product creation to be reported as successful.
+    // Logged the error. Consider more robust error handling/notification for production.
+  }
+
+  return newProduct;
 }
 
 export async function updateProduct(id: string, updates: {
