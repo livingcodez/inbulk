@@ -7,3 +7,4 @@
 2025-07-08 - Updated sidebar to center icons and added tests for UI-107.
 2025-07-09 - Added divider above bottom navigation with tests and docs for UI-108.
 2025-07-10 - Added logout icon with tests and docs for UI-109.
+2025-07-11 - Made logo clickable when logged in and added tests for UI-110.
