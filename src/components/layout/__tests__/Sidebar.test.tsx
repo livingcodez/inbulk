@@ -6,8 +6,9 @@ jest.mock('next/navigation', () => ({
   usePathname: () => '/dashboard',
 }));
 
+const signOutMock = jest.fn();
 jest.mock('@/contexts/SupabaseProvider', () => ({
-  useSupabase: () => ({ profile: { id: '1' } })
+  useSupabase: () => ({ profile: { id: '1' }, signOut: signOutMock })
 }));
 
 jest.mock('@/lib/supabase/notifications', () => ({
@@ -66,5 +67,19 @@ describe('Sidebar component', () => {
 
     fireEvent.mouseLeave(aside);
     expect(within(aside).queryByText('Dashboard')).toBeNull();
+  });
+
+  it('renders Logout without description and triggers signOut', async () => {
+    render(<Sidebar />);
+    const aside = screen.getByLabelText('Main navigation');
+    fireEvent.mouseEnter(aside);
+
+    const logout = await screen.findByText('Logout');
+    expect(logout).toBeInTheDocument();
+    const desc = within(logout.closest('div')!).queryByText(/Details about/);
+    expect(desc).toBeNull();
+
+    fireEvent.click(logout);
+    expect(signOutMock).toHaveBeenCalled();
   });
 });
