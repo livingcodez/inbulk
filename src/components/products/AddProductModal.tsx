@@ -42,7 +42,7 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
       category: formData.category,
       subcategory: formData.subcategory, // Mapped from form
       // min_buyers is removed
-      max_participants: formData.groupSize, // Changed from max_buyers to max_participants, mapped from formData.groupSize
+      max_participants: formData.groupSize, // This might be redundant if createProduct handles group creation's target_count separately
       actual_cost: formData.actualCost,  // Mapped from form
       is_fungible: formData.isFungible,  // Mapped from isFungible
       delivery_time: formData.deliveryTime === "Custom (Specify below)"
@@ -50,11 +50,17 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
                      : formData.deliveryTime, // Mapped from form with custom logic
       // end_date is not in ProductFormData, so removed.
       // status is set to 'draft' by createProduct itself.
+
+      // New fields for group creation logic within createProduct
+      createTimedGroup: formData.createTimedGroup,
+      groupSize: formData.groupSize, // Pass groupSize again for clarity in createProduct's group creation step
+      countdownSecs: formData.createTimedGroup ? formData.countdownSecs : null,
     };
 
     try {
       // console.log("Submitting to createProduct:", productDataForApi);
-      await createProduct(productDataForApi);
+      // Type assertion to any for now, will be fixed when createProduct signature is updated
+      await createProduct(productDataForApi as any);
       alert('Product added successfully!'); // Simple feedback for now
       onProductAdded(); // Trigger list refresh
       onClose(); // Close modal
