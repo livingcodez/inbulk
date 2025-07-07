@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Mail, // Added for Inbox
   Settings, // Added for Settings
+  Power,
 } from 'lucide-react'
 import { useState, useRef, useCallback, useEffect } from 'react' // Ensure useEffect, useState are imported
 import { useSupabase } from '@/contexts/SupabaseProvider'
@@ -40,6 +41,12 @@ const bottomNavItems = [
     icon: UserCircle,
     description: 'Details about your account and wallet services.',
   },
+  {
+    name: 'Logout',
+    href: '#logout',
+    icon: Power,
+    description: '',
+  },
 ]
 
 const SWIPE_THRESHOLD = 50 // minimum distance for swipe
@@ -47,7 +54,7 @@ const SWIPE_TIMEOUT = 300 // maximum time for swipe
 
 export function Sidebar() {
   const pathname = usePathname()
-  const { profile } = useSupabase()
+  const { profile, signOut } = useSupabase()
   const [isExpanded, setIsExpanded] = useState(false)
   const touchStartRef = useRef({ x: 0, y: 0, time: 0 })
 
@@ -120,15 +127,27 @@ export function Sidebar() {
       // Dynamic condition for showing the notification badge
       const showNotificationBadge = name === 'Inbox' && unreadCount > 0;
 
+      const handleClick = async (
+        e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      ) => {
+        if (name === 'Logout') {
+          e.preventDefault();
+          await signOut();
+        }
+      };
+
       const linkContent = (
         <Link
           href={href}
+          onClick={handleClick}
           className={cn(
             'group relative flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
             'hover:bg-gray-50 dark:hover:bg-gray-800',
             isActive
               ? 'bg-gray-100 text-primary dark:bg-gray-800 dark:text-primary-light'
-              : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light'
+              : name === 'Logout'
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light'
           )}
           aria-current={isActive ? 'page' : undefined}
         >
@@ -136,9 +155,11 @@ export function Sidebar() {
             <Icon
               className={cn(
                 'h-5 w-5 flex-shrink-0 transition-colors duration-150',
-                isActive
-                  ? 'text-primary dark:text-primary-light'
-                  : 'text-gray-400 group-hover:text-primary dark:text-gray-400 dark:group-hover:text-primary-light'
+                name === 'Logout'
+                  ? 'text-red-500 group-hover:text-red-600'
+                  : isActive
+                      ? 'text-primary dark:text-primary-light'
+                      : 'text-gray-400 group-hover:text-primary dark:text-gray-400 dark:group-hover:text-primary-light'
               )}
               aria-hidden="true"
             />
@@ -149,7 +170,9 @@ export function Sidebar() {
           {isExpanded && (
             <div className="ml-3 flex flex-col w-full overflow-hidden">
               <span className="text-sm font-semibold">{name}</span>
-              <span className="text-xs text-neutral-500 line-clamp-2">{description}</span>
+              {name !== 'Logout' && (
+                <span className="text-xs text-neutral-500 line-clamp-2">{description}</span>
+              )}
             </div>
           )}
           {isExpanded &&
@@ -171,7 +194,7 @@ export function Sidebar() {
         </div>
       )
     },
-    [pathname, isExpanded, unreadCount] // ADD unreadCount to dependency array
+    [pathname, isExpanded, unreadCount, signOut]
   )
 
   return (

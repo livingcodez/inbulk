@@ -2,3 +2,4 @@
 
 2025-07-08 - Updated diagram note to reflect icon alignment for UI-107.
 2025-07-09 - Added note about bottom navigation separation for UI-108.
+2025-07-10 - Added logout button note in sidebar for UI-109.
