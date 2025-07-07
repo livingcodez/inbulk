@@ -47,11 +47,11 @@ export interface ProductFormData {
 
   // Product & Group Type
   isFungible: boolean; // Renamed from is_fungible
-  autoGroup: boolean; // New field: Enable Automatic Group Creation
+  createTimedGroup: boolean; // Changed from autoGroup: If true, an initial timed group is created. Otherwise, an untimed group.
 
-  // Auto-Group Settings (Conditional)
-  groupSize: number | null; // New field: Target Group Size (formerly min_participants/max_participants could be re-evaluated)
-  countdownSecs: number | null; // New field: Timed Group Countdown (seconds)
+  // Initial Group Settings
+  groupSize: number | null; // Target Group Size for the initial automatically created group (timed or untimed)
+  countdownSecs: number | null; // Timed Group Countdown (seconds) - only if createTimedGroup is true
 
   // Fields to be deprecated or re-evaluated from old interface:
   // price: number; // This will be calculated: actualCost / groupSize
@@ -78,9 +78,9 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>("");
   const [customDeliveryTimeDesc, setCustomDeliveryTimeDesc] = useState<string>("");
   const [isFungibleValue, setIsFungibleValue] = useState<boolean>(false);
-  const [autoGroupValue, setAutoGroupValue] = useState<boolean>(true);
-  const [groupSizeInput, setGroupSizeInput] = useState<string>('5');
-  const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400');
+  const [createTimedGroupValue, setCreateTimedGroupValue] = useState<boolean>(false); // Default to false (untimed group)
+  const [groupSizeInput, setGroupSizeInput] = useState<string>('5'); // Group size always needed
+  const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400'); // For timed group
 
 
   const DELIVERY_TIME_OPTIONS = ["Instant", "1-3 Business Days", "3-7 Business Days", "1-2 Weeks", "Custom (Specify below)"];
@@ -93,7 +93,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     setSelectedSubcategory(subCat);
     setActualCostInput(initialData?.actualCost?.toString() || "");
     setIsFungibleValue(initialData?.isFungible ?? false);
-    setAutoGroupValue(initialData?.autoGroup ?? true);
+    setCreateTimedGroupValue(initialData?.createTimedGroup ?? false); // Use new prop, default to false
     setGroupSizeInput(initialData?.groupSize?.toString() ?? '5');
     setCountdownSecsInput(initialData?.countdownSecs?.toString() ?? '86400');
 
@@ -189,20 +189,21 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     let finalGroupSize: number | null = null;
     let finalCountdownSecs: number | null = null;
 
-    if (autoGroupValue) { // autoGroupValue is from state
-      const parsedGroupSize = parseInt(groupSizeInput, 10); // groupSizeInput is from state
-      if (!isNaN(parsedGroupSize) && parsedGroupSize >= 1) {
-        finalGroupSize = parsedGroupSize;
-      }
+    // Group size is always needed for the initial group
+    const parsedGroupSize = parseInt(groupSizeInput, 10);
+    if (!isNaN(parsedGroupSize) && parsedGroupSize >= 1) {
+      finalGroupSize = parsedGroupSize;
+    }
 
+    if (createTimedGroupValue) { // createTimedGroupValue is from state
       if (countdownSecsInput.trim() === "") { // countdownSecsInput is from state
-        finalCountdownSecs = 86400; // Default if blank
+        finalCountdownSecs = 86400; // Default if blank for timed group
       } else {
         const parsedCountdownSecs = parseInt(countdownSecsInput, 10);
         if (!isNaN(parsedCountdownSecs) && parsedCountdownSecs >= 1) {
           finalCountdownSecs = parsedCountdownSecs;
         }
-        // If invalid and not blank, finalCountdownSecs remains null for validation later
+        // If invalid and not blank, finalCountdownSecs remains null for validation later (for timed group)
       }
     }
 
@@ -249,14 +250,15 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         return;
       }
     }
-    if (autoGroupValue) {
-      if (finalGroupSize === null) {
-        setError("Target Group Size must be a valid number (at least 1) when automatic group creation is enabled.");
-        setLoading(false);
-        return;
-      }
+    // Validation for initial group settings
+    if (finalGroupSize === null) {
+      setError("Target Group Size must be a valid number (at least 1) for the initial group.");
+      setLoading(false);
+      return;
+    }
+    if (createTimedGroupValue) { // Only validate countdown if it's a timed group
       if (countdownSecsInput.trim() !== "" && finalCountdownSecs === null) {
-        setError("Timed Group Countdown must be a valid positive number if provided, or left blank for default.");
+        setError("Timed Group Countdown must be a valid positive number if provided, or left blank for default (when creating a timed group).");
         setLoading(false);
         return;
       }
@@ -276,9 +278,9 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       deliveryTime: selectedDeliveryTime,
       customDeliveryTimeDescription: (selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription) ? (customDeliveryTimeDesc.trim() || null) : null,
       isFungible: isFungibleValue,
-      autoGroup: autoGroupValue,
-      groupSize: autoGroupValue ? finalGroupSize : null,
-      countdownSecs: autoGroupValue ? finalCountdownSecs : null,
+      createTimedGroup: createTimedGroupValue,
+      groupSize: finalGroupSize, // Always pass groupSize
+      countdownSecs: createTimedGroupValue ? finalCountdownSecs : null, // Pass countdownSecs only if timed group
     };
 
     try {
@@ -296,12 +298,13 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
 
   const isSoftwareSubscription = selectedCategory === "Services & Subscriptions" && selectedSubcategory === "Software Subscriptions";
   const showCustomDeliveryInput = selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription;
-  const showAutoGroupSettings = autoGroupValue;
+  // const showAutoGroupSettings = autoGroupValue; // Replaced by individual conditions
 
   const calculatedPriceData = useMemo(() => {
     const cost = parseFloat(actualCostInput);
     const size = parseInt(groupSizeInput, 10);
-    if (autoGroupValue && cost > 0 && size > 0) {
+    // Price calculation is always relevant if cost and size are valid, as a group is always made.
+    if (cost > 0 && size > 0) {
       return {
         price: (cost / size).toFixed(2),
         cost: cost.toFixed(2),
@@ -309,7 +312,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       };
     }
     return null;
-  }, [actualCostInput, groupSizeInput, autoGroupValue]);
+  }, [actualCostInput, groupSizeInput]);
 
   return (
     <div className="relative p-4 sm:p-6"> {/* Added padding, relative positioning for close button */}
@@ -559,31 +562,31 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
             </div>
           </div>
 
-          {/* Enable Automatic Group Creation (autoGroup) */}
+          {/* Create Timed Group (createTimedGroup) */}
           <div className="flex items-center justify-between">
-            <label htmlFor="autoGroup" className="flex-grow cursor-pointer group">
-              <span className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Enable Automatic Group Creation</span>
-              <p className="text-xs text-gray-500 dark:text-neutral-400">If enabled, the system will automatically create timed and untimed groups. Requires Group Size.</p>
+            <label htmlFor="createTimedGroup" className="flex-grow cursor-pointer group">
+              <span className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Create Initial Timed Group</span>
+              <p className="text-xs text-gray-500 dark:text-neutral-400">If enabled, the initial group will be timed. Otherwise, it will be untimed. Group Size is always required below.</p>
             </label>
             <div className="relative inline-flex items-center">
               <input
                 type="checkbox"
-                id="autoGroup"
-                name="autoGroup"
+                id="createTimedGroup"
+                name="createTimedGroup"
                 className="sr-only peer"
-                checked={autoGroupValue}
-                onChange={(e) => setAutoGroupValue(e.target.checked)}
+                checked={createTimedGroupValue}
+                onChange={(e) => setCreateTimedGroupValue(e.target.checked)}
               />
               <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
             </div>
           </div>
         </div>
 
-        {/* Auto-Group Settings Section */}
-        {showAutoGroupSettings && (
-          <div className="my-4 p-4 bg-gray-50 dark:bg-neutral-800/50 rounded-md border border-dashed border-gray-300 dark:border-neutral-700 space-y-4">
+        {/* Initial Group Settings Section */}
+        {/* This section is always shown because a group is always created */}
+        <div className="my-4 p-4 bg-gray-50 dark:bg-neutral-800/50 rounded-md border border-dashed border-gray-300 dark:border-neutral-700 space-y-4">
             <h3 className="text-lg font-medium text-gray-900 dark:text-neutral-100 mb-3">
-              Auto-Group Settings
+              Initial Group Settings
             </h3>
             {/* Target Group Size */}
             <div>
@@ -594,34 +597,35 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                 id="groupSize"
                 value={groupSizeInput}
                 onChange={(e) => setGroupSizeInput(e.target.value)}
-                required={autoGroupValue}
+                required // Always required as a group is always created
                 min="1"
                 placeholder="e.g., 5 (min. 1)"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
-                Number of members required for automatically created groups (e.g., 2-20).
+                Number of members for the initial group (e.g., 2-20).
               </p>
             </div>
-            {/* Timed Group Countdown */}
-            <div>
-              <label htmlFor="countdownSecs" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Timed Group Countdown (seconds)</label>
-              <input
-                type="number"
-                name="countdownSecs"
-                id="countdownSecs"
-                value={countdownSecsInput}
-                onChange={(e) => setCountdownSecsInput(e.target.value)}
-                min="1"
-                placeholder="e.g., 86400 (for 24 hours)"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
-                Duration for automatically created timed groups. Defaults to 24 hours if left blank.
-              </p>
-            </div>
-          </div>
-        )}
+            {/* Timed Group Countdown - only shown if createTimedGroupValue is true */}
+            {createTimedGroupValue && (
+              <div>
+                <label htmlFor="countdownSecs" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Timed Group Countdown (seconds)</label>
+                <input
+                  type="number"
+                  name="countdownSecs"
+                  id="countdownSecs"
+                  value={countdownSecsInput}
+                  onChange={(e) => setCountdownSecsInput(e.target.value)}
+                  min="1"
+                  placeholder="e.g., 86400 (for 24 hours)"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+                  Duration for the initial timed group. Defaults to 24 hours if left blank.
+                </p>
+              </div>
+            )}
+        </div>
 
         {/* Calculated Price Per Buyer Display */}
         {calculatedPriceData && (
