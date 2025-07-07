@@ -31,6 +31,15 @@ describe('Sidebar component', () => {
     expect(aside.className).toContain('dark:border-t-neutral-700');
   });
 
+  it('renders divider with correct classes', () => {
+    render(<Sidebar />);
+    const userNav = screen.getByLabelText('User navigation links');
+    const divider = userNav.previousElementSibling as HTMLElement | null;
+    expect(divider).not.toBeNull();
+    expect(divider?.className).toContain('border-t');
+    expect(divider?.className).toContain('dark:border-t-neutral-700');
+  });
+
   it('aligns icon vertically with description', () => {
     render(<Sidebar />);
     const aside = screen.getByLabelText('Main navigation');

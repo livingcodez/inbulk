@@ -217,9 +217,12 @@ export function Sidebar() {
         </nav>
 
         {/* Bottom navigation */}
-        <nav className="px-3 mt-auto space-y-1" aria-label="User navigation links">
-          {bottomNavItems.map(renderNavItem)}
-        </nav>
+        <div className="mt-auto">
+          <div className="border-t dark:border-t-neutral-700 mx-3" />
+          <nav className="px-3 space-y-1 pt-3" aria-label="User navigation links">
+            {bottomNavItems.map(renderNavItem)}
+          </nav>
+        </div>
       </div>
     </aside>
   )

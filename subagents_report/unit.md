@@ -5,3 +5,4 @@
 2025-07-07 - Added test for description wrapping class for UI-105.
 2025-07-07 - Added tests for caption rendering and line clamp for UI-106.
 2025-07-08 - Added test for vertical centering class on navigation links for UI-107.
+2025-07-09 - Added test to verify divider classes above bottom nav for UI-108.

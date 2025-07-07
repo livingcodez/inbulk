@@ -72,7 +72,6 @@ export async function createProduct(product: {
   delivery_time: string | null;
 
   // Parameters for automatic group creation
-  price: number; // Added to function parameters, expected from AddProductModal
   createTimedGroup: boolean;
   groupSize: number;
   countdownSecs: number | null;
