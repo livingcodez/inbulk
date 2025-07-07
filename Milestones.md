@@ -10,6 +10,7 @@
 - **UI-107** - Align sidebar icons vertically with descriptions (status: draft)
 - **UI-108** - Add divider above bottom sidebar icons (status: draft)
 - **UI-109** - Add Logout icon to sidebar bottom navigation (status: draft)
+- **UI-110** - Make logo clickable to buyer explore page when signed in (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27

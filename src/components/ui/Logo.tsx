@@ -1,8 +1,13 @@
 'use client'
 
+import Link from 'next/link'
+import { useSupabase } from '@/contexts/SupabaseProvider'
+
 export function Logo() {
-  return (
-    <div className="flex items-center gap-2">
+  const { session } = useSupabase()
+
+  const content = (
+    <>
       <svg
         width="32"
         height="32"
@@ -29,6 +34,17 @@ export function Logo() {
       <span className="text-xl font-semibold text-primary quicksand">
         CrowdCart
       </span>
-    </div>
+    </>
+  )
+
+  return session ? (
+    <Link
+      href="/dashboard?mode=buyer&tab=explore"
+      className="flex items-center gap-2"
+    >
+      {content}
+    </Link>
+  ) : (
+    <div className="flex items-center gap-2">{content}</div>
   )
 }
