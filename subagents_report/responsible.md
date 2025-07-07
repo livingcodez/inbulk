@@ -5,3 +5,4 @@
 2025-07-07 - Adjusted layout to wrap descriptions and added tests for UI-105.
 2025-07-07 - Implemented captions with truncated descriptions and updated tests for UI-106.
 2025-07-08 - Updated sidebar to center icons and added tests for UI-107.
+2025-07-09 - Added divider above bottom navigation with tests and docs for UI-108.

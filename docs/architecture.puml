@@ -15,4 +15,8 @@ note right of Sidebar
   beside a caption and `line-clamp-2` description
   when expanded
 end note
+note bottom of Sidebar
+  Divider separates bottom navigation icons
+  from the main navigation links
+end note
 @enduml

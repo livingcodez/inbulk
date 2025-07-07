@@ -8,6 +8,7 @@
 - **UI-105** - Prevent sidebar description overflow when expanded (status: draft)
 - **UI-106** - Add captions and truncate sidebar descriptions (status: draft)
 - **UI-107** - Align sidebar icons vertically with descriptions (status: draft)
+- **UI-108** - Add divider above bottom sidebar icons (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27
