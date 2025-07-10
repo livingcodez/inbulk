@@ -23,3 +23,4 @@
 |---------|--------------------------------------------------------|--------|-----------------|------------|
 | BF-001  | Refine Automatic Group Creation to Timed/Untimed Choice | draft  | agent-A-BF001   | 2023-11-03 |
 | BF-002  | Default products to fungible, remove unique toggle      | draft  | agent-A-BF002   | 2023-11-05 |
+| BF-003  | Remove fungibility property from creation flow          | draft  | agent-A-BF003   | 2023-11-06 |

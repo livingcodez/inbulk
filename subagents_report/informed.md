@@ -8,3 +8,4 @@
 2025-07-09 - Stakeholders informed about sidebar divider for UI-108.
 2025-07-10 - Stakeholders informed about logout button in sidebar for UI-109.
 2025-07-11 - Stakeholders informed about clickable logo when logged in for UI-110.
+2025-07-11 - Stakeholders notified about removal of `is_fungible` field for BF-003.
