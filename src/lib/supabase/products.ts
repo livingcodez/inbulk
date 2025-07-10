@@ -68,7 +68,6 @@ export async function createProduct(product: {
   // min_buyers removed
   max_participants: number | null // Changed from max_buyers
   actual_cost: number | null
-  is_fungible?: boolean
   delivery_time: string | null;
 
   // Parameters for automatic group creation
@@ -83,7 +82,6 @@ export async function createProduct(product: {
     countdownSecs: initialCountdownSecs,
     price: productPrice, // Use for escrow_amount
     vendor_id,
-    is_fungible = false,
     ...productCoreData
   } = product;
 
@@ -94,7 +92,6 @@ export async function createProduct(product: {
       vendor_id: vendor_id, // Ensure vendor_id is part of the insert payload
       price: productPrice, // Ensure price is part of the insert payload
       status: 'draft' as ProductStatus,
-      is_fungible,
     })
     .select()
     .single();
@@ -150,7 +147,6 @@ export async function updateProduct(id: string, updates: {
   // min_buyers removed
   max_participants?: number | null // Changed from max_buyers
   actual_cost?: number | null
-  is_fungible?: boolean
   delivery_time?: string | null
   status?: ProductStatus
 }) {

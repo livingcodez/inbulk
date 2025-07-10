@@ -11,7 +11,6 @@ interface ProductCardProps {
   price: number
   category: string
   image: string
-  isUnique?: boolean
 }
 
 export function ProductCard({
@@ -21,7 +20,6 @@ export function ProductCard({
   price,
   category,
   image,
-  isUnique,
 }: ProductCardProps) {
   return (
     <article className="bg-white border rounded-lg shadow-sm overflow-hidden flex flex-col">
@@ -33,11 +31,7 @@ export function ProductCard({
           fill
           className="object-cover"
         />
-        {isUnique && (
-          <div className="absolute top-3 right-3 bg-accent-orange text-white text-xs font-medium px-2 py-1 rounded">
-            Unique Item
-          </div>
-        )}
+        {/* All listings are treated as fungible, so no uniqueness badge */}
       </div>
 
       {/* Card Content */}

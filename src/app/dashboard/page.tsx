@@ -175,9 +175,8 @@ async function DashboardContent({ searchParams }: { searchParams?: any }) {
 														description={product.description || ''}
 														price={product.price}
 														category={product.category}
-														image={product.image_url || DEFAULT_PRODUCT_IMAGE} // DEFAULT_PRODUCT_IMAGE is defined above
-														isUnique={product.is_fungible ?? false}
-													/>
+                                                                              image={product.image_url || DEFAULT_PRODUCT_IMAGE} // DEFAULT_PRODUCT_IMAGE is defined above
+                                                                              />
 												))}
 											</div>
 										)}
@@ -246,11 +245,10 @@ async function DashboardContent({ searchParams }: { searchParams?: any }) {
 														description={product.description || ''}
 														price={product.price}
 														category={product.category}
-														image={product.image_url || DEFAULT_PRODUCT_IMAGE}
-														isUnique={product.is_fungible ?? false}
-														// TODO: ProductCard could be enhanced for vendors with status pills, edit buttons, etc.
-														// For now, it will display like a regular product card.
-													/>
+                                                                              image={product.image_url || DEFAULT_PRODUCT_IMAGE}
+                                                                              // TODO: ProductCard could be enhanced for vendors with status pills, edit buttons, etc.
+                                                                              // For now, it will display like a regular product card.
+                                                                              />
 												))}
 											</div>
 										)}
