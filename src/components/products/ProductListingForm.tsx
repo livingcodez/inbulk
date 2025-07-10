@@ -46,7 +46,6 @@ export interface ProductFormData {
   customDeliveryTimeDescription: string | null; // New field: Custom Delivery Time Description
 
   // Product & Group Type
-  isFungible: boolean; // Renamed from is_fungible
   createTimedGroup: boolean; // Changed from autoGroup: If true, an initial timed group is created. Otherwise, an untimed group.
 
   // Initial Group Settings
@@ -77,7 +76,6 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
   const [actualCostInput, setActualCostInput] = useState<string>("");
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>("");
   const [customDeliveryTimeDesc, setCustomDeliveryTimeDesc] = useState<string>("");
-  const [isFungibleValue, setIsFungibleValue] = useState<boolean>(false);
   const [createTimedGroupValue, setCreateTimedGroupValue] = useState<boolean>(false); // Default to false (untimed group)
   const [groupSizeInput, setGroupSizeInput] = useState<string>('5'); // Group size always needed
   const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400'); // For timed group
@@ -92,7 +90,6 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     setSelectedCategory(cat);
     setSelectedSubcategory(subCat);
     setActualCostInput(initialData?.actualCost?.toString() || "");
-    setIsFungibleValue(initialData?.isFungible ?? false);
     setCreateTimedGroupValue(initialData?.createTimedGroup ?? false); // Use new prop, default to false
     setGroupSizeInput(initialData?.groupSize?.toString() ?? '5');
     setCountdownSecsInput(initialData?.countdownSecs?.toString() ?? '86400');
@@ -277,7 +274,6 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       image_url: formImageUrl,
       deliveryTime: selectedDeliveryTime,
       customDeliveryTimeDescription: (selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription) ? (customDeliveryTimeDesc.trim() || null) : null,
-      isFungible: isFungibleValue,
       createTimedGroup: createTimedGroupValue,
       groupSize: finalGroupSize, // Always pass groupSize
       countdownSecs: createTimedGroupValue ? finalCountdownSecs : null, // Pass countdownSecs only if timed group
@@ -543,25 +539,6 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
 
         {/* Product & Group Type Section */}
         <div className="space-y-4 pt-2">
-          {/* Unique Item/Service Instance (isFungible) */}
-          <div className="flex items-center justify-between">
-            <label htmlFor="isFungible" className="flex-grow cursor-pointer">
-              <span className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Unique Item/Service Instance</span>
-              <p className="text-xs text-gray-500 dark:text-neutral-400">Is this a specific, unique instance (e.g., specific account, single art piece)?</p>
-            </label>
-            <label className="relative inline-flex items-center cursor-pointer" aria-label="Toggle Unique Item/Service Instance">
-              <input
-                type="checkbox"
-                id="isFungible"
-                name="isFungible"
-                className="sr-only peer"
-                checked={isFungibleValue}
-                onChange={(e) => setIsFungibleValue(e.target.checked)}
-              />
-              <div className="w-11 h-6 bg-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary-dark rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-primary peer-checked:hover:bg-primary-dark"></div>
-            </label>
-          </div>
-
           {/* Create Timed Group (createTimedGroup) */}
           <div className="flex items-center justify-between">
             <label htmlFor="createTimedGroup" className="flex-grow cursor-pointer">

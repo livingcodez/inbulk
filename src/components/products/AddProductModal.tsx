@@ -44,7 +44,7 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
       // min_buyers is removed
       max_participants: formData.groupSize, // This might be redundant if createProduct handles group creation's target_count separately
       actual_cost: formData.actualCost,  // Mapped from form
-      is_fungible: formData.isFungible,  // Mapped from isFungible
+      is_fungible: false,
       delivery_time: formData.deliveryTime === "Custom (Specify below)"
                      ? formData.customDeliveryTimeDescription
                      : formData.deliveryTime, // Mapped from form with custom logic

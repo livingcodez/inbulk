@@ -38,7 +38,7 @@ The application's dependencies are mapped below. Each component contributes to t
             *   *Key files/logic:* `src/app/auth/`, `src/lib/supabase/user.ts` (profile operations), `src/lib/supabase/server.ts` & `src/lib/supabase/supabaseClient.ts` (Supabase client setup), `src/middleware.ts` (route protection).
 
         *   **Product Management System**
-            *   Allows vendors to list products, define properties (price, category, description, images, group targets like `max_participants`, type like fungible/unique), and manage their active listings. Buyers use this system to discover and view products.
+            *   Allows vendors to list products, define properties (price, category, description, images, group targets like `max_participants`) and manage their active listings. Products are treated as fungible by default, so no user input is required for uniqueness. Buyers use this system to discover and view products.
             *   **Depends on:** `Product Data Storage`, `Vendor Interface for Product Listing`, `Buyer Interface for Product Discovery`.
             *   *Key files/logic:* `src/lib/supabase/products.ts` (CRUD operations for products, fetching live products), `src/app/products/`, `src/components/products/ProductListingForm.tsx`, `src/components/products/ProductCard.tsx`, `src/app/dashboard/page.tsx` (Vendor Mode for listings, Buyer Mode for exploring).
 
