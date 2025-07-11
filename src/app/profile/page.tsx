@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
 import { WalletCard } from '@/components/profile/WalletCard'
+import { ShippingDetailsForm } from '@/components/profile/ShippingDetailsForm'
 import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
@@ -119,6 +120,8 @@ export default async function ProfilePage() {
                       />
                     </div>
                   </div>
+                  {/* Shipping details update form */}
+                  <ShippingDetailsForm />
                 </CardContent>
               </Card>
 

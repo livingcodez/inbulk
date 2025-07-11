@@ -30,6 +30,12 @@ jest.mock('@/components/layout/Header', () => {
   };
 });
 
+// Mock ShippingDetailsForm to avoid loading client dependencies
+jest.mock('@/components/profile/ShippingDetailsForm', () => ({
+  __esModule: true,
+  ShippingDetailsForm: () => <div data-testid="shipping-form" />
+}));
+
 // Mock Image component
 jest.mock('next/image', () => ({
     __esModule: true,

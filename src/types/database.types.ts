@@ -20,6 +20,8 @@ export interface Database {
         Row: {
           id: string
           full_name: string | null
+          first_name: string | null
+          last_name: string | null
           avatar_url: string | null
           role: UserRole
           wallet_balance: number
@@ -28,12 +30,16 @@ export interface Database {
           account_number: string | null
           bank_name: string | null
           currency: string | null
+          shipping_address: string | null
+          phone_number: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id: string
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
           avatar_url?: string | null
           role?: UserRole
           wallet_balance?: number
@@ -42,12 +48,16 @@ export interface Database {
           account_number?: string | null
           bank_name?: string | null
           currency?: string | null
+          shipping_address?: string | null
+          phone_number?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
           avatar_url?: string | null
           role?: UserRole
           wallet_balance?: number
@@ -56,6 +66,8 @@ export interface Database {
           account_number?: string | null
           bank_name?: string | null
           currency?: string | null
+          shipping_address?: string | null
+          phone_number?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -143,6 +155,12 @@ export interface Database {
           user_id: string
           amount: number
           joined_at: string
+          vote_status: 'pending' | 'approved' | 'rejected' | null
+          is_admin: boolean
+          first_name: string | null
+          last_name: string | null
+          shipping_address: string | null
+          phone_number: string | null
         }
         Insert: {
           id?: string
@@ -150,6 +168,12 @@ export interface Database {
           user_id: string
           amount: number
           joined_at?: string
+          vote_status?: 'pending' | 'approved' | 'rejected' | null
+          is_admin?: boolean
+          first_name?: string | null
+          last_name?: string | null
+          shipping_address?: string | null
+          phone_number?: string | null
         }
         Update: {
           id?: string
@@ -157,6 +181,12 @@ export interface Database {
           user_id?: string
           amount?: number
           joined_at?: string
+          vote_status?: 'pending' | 'approved' | 'rejected' | null
+          is_admin?: boolean
+          first_name?: string | null
+          last_name?: string | null
+          shipping_address?: string | null
+          phone_number?: string | null
         }
       }
       transactions: {

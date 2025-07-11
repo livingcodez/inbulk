@@ -200,6 +200,17 @@ export async function createGroup(group: {
 }
 
 export async function joinGroup(groupId: string, userId: string) {
+  const { data: profile, error: profileError } = await supabaseClient
+    .from('user_profiles')
+    .select('first_name, last_name, shipping_address, phone_number')
+    .eq('id', userId)
+    .single()
+
+  if (profileError) throw profileError
+  if (!profile?.first_name || !profile.last_name || !profile.shipping_address || !profile.phone_number) {
+    throw new Error('Missing shipping information')
+  }
+
   const { data: existingMember, error: checkError } = await supabaseClient
     .from('group_members')
     .select('id')
@@ -215,6 +226,10 @@ export async function joinGroup(groupId: string, userId: string) {
     .insert({
       group_id: groupId,
       user_id: userId,
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      shipping_address: profile.shipping_address,
+      phone_number: profile.phone_number,
       vote_status: 'pending',
       is_admin: false,
     })
