@@ -10,14 +10,8 @@ import {
   type UserProfileAddress
 } from '@/lib/supabase/addresses';
 
-interface RouteParams {
-  params: {
-    addressId: string;
-  };
-}
-
 // GET: Retrieve a specific profile address by ID
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: { params: { addressId: string } }) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
@@ -49,7 +43,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT: Update a specific profile address by ID
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: { params: { addressId: string } }) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
@@ -115,7 +109,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE: Delete a specific profile address by ID
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: { params: { addressId: string } }) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });

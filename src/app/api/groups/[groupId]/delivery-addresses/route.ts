@@ -4,14 +4,8 @@ import { getDeliveryAddressesForGroup } from '@/lib/supabase/addresses';
 import { getProductById, isProductPhysical } from '@/lib/supabase/products'; // To check product vendor and physicality
 import { getGroupById } from '@/lib/supabase/groups'; // To check group status
 
-interface RouteParams {
-  params: {
-    groupId: string;
-  };
-}
-
 // GET: Retrieve all delivery addresses for a specific group (for fulfillers)
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: { params: { groupId: string } }) {
   const { groupId } = params;
   if (!groupId) {
     return NextResponse.json({ error: 'Group ID is required' }, { status: 400 });

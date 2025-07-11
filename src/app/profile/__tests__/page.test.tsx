@@ -1,6 +1,6 @@
 import ProfilePage from '../page';
 import { redirect } from 'next/navigation';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import { render, screen } from '@testing-library/react'; // Using render for async component
 
 // Mock next/navigation
@@ -19,7 +19,7 @@ jest.mock('next/navigation', () => {
 
 // Mock @/lib/supabase/server
 jest.mock('@/lib/supabase/server', () => ({
-  createServerSupabaseClient: jest.fn(),
+  createServerClient: jest.fn(),
 }));
 
 // Mock Header component as it's not relevant to this test's logic
@@ -46,8 +46,8 @@ describe('ProfilePage', () => {
     jest.clearAllMocks();
   });
 
-  it('should redirect to /login if createServerSupabaseClient throws an error', async () => {
-    (createServerSupabaseClient as jest.Mock).mockRejectedValueOnce(new Error('Supabase client init failed'));
+  it('should redirect to /login if createServerClient throws an error', async () => {
+    (createServerClient as jest.Mock).mockRejectedValueOnce(new Error('Supabase client init failed'));
 
     try {
       await ProfilePage();
@@ -61,14 +61,14 @@ describe('ProfilePage', () => {
       }
     }
     expect(redirect).toHaveBeenCalledWith('/login');
-    // Based on component logic, if createServerSupabaseClient fails,
+    // Based on component logic, if createServerClient fails,
     // redirect is called once in the main catch block of ProfilePage.
     expect(redirect).toHaveBeenCalledTimes(1);
   });
 
   it('should redirect to /login if session is null', async () => {
     const mockGetSession = jest.fn().mockResolvedValueOnce({ data: { session: null }, error: null });
-    (createServerSupabaseClient as jest.Mock).mockResolvedValueOnce({
+    (createServerClient as jest.Mock).mockResolvedValueOnce({
       auth: { getSession: mockGetSession },
     });
 
@@ -87,7 +87,7 @@ describe('ProfilePage', () => {
 
   it('should redirect to /login if getSession returns an error', async () => {
     const mockGetSession = jest.fn().mockResolvedValueOnce({ data: { session: null }, error: new Error('Session fetch error') });
-    (createServerSupabaseClient as jest.Mock).mockResolvedValueOnce({
+    (createServerClient as jest.Mock).mockResolvedValueOnce({
       auth: { getSession: mockGetSession },
     });
 
@@ -120,7 +120,7 @@ describe('ProfilePage', () => {
          single: jest.fn().mockResolvedValue({ data: mockProfile, error: null }),
      });
 
-     (createServerSupabaseClient as jest.Mock).mockResolvedValue({
+     (createServerClient as jest.Mock).mockResolvedValue({
          auth: { getSession: mockGetSession },
          from: mockFrom,
      });

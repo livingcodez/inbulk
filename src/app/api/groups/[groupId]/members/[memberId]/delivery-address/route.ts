@@ -10,15 +10,8 @@ import {
 } from '@/lib/supabase/addresses';
 import { getGroupMemberById } from '@/lib/supabase/groups'; // Assuming a function to get group member details
 
-interface RouteParams {
-  params: {
-    groupId: string;
-    memberId: string; // This is group_member_id
-  };
-}
-
 // GET: Retrieve the submitted delivery address for this specific group membership
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: { params: { groupId: string; memberId: string } }) {
   const { memberId } = params; // memberId is the group_member_id
   const supabase = createServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -52,7 +45,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // POST or PUT: Add or Update delivery address for a specific group membership
 // Using POST for simplicity, can be PUT if strict idempotency is desired for updates.
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(request: NextRequest, { params }: { params: { groupId: string; memberId: string } }) {
   const { groupId, memberId } = params; // memberId is group_member_id
   const supabase = createServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();

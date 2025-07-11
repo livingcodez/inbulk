@@ -61,3 +61,4 @@
 | Task ID      | Title                                                               | Status    | Accountable | Due        |
 |--------------|---------------------------------------------------------------------|-----------|-------------|------------|
 | BUGFIX-DP-001 | Resolve Deployment Failures Due to Import and Type Errors in API Routes | completed | Jules       | 2025-07-12 |
+| BUGFIX-DP-002 | Fix Next.js build errors due to outdated Supabase helper import and invalid route param types | draft | Jules | 2025-07-13 |
