@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import { getDeliveryAddressesForGroup } from '@/lib/supabase/addresses';
 import { getProductById, isProductPhysical } from '@/lib/supabase/products'; // To check product vendor and physicality
@@ -11,7 +11,7 @@ interface RouteParams {
 }
 
 // GET: Retrieve all delivery addresses for a specific group (for fulfillers)
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   const { groupId } = params;
   if (!groupId) {
     return NextResponse.json({ error: 'Group ID is required' }, { status: 400 });

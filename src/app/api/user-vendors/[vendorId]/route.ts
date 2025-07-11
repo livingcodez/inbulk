@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import {
   getUserVendorById,
@@ -15,7 +15,7 @@ interface RouteParams {
 }
 
 // GET: Retrieve a specific vendor by ID for the authenticated user
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
@@ -51,7 +51,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 }
 
 // PUT: Update a specific vendor by ID for the authenticated user
-export async function PUT(request: Request, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
@@ -96,7 +96,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
 }
 
 // DELETE: Delete a specific vendor by ID for the authenticated user
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });

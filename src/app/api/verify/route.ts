@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import axios from 'axios'
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const url = new URL(req.url)
   const reference = url.searchParams.get('reference')
   if (!reference) return NextResponse.json({ error: 'Missing reference' }, { status: 400 })

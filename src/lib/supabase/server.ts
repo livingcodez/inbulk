@@ -4,7 +4,7 @@ import { cache } from 'react'
 import type { Database } from '@/types/database.types'
 
 // Create a cached version of the Supabase client to prevent multiple instances
-export const createServerSupabaseClient = cache(async () => {
+export const createServerClient = cache(async () => {
   const cookieStore = cookies()
   return createServerComponentClient<Database>({
     cookies: () => cookieStore,
@@ -13,7 +13,7 @@ export const createServerSupabaseClient = cache(async () => {
 
 // Get authenticated user data
 export async function getAuthUser() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerClient()
   try {
     const { data: { user }, error } = await supabase.auth.getUser()
     if (error) throw error
@@ -29,7 +29,7 @@ export async function getUserProfile() {
   const user = await getAuthUser()
   if (!user) return null
 
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerClient()
   try {
     const { data: profile, error } = await supabase
       .from('user_profiles')
