@@ -30,5 +30,6 @@ end note
 note bottom of Main
   Personal info card reveals phone and address
   below a centered avatar when See More is clicked
+  and slides out from beneath the card
 end note
 @enduml

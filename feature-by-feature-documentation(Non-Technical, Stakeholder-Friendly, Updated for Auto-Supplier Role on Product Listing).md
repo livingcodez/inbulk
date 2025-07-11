@@ -11,4 +11,4 @@
 ## Personal Info Modal
 - Shows a single centered avatar with name and email.
 - Edit button (pencil icon) opens the modal to save changes.
-- Phone and address remain hidden below until "See More" is clicked, then slide into view.
+ - Phone and address slide out from beneath the card when "See More" is clicked, revealing details smoothly within 300ms. The edit icon is vertically centered on the right.

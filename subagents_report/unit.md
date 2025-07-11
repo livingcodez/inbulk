@@ -12,3 +12,4 @@
 2025-07-11 - Unit tests cover PersonalInfoModal hide/show and save flow for UI-111.
 2025-07-11 - Unit tests updated for sliding reveal and icon button for UI-112.
 2025-07-12 - Tests cover personal info reveal bug fix for UI-113.
+2025-07-12 - Added unit test for sliding reveal toggle and edit icon alignment for UI-114.
