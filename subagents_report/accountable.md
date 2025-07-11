@@ -11,3 +11,4 @@
 2025-07-11 - Approved removal of `is_fungible` field across API and UI for BF-003.
 2025-07-13 - Confirmed build succeeds after fixing Supabase import and route params for BUGFIX-DP-002.
 2025-07-13 - Authorized schema backup completed for DB-BACKUP-001.
+2025-07-14 - Approved updated schema script with DROP statements for DB-BACKUP-001.

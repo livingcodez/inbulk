@@ -11,3 +11,4 @@
 2025-07-11 - Removed `is_fungible` parameter from product creation flow and updated tests for BF-003.
 2025-07-13 - Updated imports and route param types to restore passing build for BUGFIX-DP-002.
 2025-07-13 - Generated full schema backup for DB-BACKUP-001.
+2025-07-14 - Added drop statements in backup script to prevent enum conflicts for DB-BACKUP-001.

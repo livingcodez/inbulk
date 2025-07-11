@@ -1,5 +1,25 @@
--- Database schema backup generated 2025-07-13
+-- Database schema backup generated 2025-07-14
 -- Contains table, view, enum and policy definitions
+
+-- Drop existing tables and types so backup can be reapplied without errors
+DO $$
+BEGIN
+    -- Drop tables in dependency order
+    DROP TABLE IF EXISTS public.notifications CASCADE;
+    DROP TABLE IF EXISTS public.transactions CASCADE;
+    DROP TABLE IF EXISTS public.group_members CASCADE;
+    DROP TABLE IF EXISTS public.groups CASCADE;
+    DROP TABLE IF EXISTS public.products CASCADE;
+    DROP TABLE IF EXISTS public.user_profiles CASCADE;
+
+    -- Drop enums
+    DROP TYPE IF EXISTS notification_type CASCADE;
+    DROP TYPE IF EXISTS transaction_status CASCADE;
+    DROP TYPE IF EXISTS transaction_type CASCADE;
+    DROP TYPE IF EXISTS group_status CASCADE;
+    DROP TYPE IF EXISTS product_status CASCADE;
+    DROP TYPE IF EXISTS user_role CASCADE;
+END $$;
 
 -- Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

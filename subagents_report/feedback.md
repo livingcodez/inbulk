@@ -27,3 +27,9 @@
 - **Question:** Please verify that the exported schema accurately reflects the current Supabase database.
 - **Status:** pending_verification
 - **Resolution note:** (Awaiting confirmation)
+
+### 2025-07-14
+- **File:** docs/db-schema.sql
+- **Question:** Does the updated script with drop statements run without enum type conflicts?
+- **Status:** pending_verification
+- **Resolution note:** (Awaiting confirmation)
