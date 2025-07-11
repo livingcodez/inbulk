@@ -19,7 +19,7 @@ interface RouteParams {
 
 // GET: Retrieve the submitted delivery address for this specific group membership
 export async function GET(request: Request, { params }: RouteParams) {
-  const { memberId }_id = params.memberId; // This is group_member_id
+  const { memberId } = params; // memberId is the group_member_id
   const supabase = createServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
