@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 import { Header } from '@/components/layout/Header'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   let supabaseClient; // Define supabaseClient here to be accessible outside try
 
   try {
-    supabaseClient = await createServerSupabaseClient();
+    supabaseClient = await createServerClient();
     const { data, error } = await supabaseClient.auth.getSession();
     if (error) {
       console.error('Error getting session:', error);

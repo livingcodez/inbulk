@@ -9,3 +9,4 @@
 2025-07-10 - Confirmed logout icon added to bottom navigation for UI-109.
 2025-07-11 - Confirmed clickable logo link when signed in for UI-110.
 2025-07-11 - Approved removal of `is_fungible` field across API and UI for BF-003.
+2025-07-13 - Confirmed build succeeds after fixing Supabase import and route params for BUGFIX-DP-002.

@@ -8,14 +8,8 @@ import {
   type UserManagedVendor
 } from '@/lib/supabase/userVendors';
 
-interface RouteParams {
-  params: {
-    vendorId: string;
-  };
-}
-
 // GET: Retrieve a specific vendor by ID for the authenticated user
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: { params: { vendorId: string } }) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
@@ -51,7 +45,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT: Update a specific vendor by ID for the authenticated user
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: { params: { vendorId: string } }) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
@@ -96,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE: Delete a specific vendor by ID for the authenticated user
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: { params: { vendorId: string } }) {
   const { vendorId } = params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });

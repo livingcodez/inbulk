@@ -11,5 +11,13 @@
   - Added missing `getGroupMemberById` function to `src/lib/supabase/groups.ts`.
   - Updated various API route handlers to use `NextRequest` instead of `Request` for compatibility with Next.js App Router.
 - **Question:** Confirm that these fixes resolve the deployment errors and the application builds successfully.
+- **Status:** revised
+- **Resolution note:** Deployment failed again due to missing Supabase export and route param types. Follow-up fix BUGFIX-DP-002 created.
+
+### 2025-07-13
+- **File:** src/app/layout.tsx, src/app/page.tsx, src/app/profile/page.tsx and API route files
+- **Summary of Changes:** Replaced deprecated `createServerSupabaseClient` imports with `createServerClient` and adjusted route handler parameter types.
+- **Question:** Does this patch resolve the build errors encountered on deployment?
 - **Status:** pending_verification
-- **Resolution note:** (To be filled after user/CI confirms successful deployment)
+- **Resolution note:** (Awaiting confirmation)
+
