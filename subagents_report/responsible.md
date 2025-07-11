@@ -12,3 +12,4 @@
 2025-07-13 - Updated imports and route param types to restore passing build for BUGFIX-DP-002.
 2025-07-13 - Generated full schema backup for DB-BACKUP-001.
 2025-07-14 - Added drop statements in backup script to prevent enum conflicts for DB-BACKUP-001.
+2025-07-15 - Updated API route handlers to await context.params for BUGFIX-NXT15-001.

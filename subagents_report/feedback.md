@@ -33,3 +33,9 @@
 - **Question:** Does the updated script with drop statements run without enum type conflicts?
 - **Status:** pending_verification
 - **Resolution note:** (Awaiting confirmation)
+
+### 2025-07-15
+- **File:** src/app/api/groups/[groupId]/delivery-addresses/route.ts and related dynamic routes
+- **Question:** Do the updated handlers that await `context.params` resolve the deployment failure on Next.js 15?
+- **Status:** resolved
+- **Resolution note:** Build succeeded locally and unit tests added for BUGFIX-NXT15-001.

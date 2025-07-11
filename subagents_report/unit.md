@@ -10,3 +10,4 @@
 2025-07-11 - Lint and unit tests passed for UI-110.
 2025-07-11 - Updated product tests to exclude `is_fungible` for BF-003.
 2025-07-13 - Updated unit tests to mock createServerClient and verified routes use inline param types for BUGFIX-DP-002.
+2025-07-15 - Added tests for awaited context.params to ensure Next.js 15 compatibility for BUGFIX-NXT15-001.
