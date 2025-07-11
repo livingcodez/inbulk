@@ -12,6 +12,7 @@
 - **UI-109** - Add Logout icon to sidebar bottom navigation (status: draft)
 - **UI-110** - Make logo clickable to buyer explore page when signed in (status: draft)
 - **UI-111** - Streamline Personal Info Modal with Edit Flow (status: draft)
+- **UI-112** - Redesign Personal Info Card with Sliding Reveal (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27

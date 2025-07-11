@@ -10,3 +10,4 @@
 2025-07-11 - Confirmed clickable logo link when signed in for UI-110.
 2025-07-11 - Implemented vendor management features.
 2025-07-11 - Streamlined personal info modal with edit flow for UI-111.
+2025-07-11 - Confirmed sliding reveal personal info card for UI-112.
