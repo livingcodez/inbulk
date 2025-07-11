@@ -30,23 +30,23 @@ export function PersonalInfoSection() {
         <h3 className="mt-2 text-lg font-semibold text-center">
           {profile?.full_name || 'Not Available'}
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground text-center">
           {session?.user.email || ''}
         </p>
         <div
           className={clsx(
-            'grid w-full gap-2 transition-all duration-200',
+            'grid w-full gap-2 transition-all duration-200 text-center',
             expanded ? 'max-h-40 opacity-100 mt-4' : 'max-h-0 overflow-hidden opacity-0'
           )}
           aria-hidden={!expanded}
         >
           {expanded && profile?.phone_number && (
-            <p data-testid="phone" className="text-sm">
+            <p data-testid="phone" className="text-sm text-center">
               {profile.phone_number}
             </p>
           )}
           {expanded && profile?.shipping_address && (
-            <p data-testid="address" className="text-sm">
+            <p data-testid="address" className="text-sm text-center">
               {profile.shipping_address}
             </p>
           )}

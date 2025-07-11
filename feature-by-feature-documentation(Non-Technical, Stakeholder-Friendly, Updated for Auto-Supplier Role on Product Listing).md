@@ -9,6 +9,6 @@
 - The product stores the vendor id for participants to reference.
 
 ## Personal Info Modal
-- Shows name and email with optional phone and address.
-- Edit button opens modal saving changes to profile.
-- Personal info card hides phone and address until the See More tab is clicked, sliding details into view.
+- Shows a single centered avatar with name and email.
+- Edit button (pencil icon) opens the modal to save changes.
+- Phone and address remain hidden below until "See More" is clicked, then slide into view.

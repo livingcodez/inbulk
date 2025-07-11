@@ -27,4 +27,8 @@ end note
 note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
+note bottom of Main
+  Personal info card reveals phone and address
+  below a centered avatar when See More is clicked
+end note
 @enduml
