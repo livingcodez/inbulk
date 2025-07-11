@@ -22,3 +22,6 @@
 | Task ID | Title                                                  | Status | Accountable     | Due        |
 |---------|--------------------------------------------------------|--------|-----------------|------------|
 | BF-001  | Refine Automatic Group Creation to Timed/Untimed Choice | draft  | agent-A-BF001   | 2023-11-03 |
+
+## MILESTONE-4
+- **FEAT-VEND-MGMT-001** - User-Managed Vendor Lists and Vendor Selection in Product Listing (status: draft)

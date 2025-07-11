@@ -20,4 +20,8 @@ note bottom of Sidebar
   from the main navigation links
   Logout button appears below the Profile icon
 end note
+note bottom of Main
+  Product listing form pulls vendors via API
+  and stores selected_user_vendor_id
+end note
 @enduml

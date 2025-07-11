@@ -75,6 +75,7 @@ export async function createProduct(product: {
   createTimedGroup: boolean;
   groupSize: number;
   countdownSecs: number | null;
+  selected_user_vendor_id: string;
 }) {
   // Destructure to separate product fields from group creation params
   const {
@@ -83,6 +84,7 @@ export async function createProduct(product: {
     countdownSecs: initialCountdownSecs,
     price: productPrice, // Use for escrow_amount
     vendor_id,
+    selected_user_vendor_id,
     ...productCoreData
   } = product;
 
@@ -91,6 +93,7 @@ export async function createProduct(product: {
     .insert({
       ...productCoreData, // Insert core product data
       vendor_id: vendor_id, // Ensure vendor_id is part of the insert payload
+      selected_user_vendor_id,
       price: productPrice, // Ensure price is part of the insert payload
       status: 'draft' as ProductStatus,
     })
