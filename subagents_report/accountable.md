@@ -9,3 +9,4 @@
 2025-07-10 - Confirmed logout icon added to bottom navigation for UI-109.
 2025-07-11 - Confirmed clickable logo link when signed in for UI-110.
 2025-07-11 - Implemented vendor management features.
+2025-07-11 - Streamlined personal info modal with edit flow for UI-111.

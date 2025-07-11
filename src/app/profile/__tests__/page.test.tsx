@@ -36,6 +36,12 @@ jest.mock('@/components/profile/ShippingDetailsForm', () => ({
   ShippingDetailsForm: () => <div data-testid="shipping-form" />
 }));
 
+// Mock PersonalInfoSection to avoid client dependencies
+jest.mock('@/components/profile/PersonalInfoSection', () => ({
+  __esModule: true,
+  PersonalInfoSection: () => <div data-testid="personal-info" />
+}));
+
 // Mock Image component
 jest.mock('next/image', () => ({
     __esModule: true,
