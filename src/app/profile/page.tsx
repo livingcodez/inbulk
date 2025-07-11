@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
 import { WalletCard } from '@/components/profile/WalletCard'
 import { PersonalInfoSection } from '@/components/profile/PersonalInfoSection'
-import Image from 'next/image'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
 export default async function ProfilePage() {
@@ -81,23 +80,6 @@ export default async function ProfilePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center space-x-8">
-                    <div className="relative h-24 w-24 overflow-hidden rounded-full">
-                      <Image
-                        src={profile?.avatar_url || '/avatars/default.jpg'}
-                        alt={profile?.full_name || 'Profile'}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="text-2xl font-semibold">{profile?.full_name || 'Not Available'}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {profile?.role || 'N/A'} Account
-                      </p>
-                    </div>
-                  </div>
-
                   <PersonalInfoSection />
                 </CardContent>
               </Card>

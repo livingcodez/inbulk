@@ -38,6 +38,24 @@ describe('PersonalInfoSection', () => {
     expect(screen.getByTestId('address')).toBeInTheDocument()
   })
 
+  it('handles missing details gracefully', () => {
+    mockUseSupabase.mockReturnValue({
+      profile: { full_name: 'Test User', avatar_url: '/test.jpg' },
+      session: { user: { email: 'test@example.com' } },
+      updateProfile: mockUpdateProfile
+    })
+    render(<PersonalInfoSection />)
+    fireEvent.click(screen.getByText('See More'))
+    expect(screen.queryByTestId('phone')).toBeNull()
+    expect(screen.queryByTestId('address')).toBeNull()
+  })
+
+  it('edit button contains only an icon', () => {
+    render(<PersonalInfoSection />)
+    const btn = screen.getByLabelText('Edit Personal Information')
+    expect(btn).not.toHaveTextContent(/edit/i)
+  })
+
   it('saves updates and closes modal', async () => {
     render(<PersonalInfoSection />)
     fireEvent.click(screen.getByLabelText('Edit Personal Information'))
