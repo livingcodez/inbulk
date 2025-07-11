@@ -14,6 +14,7 @@
 - **UI-111** - Streamline Personal Info Modal with Edit Flow (status: draft)
 - **UI-112** - Redesign Personal Info Card with Sliding Reveal (status: draft)
 - **UI-113** - Fix Personal Info Card Reveal and Remove Duplicate Avatar (status: draft)
+- **UI-114** - Fix and Style See More Reveal Animation (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27

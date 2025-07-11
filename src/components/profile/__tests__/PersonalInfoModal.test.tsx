@@ -38,6 +38,28 @@ describe('PersonalInfoSection', () => {
     expect(screen.getByTestId('address')).toBeInTheDocument()
   })
 
+  it('toggles details visibility and button text', () => {
+    render(<PersonalInfoSection />)
+    const toggleBtn = screen.getByText('See More')
+    fireEvent.click(toggleBtn)
+    expect(toggleBtn).toHaveTextContent('Hide')
+    expect(screen.getByTestId('phone')).toBeInTheDocument()
+    fireEvent.click(toggleBtn)
+    expect(toggleBtn).toHaveTextContent('See More')
+    expect(screen.queryByTestId('phone')).toBeNull()
+  })
+
+  it('handles rapid repeated clicks', () => {
+    render(<PersonalInfoSection />)
+    const btn = screen.getByText('See More')
+    fireEvent.click(btn)
+    fireEvent.click(btn)
+    fireEvent.click(btn)
+    expect(screen.getByTestId('phone')).toBeInTheDocument()
+    fireEvent.click(btn)
+    expect(screen.queryByTestId('phone')).toBeNull()
+  })
+
   it('handles missing details gracefully', () => {
     mockUseSupabase.mockReturnValue({
       profile: { full_name: 'Test User', avatar_url: '/test.jpg' },
