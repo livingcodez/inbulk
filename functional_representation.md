@@ -25,30 +25,56 @@ The application's dependencies are mapped below. Each component contributes to t
         *   *Key files/logic:* `src/app/api/group-payment/route.ts` (orchestrates wallet debit or Paystack payment initialization), `src/lib/supabase/wallet.ts` (manages wallet balance updates), `src/app/api/webhook/route.ts` (handles Paystack webhook for payment confirmation), `wallet_transactions.sql` (schema for transaction table).
 
     *   **Product/Service Delivery Confirmation**
-        *   This component handles the post-payment stage, ensuring buyers receive access to or information about the purchased product/service. For digital goods like software subscriptions, this involves securely sending credentials or access details.
-        *   **Depends on:** `Notification System`, `Vendor Product Information`.
-        *   *Key files/logic:* `src/lib/supabase/groups.ts` (function `sendSoftwareSubscriptionCredentials` for specific product types), `src/lib/supabase/notifications.ts` (handles creation of notifications), `src/lib/supabase/products.ts` (stores product details including subscription info if applicable).
+            *   This component handles the post-payment stage.
+            *   For *digital goods* (e.g., software subscriptions), this involves securely sending credentials or access details, often via the `Notification System`.
+            *   For *physical goods*, this stage now relies on the `Participant Address Management` system to provide necessary delivery information to the fulfiller (platform vendor or fulfillment center). The fulfiller then handles external shipping logistics.
+            *   **Depends on:** `Notification System`, `Vendor Product Information` (including source vendor), `Participant Address Management` (for physical goods), `Product Physicality Determination`.
+            *   *Key files/logic:*
+                *   Digital: `src/lib/supabase/groups.ts` (`sendSoftwareSubscriptionCredentials`), `src/lib/supabase/notifications.ts`.
+                *   Physical: `src/lib/supabase/addresses.ts` (`getDeliveryAddressesForGroup`), `src/app/api/groups/[groupId]/delivery-addresses/route.ts` (fulfiller API), `src/components/dashboard/OrderDeliveryDetails.tsx` (fulfiller UI).
 
     *   **Underpinning Systems & Primitives:**
         *   These are foundational elements required for the above core processes to function.
 
         *   **User Management & Authentication**
-            *   Manages user accounts, profiles (including vendor/buyer roles), login, registration, and session handling. Essential for identifying users, securing access, and tailoring experiences.
+            *   Manages user accounts, profiles (including vendor/buyer roles, saved delivery addresses), login, registration, and session handling.
             *   **Depends on:** `Authentication Service (Supabase Auth)`, `User Profile Storage`.
-            *   *Key files/logic:* `src/app/auth/`, `src/lib/supabase/user.ts` (profile operations), `src/lib/supabase/server.ts` & `src/lib/supabase/supabaseClient.ts` (Supabase client setup), `src/middleware.ts` (route protection).
+            *   *Key files/logic:* `src/app/auth/`, `src/lib/supabase/user.ts`, `src/lib/supabase/addresses.ts` (for profile addresses), `src/app/api/profile/addresses/`, `src/app/profile/addresses/page.tsx`, `src/lib/supabase/server.ts` & `src/lib/supabase/supabaseClient.ts`, `src/middleware.ts`.
+
+        *   **User-Managed Vendor Data Management**
+            *   Allows users to create, manage, and store a personal list of their preferred external source vendors. This information is used during product listing.
+            *   **Depends on:** `User Authentication`, `Database for storage`.
+            *   *Key files/logic:* `src/lib/supabase/userVendors.ts`, `src/app/api/user-vendors/`, `src/app/profile/vendors/page.tsx`.
+
+        *   **Product Physicality Determination (New Logic Component)**
+            *   Logic to determine if a product is physical (requiring delivery address) or digital.
+            *   Primarily based on product category/subcategory mapping (e.g., from a `category_properties` table). May include an optional manual override flag (`is_physical_product`) on the product itself.
+            *   **Depends on:** `Product Data Storage` (category, subcategory, override flag), `Category Properties Data Storage`.
+            *   *Key files/logic:* `src/lib/supabase/products.ts` (new `isProductPhysical` function), `category_properties` DB table (schema defined).
 
         *   **Product Management System**
-            *   Allows vendors to list products, define properties (price, category, description, images, group targets like `max_participants`) and manage their active listings. Products are treated as fungible by default, so no user input is required for uniqueness. Buyers use this system to discover and view products.
-            *   **Depends on:** `Product Data Storage`, `Vendor Interface for Product Listing`, `Buyer Interface for Product Discovery`.
-            *   *Key files/logic:* `src/lib/supabase/products.ts` (CRUD operations for products, fetching live products), `src/app/products/`, `src/components/products/ProductListingForm.tsx`, `src/components/products/ProductCard.tsx`, `src/app/dashboard/page.tsx` (Vendor Mode for listings, Buyer Mode for exploring).
+            *   Allows users to list products, defining properties (price, category, subcategory, etc.).
+            *   Requires selection of a source vendor from "User-Managed Vendor" list.
+            *   May include an optional `is_physical_product` override flag.
+            *   **Depends on:** `Product Data Storage`, `User-Managed Vendor Data Management`, `Product Physicality Determination` (implicitly, as product properties feed into this), `Vendor Interface for Product Listing`, `Buyer Interface for Product Discovery`.
+            *   *Key files/logic:* `src/lib/supabase/products.ts` (CRUD, `isProductPhysical`), `src/app/api/products/route.ts`, `src/components/products/ProductListingForm.tsx` (vendor selection, physical flag).
+
+        *   **Participant Address Management (New)**
+            *   Handles collection, storage, and retrieval of delivery addresses for participants in group buys of physical products.
+            *   Includes per-group-participation addresses and optional saving of addresses to user profiles.
+            *   Provides secure access for fulfillers to retrieve addresses for completed orders.
+            *   **Depends on:** `User Authentication`, `Group Membership Data`, `Product Physicality Determination` (to trigger collection), `Database for storage`.
+            *   *Key files/logic:* `src/lib/supabase/addresses.ts` (participant and profile address functions), `src/app/api/groups/[groupId]/members/[memberId]/delivery-address/route.ts`, `src/app/api/groups/[groupId]/delivery-addresses/route.ts`, `src/app/api/profile/addresses/`, `src/components/forms/DeliveryAddressForm.tsx`, `src/app/profile/addresses/page.tsx`, `src/components/dashboard/OrderDeliveryDetails.tsx`.
 
         *   **Group Management System (Detailed)**
-            *   Facilitates the creation of groups (often automatically upon product listing or manually by users), discovery of existing groups, joining/leaving groups, and group administration (e.g., by group creators or implicitly by system rules). Tracks group status (open, waiting_votes, closed, completed), member counts, and voting processes if applicable.
-            *   **Depends on:** `Group Data Storage`, `User Interface for Group Interaction & Management`.
-            *   *Key files/logic:* `src/lib/supabase/groups.ts` (CRUD for groups & members, fetching groups by various criteria), `src/components/products/GroupCard.tsx`, `src/components/dashboard/JoinedGroupCard.tsx`, `src/app/dashboard/page.tsx` (Buyer Mode - My Groups).
+            *   Facilitates group creation, discovery, joining/leaving, and administration.
+            *   Triggers address collection notification if a product is physical upon a user joining (via `joinGroup` modification).
+            *   Participants can view source vendor details.
+            *   **Depends on:** `Group Data Storage`, `User Interface for Group Interaction`, `Product Physicality Determination` (for `joinGroup` logic).
+            *   *Key files/logic:* `src/lib/supabase/groups.ts` (updated `joinGroup`), `src/components/products/GroupCard.tsx`, `src/components/dashboard/JoinedGroupCard.tsx`.
 
         *   **User Wallet System**
-            *   Allows users to maintain a balance on the platform. Users can fund their wallets (e.g., via Paystack deposit) and use this balance for group buy payments.
+            *   Allows users to maintain a balance on the platform.
             *   **Depends on:** `Wallet Data Storage`, `Funding Mechanism (Paystack Integration for Deposits)`.
             *   *Key files/logic:* `src/lib/supabase/wallet.ts` (wallet balance operations), `src/app/api/deposit/route.ts` (initiating wallet funding), `src/app/api/fund-wallet/route.ts` (frontend wrapper for deposit), `src/components/profile/WalletCard.tsx`, `src/components/profile/FundWalletModal.tsx`.
 
@@ -81,10 +107,10 @@ The application's dependencies are mapped below. Each component contributes to t
             *   User Interface for Group Interaction (`src/components/products/GroupCard.tsx`, `src/components/dashboard/JoinedGroupCard.tsx`)
             *   Automated Group Creation (on product listing, `src/lib/supabase/products.ts` calling `createGroup`)
         *   `Product Configuration` (Defines group targets, type, from `products` table)
-            *   Product Management System (`src/lib/supabase/products.ts` - e.g., `max_participants` used as `target_count`)
+            *   Product Management System (`src/lib/supabase/products.ts` - e.g., `max_participants` used as `target_count`, now also includes `selected_user_managed_vendor_id` to identify source)
         *   `User Participation` (Users finding and joining groups)
             *   User Management & Authentication (ensures valid users interact)
-            *   Product Discovery (leading to group discovery)
+            *   Product Discovery (leading to group discovery, includes viewing source vendor info)
     *   `Payment Processing`
         *   `User Wallet System`
             *   Wallet Data Storage & Logic (`src/lib/supabase/wallet.ts`)
@@ -101,22 +127,38 @@ The application's dependencies are mapped below. Each component contributes to t
             *   Notification Data Storage & Logic (`src/lib/supabase/notifications.ts`, `notifications.sql` schema)
             *   Create & Dispatch Notification (`src/lib/supabase/notifications.ts` - `createNotification`)
             *   Automated Credential/Access Dispatch (e.g., `src/lib/supabase/groups.ts` - `sendSoftwareSubscriptionCredentials` which uses notifications)
-        *   `Vendor Product Information` (Source of delivery details, e.g., subscription credentials stored with product)
+        *   `Vendor Product Information` (Source of delivery details, e.g., subscription credentials stored with product, now also includes the declared Source Vendor from `user_managed_vendors` via `products.selected_user_managed_vendor_id`)
             *   Product Management System (`src/lib/supabase/products.ts`)
+            *   User-Managed Vendor Data Management (`src/lib/supabase/userVendors.ts`)
+            *   Participant Address Management (`src/lib/supabase/addresses.ts`)
     *   **Underpinning Systems & Primitives (Supporting the entire platform)**
         *   `User Management & Authentication`
-            *   Authentication Service (Supabase Auth via `src/lib/supabase/server.ts`, `src/lib/supabase/supabaseClient.ts`)
-            *   User Profile Storage & Management (`src/lib/supabase/user.ts`, `user_profiles` table)
-            *   Session Management & Route Protection (`src/middleware.ts`, Next.js routing)
-            *   Login/Registration UI (`src/app/login/page.tsx`, `src/app/auth/callback/route.ts`)
+            *   Authentication Service (Supabase Auth)
+            *   User Profile Storage & Management (`src/lib/supabase/user.ts`, `user_profiles` table, including saved addresses logic in `src/lib/supabase/addresses.ts`)
+            *   Session Management & Route Protection
+            *   Login/Registration UI
+        *   `User-Managed Vendor Data Management`
+            *   User-Specific Vendor Data Storage & Logic (`src/lib/supabase/userVendors.ts`, `user_managed_vendors` table).
+            *   Vendor Management UI (`src/app/profile/vendors/page.tsx`, `AddEditVendorModal.tsx`).
+            *   API for Vendor CRUD (`src/app/api/user-vendors/`).
+        *   `Product Physicality Determination`
+            *   Logic (`src/lib/supabase/products.ts` - `isProductPhysical` function)
+            *   Data Storage (`category_properties` table, optional `is_physical_product` on `products` table)
         *   `Product Management System`
-            *   Product Data Storage & Logic (`src/lib/supabase/products.ts`, `products` table)
-            *   Product Creation/Listing UI & Logic (`src/components/products/ProductListingForm.tsx`, `src/lib/supabase/products.ts` - `createProduct`)
-            *   Product Discovery/Browsing UI & Logic (`src/app/dashboard/page.tsx` - Buyer explore, `src/lib/supabase/products.ts` - `getLiveProducts`)
-            *   Vendor Product Management UI (`src/app/dashboard/page.tsx` - Vendor "My Listings")
+            *   Product Data Storage & Logic (`src/lib/supabase/products.ts`, `products` table, with `selected_user_managed_vendor_id`).
+            *   Product Creation/Listing UI & Logic (`src/components/products/ProductListingForm.tsx`, `src/lib/supabase/products.ts` - `createProduct`).
+            *   Product Discovery/Browsing UI & Logic.
+            *   Vendor Product Management UI.
+        *   `Participant Address Management`
+            *   Participant-Specific Address Storage & Logic (`src/lib/supabase/addresses.ts`, `participant_delivery_addresses` table)
+            *   User Profile Saved Address Storage & Logic (`src/lib/supabase/addresses.ts`, `user_profile_addresses` table)
+            *   Address Collection UI (`src/components/forms/DeliveryAddressForm.tsx`, integration into group join flow)
+            *   Profile Address Management UI (`src/app/profile/addresses/page.tsx`)
+            *   Fulfiller Address View UI (`src/components/dashboard/OrderDeliveryDetails.tsx`)
+            *   APIs for Address Operations (`/api/groups/.../delivery-address`, `/api/profile/addresses/`)
         *   `User Interface (UI Framework & Components)`
-            *   Frontend Framework (Next.js - structure in `src/app/`)
-            *   Global Styles & Layout (`src/app/layout.tsx`, `src/app/globals.css`)
+            *   Frontend Framework (Next.js)
+            *   Global Styles & Layout
             *   Reusable UI Components (`src/components/ui/`, `src/components/layout/`, etc.)
             *   Dashboard Shell & Navigation (`src/app/dashboard/layout.tsx`, `src/components/layout/Sidebar.tsx`, `src/components/layout/Header.tsx`)
             *   State Management (React state, context, server components)

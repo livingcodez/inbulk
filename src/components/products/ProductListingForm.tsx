@@ -3,7 +3,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import toast from 'react-hot-toast'; // Import toast
 import { Button } from '@/components/ui/Button'
-import { type Product } from '@/types/database.types';
+// import { type Product } from '@/types/database.types'; // Product type might not be directly needed here
+import { type UserManagedVendor } from '@/lib/supabase/userVendors'; // Import for vendor type
+import Link from 'next/link'; // For linking to vendor management page
+import { Loader2 } from 'lucide-react'; // For loading indicator
 
 // Define the category structure
 interface CategoryOption {
@@ -57,18 +60,30 @@ export interface ProductFormData {
   // min_participants: number | null; // Replaced by groupSize for autoGroup, or manual group settings elsewhere
   // max_participants: number | null; // Replaced by groupSize for autoGroup
   // end_date: string | null; // This might be covered by countdownSecs for timed groups, or a separate field for non-auto groups
+
+  // New field for FEAT-VEND-MGMT
+  selected_user_managed_vendor_id: string;
 }
 
 interface ProductListingFormProps {
   onSubmit: (formData: ProductFormData) => Promise<void>;
   onClose?: () => void; // For closing the modal
-  // initialData could be mapped from Product to ProductFormData if needed for an edit form
-  initialData?: Partial<ProductFormData>; // Use ProductFormData for consistency if editing
+  initialData?: Partial<ProductFormData>;
+  userId: string; // Needed to verify vendor ownership if editing, though API does this too
 }
 
-export function ProductListingForm({ onSubmit, initialData, onClose }: ProductListingFormProps) {
+export function ProductListingForm({ onSubmit, initialData, onClose, userId }: ProductListingFormProps) {
   const [loading, setLoading] = useState(false);
+  const [formSubmitLoading, setFormSubmitLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Vendor state
+  const [userVendors, setUserVendors] = useState<UserManagedVendor[]>([]);
+  const [selectedVendorId, setSelectedVendorId] = useState<string>("");
+  const [vendorsLoading, setVendorsLoading] = useState(true);
+  const [vendorFetchError, setVendorFetchError] = useState<string | null>(null);
+
+  // Existing states
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
   const [availableSubcategories, setAvailableSubcategories] = useState<string[]>([]);
@@ -76,24 +91,52 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
   const [actualCostInput, setActualCostInput] = useState<string>("");
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>("");
   const [customDeliveryTimeDesc, setCustomDeliveryTimeDesc] = useState<string>("");
-  const [createTimedGroupValue, setCreateTimedGroupValue] = useState<boolean>(false); // Default to false (untimed group)
-  const [groupSizeInput, setGroupSizeInput] = useState<string>('5'); // Group size always needed
-  const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400'); // For timed group
-
+  const [createTimedGroupValue, setCreateTimedGroupValue] = useState<boolean>(false);
+  const [groupSizeInput, setGroupSizeInput] = useState<string>('5');
+  const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400');
 
   const DELIVERY_TIME_OPTIONS = ["Instant", "1-3 Business Days", "3-7 Business Days", "1-2 Weeks", "Custom (Specify below)"];
 
+  // Fetch user's managed vendors
   useEffect(() => {
-    // Initialize all relevant states from initialData
+    const fetchVendors = async () => {
+      setVendorsLoading(true);
+      setVendorFetchError(null);
+      try {
+        const response = await fetch('/api/user-vendors');
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Failed to fetch your vendors.');
+        }
+        const data: UserManagedVendor[] = await response.json();
+        setUserVendors(data);
+        if (initialData?.selected_user_managed_vendor_id && data.some(v => v.id === initialData.selected_user_managed_vendor_id)) {
+          setSelectedVendorId(initialData.selected_user_managed_vendor_id);
+        } else if (data.length > 0) {
+          // Optionally pre-select first vendor if not editing or if initialData.selected_user_managed_vendor_id is invalid
+          // setSelectedVendorId(data[0].id);
+        }
+      } catch (err: any) {
+        setVendorFetchError(err.message);
+        toast.error(`Error fetching vendors: ${err.message}`);
+      } finally {
+        setVendorsLoading(false);
+      }
+    };
+    fetchVendors();
+  }, [initialData?.selected_user_managed_vendor_id]);
+
+
+  useEffect(() => {
     const cat = initialData?.category || "";
     const subCat = initialData?.subcategory || "";
     setSelectedCategory(cat);
     setSelectedSubcategory(subCat);
     setActualCostInput(initialData?.actualCost?.toString() || "");
-    setCreateTimedGroupValue(initialData?.createTimedGroup ?? false); // Use new prop, default to false
+    setCreateTimedGroupValue(initialData?.createTimedGroup ?? false);
     setGroupSizeInput(initialData?.groupSize?.toString() ?? '5');
     setCountdownSecsInput(initialData?.countdownSecs?.toString() ?? '86400');
-
+    // selectedVendorId is handled by the vendor fetching useEffect
 
     const isSoftwareSubInit = cat === "Services & Subscriptions" && subCat === "Software Subscriptions";
     if (isSoftwareSubInit) {
@@ -108,7 +151,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         setCustomDeliveryTimeDesc("");
       }
     }
-  }, [initialData]);
+  }, [initialData]); // Removed selectedVendorId from dependencies as it's set after vendor fetch
 
   useEffect(() => {
     // Update available subcategories when category changes
@@ -160,7 +203,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    setFormSubmitLoading(true); // Use specific loading state for form submission
     setError(null);
 
     // --- Step 1: Data Collection from Form Elements & State ---
@@ -217,56 +260,60 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     }
     if (!selectedCategory) {
       setError("Please select a Category.");
-      setLoading(false);
+      setFormSubmitLoading(false);
+      return;
+    }
+     if (!selectedVendorId) { // Validation for selected source vendor
+      setError("Please select a Source Vendor for the product.");
+      setFormSubmitLoading(false);
       return;
     }
     if (finalActualCost === null || finalActualCost <= 0) {
       setError("Actual Cost must be a positive number.");
-      setLoading(false);
+      setFormSubmitLoading(false);
       return;
     }
     if (!selectedDeliveryTime) {
       setError("Please select a Delivery Time.");
-      setLoading(false);
+      setFormSubmitLoading(false);
       return;
     }
     if (selectedDeliveryTime === "Custom (Specify below)" && (!customDeliveryTimeDesc || customDeliveryTimeDesc.trim() === "")) {
       setError("Please provide a Custom Delivery Time Description when 'Custom' is selected.");
-      setLoading(false);
+      setFormSubmitLoading(false);
       return;
     }
     if (currentIsSoftwareSubscription) {
       if (!formSubUsername) {
         setError("Subscription Username is required for Software Subscriptions.");
-        setLoading(false);
+        setFormSubmitLoading(false);
         return;
       }
       if (!formSubPassword) {
         setError("Subscription Password is required for Software Subscriptions.");
-        setLoading(false);
+        setFormSubmitLoading(false);
         return;
       }
     }
-    // Validation for initial group settings
     if (finalGroupSize === null) {
       setError("Target Group Size must be a valid number (at least 1) for the initial group.");
-      setLoading(false);
+      setFormSubmitLoading(false);
       return;
     }
-    if (createTimedGroupValue) { // Only validate countdown if it's a timed group
+    if (createTimedGroupValue) {
       if (countdownSecsInput.trim() !== "" && finalCountdownSecs === null) {
         setError("Timed Group Countdown must be a valid positive number if provided, or left blank for default (when creating a timed group).");
-        setLoading(false);
+        setFormSubmitLoading(false);
         return;
       }
     }
 
-    // --- Construct final data object ---
     const data: ProductFormData = {
       name: formName,
       description: formDescription,
       category: selectedCategory,
       subcategory: selectedSubcategory || null,
+      selected_user_managed_vendor_id: selectedVendorId, // Add selected vendor ID
       subscriptionUsername: currentIsSoftwareSubscription ? formSubUsername : null,
       subscriptionPassword: currentIsSoftwareSubscription ? formSubPassword : null,
       subscription2FAKey: currentIsSoftwareSubscription ? formSub2FAKey : null,
@@ -275,20 +322,20 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       deliveryTime: selectedDeliveryTime,
       customDeliveryTimeDescription: (selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription) ? (customDeliveryTimeDesc.trim() || null) : null,
       createTimedGroup: createTimedGroupValue,
-      groupSize: finalGroupSize, // Always pass groupSize
-      countdownSecs: createTimedGroupValue ? finalCountdownSecs : null, // Pass countdownSecs only if timed group
+      groupSize: finalGroupSize,
+      countdownSecs: createTimedGroupValue ? finalCountdownSecs : null,
     };
 
     try {
       await onSubmit(data);
-      toast.success(initialData ? "Listing updated successfully!" : "Listing created successfully!");
-      if (onClose) onClose();
+      // Toast success is handled by the calling component (AddProductModal)
+      // if (onClose) onClose(); // onClose is also handled by the modal
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      setError(errorMessage);
-      toast.error(initialData ? `Error updating listing: ${errorMessage}` : `Error creating listing: ${errorMessage}`);
+      setError(errorMessage); // Set error state to display in the form
+      // Toast error is handled by the calling component
     } finally {
-      setLoading(false);
+      setFormSubmitLoading(false);
     }
   }
 
@@ -349,12 +396,53 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
           <input type="text" name="name" id="name" required placeholder="e.g., Premium Laptop Stand" defaultValue={initialData?.name} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
         </div>
 
+        {/* Source Vendor Selection */}
+        <div>
+          <label htmlFor="selected_user_managed_vendor_id" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">
+            Source Vendor <span className="text-red-500">*</span>
+          </label>
+          {vendorsLoading ? (
+            <div className="mt-1 flex items-center">
+              <Loader2 className="h-5 w-5 animate-spin mr-2 text-gray-500" />
+              <span className="text-sm text-gray-500">Loading your vendors...</span>
+            </div>
+          ) : vendorFetchError ? (
+            <div className="mt-1 text-sm text-red-600">
+              Error loading vendors: {vendorFetchError}. Please try refreshing or ensure you have added vendors.
+            </div>
+          ) : userVendors.length === 0 ? (
+            <div className="mt-1 text-sm text-gray-600 dark:text-neutral-400">
+              You haven&apos;t added any source vendors yet.
+              <Link href="/profile/vendors" className="text-primary hover:underline dark:text-primary-dark">
+                Please add a vendor first.
+              </Link>
+            </div>
+          ) : (
+            <select
+              id="selected_user_managed_vendor_id"
+              name="selected_user_managed_vendor_id"
+              required
+              value={selectedVendorId}
+              onChange={(e) => setSelectedVendorId(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+            >
+              <option value="" disabled>Select a source vendor</option>
+              {userVendors.map(vendor => (
+                <option key={vendor.id} value={vendor.id}>{vendor.vendor_name}</option>
+              ))}
+            </select>
+          )}
+           <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+            This is the vendor from whom this product will be sourced. Manage your vendors in your profile.
+          </p>
+        </div>
+
+
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Description</label>
           <textarea name="description" id="description" rows={3} required placeholder="Detailed description of your product..." defaultValue={initialData?.description || ''} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50" />
         </div>
 
-        {/* Category and Subcategory */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Category</label>
@@ -620,8 +708,8 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
         )}
       </div>
        <div className="flex justify-end pt-6">
-        <Button type="submit" disabled={loading} className="w-full sm:w-auto dark:bg-primary-dark dark:hover:bg-primary-dark/90">
-          {loading ? 'Saving...' : (initialData ? 'Update Listing' : 'Add Listing')}
+        <Button type="submit" disabled={formSubmitLoading || vendorsLoading || (userVendors.length === 0 && !vendorFetchError)} className="w-full sm:w-auto dark:bg-primary-dark dark:hover:bg-primary-dark/90">
+          {formSubmitLoading ? 'Saving...' : (initialData ? 'Update Listing' : 'Add Listing')}
         </Button>
       </div>
     </form>

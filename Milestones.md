@@ -24,3 +24,28 @@
 | BF-001  | Refine Automatic Group Creation to Timed/Untimed Choice | draft  | agent-A-BF001   | 2023-11-03 |
 | BF-002  | Default products to fungible, remove unique toggle      | draft  | agent-A-BF002   | 2023-11-05 |
 | BF-003  | Remove fungibility property from creation flow          | draft  | agent-A-BF003   | 2023-11-06 |
+
+## MILESTONE-3 – Logistics and Fulfillment Enhancements
+- **Start:** 2025-07-15
+- **Target Finish:** 2025-08-15
+- **Status:** planned
+- **Objectives**
+  1. Enable basic logistics for physical product delivery.
+  2. Improve vendor capabilities for order fulfillment.
+### Task Roster
+| Task ID             | Title                                                                                     | Status | Accountable        | Due        |
+|---------------------|-------------------------------------------------------------------------------------------|--------|--------------------|------------|
+| FEAT-ADDR-COLL-001  | Implement Participant Address Collection & Fulfiller Access for Physical Product Delivery | draft  | agent-DevTeamLead  | 2025-09-30 |
+
+## MILESTONE-4 – Foundational Sourcing & Vendor Management
+- **Start:** 2025-07-20
+- **Target Finish:** 2025-08-31
+- **Status:** planned
+- **Objectives**
+  1. Enable users to manage a personal list of vendors.
+  2. Standardize product sourcing by requiring vendor selection during product listing.
+  3. Increase transparency for group buy participants regarding product source.
+### Task Roster
+| Task ID            | Title                                                                          | Status | Accountable        | Due        |
+|--------------------|--------------------------------------------------------------------------------|--------|--------------------|------------|
+| FEAT-VEND-MGMT-001 | Implement User-Managed Vendor Lists and Vendor Selection in Product Listing      | draft  | agent-DevTeamLead  | 2025-08-31 |

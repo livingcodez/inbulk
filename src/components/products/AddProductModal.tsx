@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { ProductListingForm, type ProductFormData } from './ProductListingForm';
-import { createProduct } from '@/lib/supabase/products'; // Import Supabase function
+import { createProduct, type CreateProductInput } from '@/lib/supabase/products'; // Import Supabase function and type
 import { useSupabase } from '@/contexts/SupabaseProvider'; // To get profile for vendor_id
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/Button'; // Assuming Button is a general component
+// Button import might not be needed here if ProductListingForm handles its own submit button.
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -26,47 +26,57 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
   const handleFormSubmit = async (formData: ProductFormData) => {
     if (!profile?.id) {
       setSubmissionError("User not authenticated. Cannot add product.");
+      setIsSubmitting(false); // Ensure loading state is reset
       return;
     }
     setIsSubmitting(true);
     setSubmissionError(null);
 
-    // Map ProductFormData to the structure expected by createProduct
-    const productDataForApi = {
-      title: formData.name, // Changed from name to title, mapped from formData.name
+    // ProductFormData now includes selected_user_managed_vendor_id
+    // Map ProductFormData to CreateProductInput structure
+    const productDataForApi: CreateProductInput = {
+      title: formData.name,
       description: formData.description,
-      // Calculate price if actualCost and groupSize are available, otherwise default or handle as per createProduct's needs
-      price: (formData.actualCost && formData.groupSize && formData.groupSize > 0) ? formData.actualCost / formData.groupSize : 0,
+      price: (formData.actualCost && formData.groupSize && formData.groupSize > 0)
+             ? parseFloat((formData.actualCost / formData.groupSize).toFixed(2))
+             : 0, // Ensure price is a number
       image_url: formData.image_url,
-      vendor_id: profile.id,
+      vendor_id: profile.id, // This is the platform user acting as vendor
+      selected_user_managed_vendor_id: formData.selected_user_managed_vendor_id, // The chosen source vendor
       category: formData.category,
-      subcategory: formData.subcategory, // Mapped from form
-      // min_buyers is removed
-      max_participants: formData.groupSize, // This might be redundant if createProduct handles group creation's target_count separately
-      actual_cost: formData.actualCost,  // Mapped from form
+      subcategory: formData.subcategory,
+      max_participants: formData.groupSize,
+      actual_cost: formData.actualCost,
       delivery_time: formData.deliveryTime === "Custom (Specify below)"
                      ? formData.customDeliveryTimeDescription
-                     : formData.deliveryTime, // Mapped from form with custom logic
-      // end_date is not in ProductFormData, so removed.
-      // status is set to 'draft' by createProduct itself.
-
-      // New fields for group creation logic within createProduct
+                     : formData.deliveryTime,
       createTimedGroup: formData.createTimedGroup,
-      groupSize: formData.groupSize, // Pass groupSize again for clarity in createProduct's group creation step
+      // groupSize is already part of max_participants for product,
+      // but createProduct also uses it for initial group. Ensure consistency.
+      groupSize: formData.groupSize as number, // Assert as number, should be validated in form
       countdownSecs: formData.createTimedGroup ? formData.countdownSecs : null,
     };
 
+    if (!productDataForApi.selected_user_managed_vendor_id) {
+        setSubmissionError("Source Vendor ID is missing. Please select a source vendor in the form.");
+        setIsSubmitting(false);
+        return;
+    }
+
+
     try {
-      // console.log("Submitting to createProduct:", productDataForApi);
-      // Type assertion to any for now, will be fixed when createProduct signature is updated
-      await createProduct(productDataForApi as any);
-      alert('Product added successfully!'); // Simple feedback for now
-      onProductAdded(); // Trigger list refresh
-      onClose(); // Close modal
+      // createProduct now expects CreateProductInput
+      await createProduct(productDataForApi);
+      // Using toast for feedback, consistent with ProductListingForm's internal potential use
+      // but this modal is the one initiating the API call.
+      alert('Product added successfully!'); // Or use toast.success if available globally
+      onProductAdded();
+      onClose();
     } catch (error: any) {
       console.error("Failed to create product:", error);
-      setSubmissionError(error.message || "Failed to add product. Please try again.");
-      // The error will also be shown in ProductListingForm's internal error display if it re-throws
+      const message = error.message || "Failed to add product. Please try again.";
+      setSubmissionError(message);
+      // toast.error(message); // Optionally use toast here too
     } finally {
       setIsSubmitting(false);
     }
@@ -112,6 +122,8 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
 
         <ProductListingForm
             onSubmit={handleFormSubmit}
+            userId={profile?.id || ''} // Pass userId to ProductListingForm
+            onClose={onClose} // Pass onClose so ProductListingForm can also close modal if needed
             // initialData can be an empty object or mapped if we were editing
         />
       </div>

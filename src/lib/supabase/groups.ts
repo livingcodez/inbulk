@@ -1,5 +1,14 @@
-import supabaseClient from './supabaseClient'
-import { createNotification } from './notifications'
+import supabaseClient from './supabaseClient';
+import { createNotification } from './notifications';
+import { isProductPhysical } from './products'; // Import the new function
+import { type Tables } from '@/types/database.types';
+
+// Define a type for the group member, which will be returned by joinGroup
+export type GroupMemberWithProductPhysicality = Tables<'group_members'> & {
+  requires_address_collection: boolean;
+  product_id: string; // Add product_id for convenience
+};
+
 
 async function sendSoftwareSubscriptionCredentials(groupId: string) {
   const { data: group, error } = await supabaseClient
@@ -228,12 +237,50 @@ export async function joinGroup(groupId: string, userId: string) {
     group_id: groupId
   })
 
-  if (updateError) throw updateError
+  if (updateError) throw updateError;
 
-  return data
+  // After successfully joining, check if the product is physical
+  // This requires fetching the group to get the product_id
+  const { data: groupData, error: groupError } = await supabaseClient
+    .from('groups')
+    .select('product_id')
+    .eq('id', groupId)
+    .single();
+
+  if (groupError || !groupData) {
+    console.error(`joinGroup: Could not fetch group ${groupId} to check product physicality.`, groupError);
+    // Return the member data but log the error. Address collection might not be triggered.
+    return { ...data, requires_address_collection: false, product_id: 'unknown' } as GroupMemberWithProductPhysicality;
+  }
+
+  const productId = groupData.product_id;
+  let requiresAddress = false;
+  try {
+    requiresAddress = await isProductPhysical(productId);
+  } catch (physicalityError) {
+    console.error(`joinGroup: Error checking product physicality for product ${productId}:`, physicalityError);
+    // Proceed but flag that address collection state is uncertain
+  }
+
+  // Create a notification if address collection is required
+  if (requiresAddress) {
+    try {
+      await createNotification({
+        user_id: userId,
+        title: 'Delivery Address Required',
+        message: `Please provide your delivery address for the product in group ID: ${groupId.substring(0,8)}...`, // Keep message concise
+        type: 'action_required', // A new type or use 'info'
+        link: `/profile/delivery-address?group_member_id=${data.id}&group_id=${groupId}&product_id=${productId}`, // Example link to where they'd provide it
+      });
+    } catch (notificationError) {
+        console.error(`joinGroup: Failed to create address requirement notification for user ${userId}, group ${groupId}:`, notificationError);
+    }
+  }
+
+  return { ...data, requires_address_collection: requiresAddress, product_id: productId } as GroupMemberWithProductPhysicality;
 }
 
-export async function leaveGroup(groupId: string, userId: string) {
+export async function leaveGroup(groupId: string, userId: string): Promise<boolean> {
   const { error } = await supabaseClient
     .from('group_members')
     .delete()
