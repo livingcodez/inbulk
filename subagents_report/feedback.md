@@ -21,3 +21,9 @@
 - **Status:** pending_verification
 - **Resolution note:** (Awaiting confirmation)
 
+
+### 2025-07-13
+- **File:** docs/db-schema.sql
+- **Question:** Please verify that the exported schema accurately reflects the current Supabase database.
+- **Status:** pending_verification
+- **Resolution note:** (Awaiting confirmation)

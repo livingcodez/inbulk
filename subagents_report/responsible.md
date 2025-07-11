@@ -10,3 +10,4 @@
 2025-07-11 - Made logo clickable when logged in and added tests for UI-110.
 2025-07-11 - Removed `is_fungible` parameter from product creation flow and updated tests for BF-003.
 2025-07-13 - Updated imports and route param types to restore passing build for BUGFIX-DP-002.
+2025-07-13 - Generated full schema backup for DB-BACKUP-001.
