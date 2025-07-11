@@ -24,4 +24,7 @@ note bottom of Main
   Product listing form pulls vendors via API
   and stores selected_user_vendor_id
 end note
+note bottom of Main
+  PersonalInfoModal updates user_profiles via updateProfile
+end note
 @enduml
