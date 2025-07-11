@@ -12,4 +12,3 @@
 2025-07-11 - No consultations were necessary for UI-111.
 2025-07-11 - No consultations were necessary for UI-112.
 2025-07-12 - No consultations were necessary for UI-113.
-2025-07-12 - No consultations were necessary for UI-114.
