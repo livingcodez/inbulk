@@ -1,68 +1,71 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
+import clsx from 'clsx'
+import { Pencil } from 'lucide-react'
 import { useSupabase } from '@/contexts/SupabaseProvider'
 import { Button } from '@/components/ui/Button'
 import { PersonalInfoModal } from './PersonalInfoModal'
 
 export function PersonalInfoSection() {
   const { profile, session } = useSupabase()
-  const [showMore, setShowMore] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const toggleMore = () => setShowMore(prev => !prev)
+  const toggle = () => setExpanded(prev => !prev)
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
   return (
-    <div>
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <label htmlFor="pi_fullname" className="text-sm font-medium">Full Name</label>
-          <input
-            id="pi_fullname"
-            value={profile?.full_name || ''}
-            readOnly
-            className="w-full rounded-lg border bg-background px-3 py-2"
+    <div className="relative">
+      <div className="flex flex-col items-center">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full">
+          <Image
+            src={profile?.avatar_url || '/avatars/default.jpg'}
+            alt={profile?.full_name || 'Profile'}
+            fill
+            className="object-cover"
           />
         </div>
-        <div className="space-y-2">
-          <label htmlFor="pi_email" className="text-sm font-medium">Email</label>
-          <input
-            id="pi_email"
-            value={session?.user.email || ''}
-            readOnly
-            className="w-full rounded-lg border bg-background px-3 py-2"
-          />
+        <h3 className="mt-2 text-lg font-semibold text-center">
+          {profile?.full_name || 'Not Available'}
+        </h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {session?.user.email || ''}
+        </p>
+        <div
+          className={clsx(
+            'grid w-full gap-2 transition-all duration-200',
+            expanded ? 'max-h-40 opacity-100 mt-4' : 'max-h-0 overflow-hidden opacity-0'
+          )}
+          aria-hidden={!expanded}
+        >
+          {expanded && profile?.phone_number && (
+            <p data-testid="phone" className="text-sm">
+              {profile.phone_number}
+            </p>
+          )}
+          {expanded && profile?.shipping_address && (
+            <p data-testid="address" className="text-sm">
+              {profile.shipping_address}
+            </p>
+          )}
         </div>
-        {showMore && (
-          <>
-            <div className="space-y-2">
-              <label htmlFor="pi_phone" className="text-sm font-medium">Phone Number</label>
-              <input
-                id="pi_phone"
-                value={profile?.phone_number || ''}
-                readOnly
-                className="w-full rounded-lg border bg-background px-3 py-2"
-              />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label htmlFor="pi_address" className="text-sm font-medium">Shipping Address</label>
-              <textarea
-                id="pi_address"
-                value={profile?.shipping_address || ''}
-                readOnly
-                className="w-full rounded-lg border bg-background px-3 py-2"
-              />
-            </div>
-          </>
-        )}
       </div>
-      <div className="mt-4 flex gap-2">
-        <Button variant="secondary" onClick={toggleMore}>
-          {showMore ? 'Hide' : 'See More'}
-        </Button>
-        <Button onClick={openModal}>Edit Personal Information</Button>
-      </div>
+      <button
+        onClick={toggle}
+        className="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-t-md bg-muted px-3 py-1 text-sm font-medium"
+      >
+        {expanded ? 'Hide' : 'See More'}
+      </button>
+      <Button
+        size="sm"
+        onClick={openModal}
+        aria-label="Edit Personal Information"
+        className="absolute right-2 top-2 p-2"
+      >
+        <Pencil className="h-4 w-4" />
+      </Button>
       <PersonalInfoModal isOpen={open} onClose={closeModal} />
     </div>
   )

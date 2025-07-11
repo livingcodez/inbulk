@@ -10,3 +10,4 @@
 2025-07-11 - Stakeholders informed about clickable logo when logged in for UI-110.
 2025-07-11 - Implemented vendor management features.
 2025-07-11 - Stakeholders informed about streamlined personal info editing for UI-111.
+2025-07-11 - Stakeholders informed about new sliding personal info layout for UI-112.
