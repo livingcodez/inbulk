@@ -1,9 +1,9 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import axios from 'axios'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const { amount } = await request.json()
   const value = Number(amount)
   if (isNaN(value) || value < 100) {

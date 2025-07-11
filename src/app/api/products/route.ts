@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server'; // For route handlers
 import { createProduct, type CreateProductInput } from '@/lib/supabase/products';
 import { listUserVendors } from '@/lib/supabase/userVendors'; // To validate vendor ownership
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const supabase = createServerClient();
 
   const {

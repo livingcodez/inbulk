@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import {
   // getUserProfileAddressById, // We don't have this specific function, listUserProfileAddresses is usually enough or RLS handles GET
@@ -17,7 +17,7 @@ interface RouteParams {
 }
 
 // GET: Retrieve a specific profile address by ID
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
@@ -49,7 +49,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 }
 
 // PUT: Update a specific profile address by ID
-export async function PUT(request: Request, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
@@ -115,7 +115,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
 }
 
 // DELETE: Delete a specific profile address by ID
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { addressId } = params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });

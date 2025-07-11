@@ -49,3 +49,15 @@
 | Task ID            | Title                                                                          | Status | Accountable        | Due        |
 |--------------------|--------------------------------------------------------------------------------|--------|--------------------|------------|
 | FEAT-VEND-MGMT-001 | Implement User-Managed Vendor Lists and Vendor Selection in Product Listing      | draft  | agent-DevTeamLead  | 2025-08-31 |
+
+## MILESTONE-5 – Ongoing Maintenance & Stability
+- **Start:** 2025-07-12
+- **Target Finish:** Ongoing
+- **Status:** active
+- **Objectives**
+  1. Address critical bugs and improve system stability.
+  2. Ensure smooth deployment and operation of the application.
+### Task Roster
+| Task ID      | Title                                                               | Status    | Accountable | Due        |
+|--------------|---------------------------------------------------------------------|-----------|-------------|------------|
+| BUGFIX-DP-001 | Resolve Deployment Failures Due to Import and Type Errors in API Routes | completed | Jules       | 2025-07-12 |

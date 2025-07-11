@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import axios from 'axios'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { email, amount } = await req.json()
   const value = Number(amount)
   if (!email || isNaN(value) || value < 100) {

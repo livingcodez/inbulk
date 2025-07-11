@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import {
   createUserVendor,
@@ -7,7 +7,7 @@ import {
 } from '@/lib/supabase/userVendors';
 
 // GET: List all vendors for the authenticated user
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const supabase = createServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 }
 
 // POST: Create a new vendor for the authenticated user
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const supabase = createServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 

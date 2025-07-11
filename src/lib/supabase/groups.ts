@@ -280,6 +280,24 @@ export async function joinGroup(groupId: string, userId: string) {
   return { ...data, requires_address_collection: requiresAddress, product_id: productId } as GroupMemberWithProductPhysicality;
 }
 
+export async function getGroupMemberById(memberId: string) {
+  const { data, error } = await supabaseClient
+    .from('group_members')
+    .select('*')
+    .eq('id', memberId)
+    .single();
+
+  if (error) {
+    // Log the error but don't necessarily throw, or throw a custom error
+    // The route handler can decide how to respond based on whether data is null
+    console.error(`Error fetching group member by ID ${memberId}:`, error);
+    // Depending on how you want to handle errors, you might throw here
+    // or let the caller handle the null data. For now, just logging.
+    // throw error;
+  }
+  return data; // This will be null if not found or if RLS prevents access and an error occurs
+}
+
 export async function leaveGroup(groupId: string, userId: string): Promise<boolean> {
   const { error } = await supabaseClient
     .from('group_members')

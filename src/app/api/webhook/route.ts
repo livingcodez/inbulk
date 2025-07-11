@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const rawBody = await req.text()
   const signature = req.headers.get('x-paystack-signature')
   const secret = process.env.PAYSTACK_WEBHOOK_SECRET || ''
