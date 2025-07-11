@@ -12,3 +12,4 @@
 - Shows a single centered avatar with name and email.
 - Edit button (pencil icon) opens the modal to save changes.
 - Phone and address remain hidden below until "See More" is clicked, then slide into view.
+- A black-bordered "See More" tab peeks below the card and slides phone and address into view when clicked.

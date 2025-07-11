@@ -17,7 +17,7 @@ export function PersonalInfoSection() {
   const closeModal = () => setOpen(false)
 
   return (
-    <div className="relative">
+    <div className="relative pb-8">
       <div className="flex flex-col items-center">
         <div className="relative h-24 w-24 overflow-hidden rounded-full">
           <Image
@@ -35,8 +35,8 @@ export function PersonalInfoSection() {
         </p>
         <div
           className={clsx(
-            'grid w-full gap-2 transition-all duration-200 text-center',
-            expanded ? 'max-h-40 opacity-100 mt-4' : 'max-h-0 overflow-hidden opacity-0'
+            'grid w-full gap-2 text-center transition-[max-height] duration-300',
+            expanded ? 'max-h-40 mt-4' : 'max-h-0 overflow-hidden'
           )}
           aria-hidden={!expanded}
         >
@@ -54,7 +54,7 @@ export function PersonalInfoSection() {
       </div>
       <button
         onClick={toggle}
-        className="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-t-md bg-muted px-3 py-1 text-sm font-medium"
+        className="absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2 rounded-t-md border border-black bg-muted px-3 py-1 text-sm font-medium"
       >
         {expanded ? 'Hide' : 'See More'}
       </button>

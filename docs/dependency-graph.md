@@ -6,3 +6,4 @@
 - `ProductListingForm` requires vendor selection
 - `PersonalInfoModal` uses `updateProfile` from SupabaseProvider
 - `PersonalInfoSection` toggles phone and address visibility on See More
+- `PersonalInfoSection` reveals details with CSS slide animation and tab overlay
