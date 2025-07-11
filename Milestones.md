@@ -63,3 +63,14 @@
 | BUGFIX-DP-001 | Resolve Deployment Failures Due to Import and Type Errors in API Routes | completed | Jules       | 2025-07-12 |
 | BUGFIX-DP-002 | Fix Next.js build errors due to outdated Supabase helper import and invalid route param types | draft | Jules | 2025-07-13 |
 | DB-BACKUP-001 | Export Supabase Schema to db-schema.sql | completed | agent-DevOps | 2025-07-18 |
+
+## MILESTONE-6 – Next.js 15 Upgrade Adjustments
+- **Start:** 2025-07-11
+- **Target Finish:** 2025-07-16
+- **Status:** planned
+- **Objectives**
+  1. Ensure API routes are compatible with Next.js 15 param promise format.
+### Task Roster
+| Task ID          | Title                                                     | Status | Accountable        | Due        |
+|------------------|-----------------------------------------------------------|--------|--------------------|------------|
+| BUGFIX-NXT15-001 | Update dynamic API routes for Next.js 15 param promises   | draft  | agent-DevTeamLead  | 2025-07-16 |

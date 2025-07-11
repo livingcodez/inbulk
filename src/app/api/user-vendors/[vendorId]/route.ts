@@ -9,8 +9,8 @@ import {
 } from '@/lib/supabase/userVendors';
 
 // GET: Retrieve a specific vendor by ID for the authenticated user
-export async function GET(request: NextRequest, { params }: { params: { vendorId: string } }) {
-  const { vendorId } = params;
+export async function GET(request: NextRequest, context: { params: { vendorId: string } }) {
+  const { vendorId } = await context.params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
   }
@@ -45,8 +45,8 @@ export async function GET(request: NextRequest, { params }: { params: { vendorId
 }
 
 // PUT: Update a specific vendor by ID for the authenticated user
-export async function PUT(request: NextRequest, { params }: { params: { vendorId: string } }) {
-  const { vendorId } = params;
+export async function PUT(request: NextRequest, context: { params: { vendorId: string } }) {
+  const { vendorId } = await context.params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
   }
@@ -90,8 +90,8 @@ export async function PUT(request: NextRequest, { params }: { params: { vendorId
 }
 
 // DELETE: Delete a specific vendor by ID for the authenticated user
-export async function DELETE(request: NextRequest, { params }: { params: { vendorId: string } }) {
-  const { vendorId } = params;
+export async function DELETE(request: NextRequest, context: { params: { vendorId: string } }) {
+  const { vendorId } = await context.params;
   if (!vendorId) {
     return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
   }

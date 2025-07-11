@@ -11,8 +11,8 @@ import {
 } from '@/lib/supabase/addresses';
 
 // GET: Retrieve a specific profile address by ID
-export async function GET(request: NextRequest, { params }: { params: { addressId: string } }) {
-  const { addressId } = params;
+export async function GET(request: NextRequest, context: { params: { addressId: string } }) {
+  const { addressId } = await context.params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
   }
@@ -43,8 +43,8 @@ export async function GET(request: NextRequest, { params }: { params: { addressI
 }
 
 // PUT: Update a specific profile address by ID
-export async function PUT(request: NextRequest, { params }: { params: { addressId: string } }) {
-  const { addressId } = params;
+export async function PUT(request: NextRequest, context: { params: { addressId: string } }) {
+  const { addressId } = await context.params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
   }
@@ -109,8 +109,8 @@ export async function PUT(request: NextRequest, { params }: { params: { addressI
 }
 
 // DELETE: Delete a specific profile address by ID
-export async function DELETE(request: NextRequest, { params }: { params: { addressId: string } }) {
-  const { addressId } = params;
+export async function DELETE(request: NextRequest, context: { params: { addressId: string } }) {
+  const { addressId } = await context.params;
   if (!addressId) {
     return NextResponse.json({ error: 'Address ID is required' }, { status: 400 });
   }
