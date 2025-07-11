@@ -14,7 +14,7 @@ jest.mock('@supabase/auth-helpers-nextjs', () => ({
 describe('group delivery info API', () => {
   it('returns data', async () => {
     const req = new Request('http://localhost')
-    const res = await GET(req as any, { params: { id: 'g1' } } as any)
+    const res = await GET(req as any, { params: Promise.resolve({ id: 'g1' }) } as any)
     expect(res.status).toBe(200)
   })
 })
