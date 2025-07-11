@@ -36,6 +36,7 @@ describe('PersonalInfoSection', () => {
     fireEvent.click(screen.getByText('See More'))
     expect(screen.getByTestId('phone')).toBeInTheDocument()
     expect(screen.getByTestId('address')).toBeInTheDocument()
+    expect(screen.getByText('Hide')).toBeInTheDocument()
   })
 
   it('handles missing details gracefully', () => {
@@ -50,10 +51,12 @@ describe('PersonalInfoSection', () => {
     expect(screen.queryByTestId('address')).toBeNull()
   })
 
-  it('edit button contains only an icon', () => {
+  it('edit button contains only an icon and is vertically centered', () => {
     render(<PersonalInfoSection />)
     const btn = screen.getByLabelText('Edit Personal Information')
     expect(btn).not.toHaveTextContent(/edit/i)
+    expect(btn.className).toMatch(/top-1\/2/)
+    expect(btn.className).toMatch(/-translate-y-1\/2/)
   })
 
   it('saves updates and closes modal', async () => {

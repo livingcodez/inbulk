@@ -33,36 +33,38 @@ export function PersonalInfoSection() {
         <p className="mt-1 text-sm text-muted-foreground text-center">
           {session?.user.email || ''}
         </p>
-        <div
-          className={clsx(
-            'grid w-full gap-2 transition-all duration-200 text-center',
-            expanded ? 'max-h-40 opacity-100 mt-4' : 'max-h-0 overflow-hidden opacity-0'
-          )}
-          aria-hidden={!expanded}
-        >
-          {expanded && profile?.phone_number && (
-            <p data-testid="phone" className="text-sm text-center">
-              {profile.phone_number}
-            </p>
-          )}
-          {expanded && profile?.shipping_address && (
-            <p data-testid="address" className="text-sm text-center">
-              {profile.shipping_address}
-            </p>
-          )}
+        <div className="relative mt-4 w-full">
+          <div
+            className={clsx(
+              'absolute inset-x-0 bottom-0 grid gap-2 bg-background text-center transition-all duration-300',
+              expanded ? 'max-h-40 translate-y-0' : 'max-h-6 translate-y-[95%]'
+            )}
+            aria-hidden={!expanded}
+          >
+            {expanded && profile?.phone_number && (
+              <p data-testid="phone" className="text-sm">
+                {profile.phone_number}
+              </p>
+            )}
+            {expanded && profile?.shipping_address && (
+              <p data-testid="address" className="text-sm">
+                {profile.shipping_address}
+              </p>
+            )}
+            <button
+              onClick={toggle}
+              className="rounded-t-md bg-muted px-3 py-1 text-sm font-medium"
+            >
+              {expanded ? 'Hide' : 'See More'}
+            </button>
+          </div>
         </div>
       </div>
-      <button
-        onClick={toggle}
-        className="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-t-md bg-muted px-3 py-1 text-sm font-medium"
-      >
-        {expanded ? 'Hide' : 'See More'}
-      </button>
       <Button
         size="sm"
         onClick={openModal}
         aria-label="Edit Personal Information"
-        className="absolute right-2 top-2 p-2"
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-2"
       >
         <Pencil className="h-4 w-4" />
       </Button>
