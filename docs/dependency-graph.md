@@ -5,5 +5,5 @@
 - `VendorListManager` UI fetches `/api/user-vendors`
 - `ProductListingForm` requires vendor selection
 - `PersonalInfoModal` uses `updateProfile` from SupabaseProvider
-- `PersonalInfoSection` toggles phone and address visibility on See More
-- `PersonalInfoSection` reveals details with CSS slide animation and tab overlay
+- `PersonalInfoViewModal` reads phone and address from SupabaseProvider
+- `PersonalInfoSection` opens `PersonalInfoViewModal` when See More is clicked

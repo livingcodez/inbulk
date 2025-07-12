@@ -25,28 +25,23 @@ describe('PersonalInfoSection', () => {
     })
   })
 
-  it('hides phone and address by default', () => {
+  it('modal closed by default', () => {
     render(<PersonalInfoSection />)
-    expect(screen.queryByTestId('phone')).toBeNull()
-    expect(screen.queryByTestId('address')).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('shows phone and address when See More clicked', () => {
+  it('opens modal with details when See More clicked', () => {
     render(<PersonalInfoSection />)
     fireEvent.click(screen.getByText('See More'))
-    expect(screen.getByTestId('phone')).toBeInTheDocument()
-    expect(screen.getByTestId('address')).toBeInTheDocument()
+    expect(screen.getByTestId('modal-phone')).toBeInTheDocument()
+    expect(screen.getByTestId('modal-address')).toBeInTheDocument()
   })
 
-  it('toggles details visibility and button text', () => {
+  it('modal closes via X button', () => {
     render(<PersonalInfoSection />)
-    const toggleBtn = screen.getByText('See More')
-    fireEvent.click(toggleBtn)
-    expect(toggleBtn).toHaveTextContent('Hide')
-    expect(screen.getByTestId('phone')).toBeInTheDocument()
-    fireEvent.click(toggleBtn)
-    expect(toggleBtn).toHaveTextContent('See More')
-    expect(screen.queryByTestId('phone')).toBeNull()
+    fireEvent.click(screen.getByText('See More'))
+    fireEvent.click(screen.getByLabelText('Close'))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('handles rapid repeated clicks', () => {
@@ -55,9 +50,9 @@ describe('PersonalInfoSection', () => {
     fireEvent.click(btn)
     fireEvent.click(btn)
     fireEvent.click(btn)
-    expect(screen.getByTestId('phone')).toBeInTheDocument()
-    fireEvent.click(btn)
-    expect(screen.queryByTestId('phone')).toBeNull()
+    expect(screen.getAllByRole('dialog').length).toBe(1)
+    fireEvent.click(screen.getByLabelText('Close'))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('handles missing details gracefully', () => {
@@ -68,8 +63,13 @@ describe('PersonalInfoSection', () => {
     })
     render(<PersonalInfoSection />)
     fireEvent.click(screen.getByText('See More'))
-    expect(screen.queryByTestId('phone')).toBeNull()
-    expect(screen.queryByTestId('address')).toBeNull()
+    expect(screen.getByTestId('no-details')).toBeInTheDocument()
+  })
+
+  it('See More button has no border', () => {
+    render(<PersonalInfoSection />)
+    const btn = screen.getByText('See More')
+    expect(btn.className).not.toMatch(/border/)
   })
 
   it('edit button contains only an icon', () => {

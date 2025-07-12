@@ -28,8 +28,8 @@ note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
 note bottom of Main
-  Personal info card uses a sliding See More tab
-  to reveal phone and address with an animated
-  slide-down effect
+  Personal info card opens a modal to
+  display phone and address when
+  the See More button is clicked
 end note
 @enduml
