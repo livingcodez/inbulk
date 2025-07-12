@@ -16,3 +16,4 @@
 2025-07-12 - Replaced sliding reveal with modal and updated tests for UI-115.
 2025-07-12 - Implemented VendorManagerModal and updated PersonalInfoSection layout for UI-116.
 2025-07-13 - Fixed deployment lint errors.
+2025-07-14 - Updated header and edit button for UI-117 with passing tests.

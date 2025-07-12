@@ -12,5 +12,7 @@
 - Dark themed card with a green accent bar.
 - Displays the user's name and email next to their avatar.
 - "Edit Personal Info" button opens the edit modal.
+- Edit button shows only a pencil icon with an aria-label.
 - "Vendors" button opens the vendor manager modal.
+- The header above the avatar displays the user's name when available.
 - The green "See More" bar opens a modal showing phone and shipping address or a notice when none exist.
