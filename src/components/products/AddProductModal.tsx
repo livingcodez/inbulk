@@ -51,6 +51,8 @@ export function AddProductModal({ isOpen, onClose, onProductAdded }: AddProductM
       // end_date is not in ProductFormData, so removed.
       // status is set to 'draft' by createProduct itself.
 
+      selected_user_vendor_id: formData.selectedVendorId,
+
       // New fields for group creation logic within createProduct
       createTimedGroup: formData.createTimedGroup,
       groupSize: formData.groupSize, // Pass groupSize again for clarity in createProduct's group creation step
