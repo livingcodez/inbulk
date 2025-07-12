@@ -28,8 +28,9 @@ note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
 note bottom of Main
-  Personal info card opens a modal to
-  display phone and address when
-  the See More button is clicked
+  Dark themed personal info card shows name and email
+  with Edit and Vendors buttons.
+  The Vendors button opens VendorManagerModal,
+  and See More opens PersonalInfoViewModal.
 end note
 @enduml

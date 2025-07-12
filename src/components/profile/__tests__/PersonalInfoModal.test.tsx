@@ -3,6 +3,7 @@ import { PersonalInfoSection } from '../PersonalInfoSection'
 
 const mockUpdateProfile = jest.fn()
 const mockUseSupabase = jest.fn()
+global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve([]) })) as any
 
 jest.mock('@/contexts/SupabaseProvider', () => ({
   useSupabase: () => mockUseSupabase()
@@ -66,16 +67,16 @@ describe('PersonalInfoSection', () => {
     expect(screen.getByTestId('no-details')).toBeInTheDocument()
   })
 
-  it('See More button has no border', () => {
-    render(<PersonalInfoSection />)
-    const btn = screen.getByText('See More')
-    expect(btn.className).not.toMatch(/border/)
-  })
-
-  it('edit button contains only an icon', () => {
+  it('edit button shows text', () => {
     render(<PersonalInfoSection />)
     const btn = screen.getByLabelText('Edit Personal Information')
-    expect(btn).not.toHaveTextContent(/edit/i)
+    expect(btn).toHaveTextContent(/edit personal info/i)
+  })
+
+  it('opens vendor manager when Vendors clicked', () => {
+    render(<PersonalInfoSection />)
+    fireEvent.click(screen.getByText('Vendors'))
+    expect(screen.getByPlaceholderText('Vendor name')).toBeInTheDocument()
   })
 
   it('saves updates and closes modal', async () => {

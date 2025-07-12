@@ -4,3 +4,4 @@ Feedback: Please confirm the new personal info sliding card layout for UI-112.
 Feedback: Confirmed layout change with single avatar and reveal fix for UI-113.
 Feedback: Please confirm the new sliding See More tab design for UI-114.
 Feedback: Please confirm the switch to a modal for UI-115.
+2025-07-12 | Personal Info Card | Please confirm dark theme redesign with vendor modal.
