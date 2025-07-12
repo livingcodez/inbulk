@@ -19,6 +19,7 @@
 - **UI-116** - Dark Mode Personal Info Card with Vendor Button (status: draft)
 - **UI-117** - Show user name in Personal Info header and icon-only edit button (status: draft)
 - **UI-118** - Merge Personal Info card and remove duplicate text (status: draft)
+- **UI-119** - Add Personal Info label with icon on profile card (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27
