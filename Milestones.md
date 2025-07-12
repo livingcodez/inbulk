@@ -10,6 +10,16 @@
 - **UI-107** - Align sidebar icons vertically with descriptions (status: draft)
 - **UI-108** - Add divider above bottom sidebar icons (status: draft)
 - **UI-109** - Add Logout icon to sidebar bottom navigation (status: draft)
+- **UI-110** - Make logo clickable to buyer explore page when signed in (status: draft)
+- **UI-111** - Streamline Personal Info Modal with Edit Flow (status: draft)
+- **UI-112** - Redesign Personal Info Card with Sliding Reveal (status: draft)
+- **UI-113** - Fix Personal Info Card Reveal and Remove Duplicate Avatar (status: draft)
+- **UI-114** - Fix and Style See More Reveal Animation (status: draft)
+- **UI-115** - Simplify Personal Info See More into Modal (status: draft)
+- **UI-116** - Dark Mode Personal Info Card with Vendor Button (status: draft)
+- **UI-117** - Show user name in Personal Info header and icon-only edit button (status: draft)
+- **UI-118** - Merge Personal Info card and remove duplicate text (status: draft)
+- **UI-119** - Add Personal Info label with icon on profile card (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27
@@ -21,3 +31,17 @@
 | Task ID | Title                                                  | Status | Accountable     | Due        |
 |---------|--------------------------------------------------------|--------|-----------------|------------|
 | BF-001  | Refine Automatic Group Creation to Timed/Untimed Choice | draft  | agent-A-BF001   | 2023-11-03 |
+
+## MILESTONE-4
+- **FEAT-VEND-MGMT-001** - User-Managed Vendor Lists and Vendor Selection in Product Listing (status: draft)
+
+## MILESTONE-3 – Build Stabilization
+- **Start:** 2025-07-13
+- **Target Finish:** 2025-07-20
+- **Status:** planned
+- **Objectives**
+  1. Fix ESLint deployment failures.
+### Task Roster
+| Task ID | Title | Status | Accountable | Due |
+|---------|-------|--------|-------------|-----|
+| CFG-001 | Fix ESLint errors blocking Vercel deployment | draft | agent-A-CFG001 | 2025-07-20 |

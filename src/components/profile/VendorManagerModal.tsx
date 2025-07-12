@@ -1,17 +1,14 @@
 'use client'
 import { X } from 'lucide-react'
-import DepositForm from '../DepositForm'
+import { VendorListManager } from './VendorListManager'
 
-interface FundWalletModalProps {
+interface VendorManagerModalProps {
   isOpen: boolean
   onClose: () => void
-  email: string
 }
 
-export function FundWalletModal({ isOpen, onClose, email }: FundWalletModalProps) {
-
+export function VendorManagerModal({ isOpen, onClose }: VendorManagerModalProps) {
   if (!isOpen) return null
-
   return (
     <button
       type="button"
@@ -22,18 +19,18 @@ export function FundWalletModal({ isOpen, onClose, email }: FundWalletModalProps
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         className="bg-white dark:bg-neutral-850 p-6 rounded-lg shadow-xl w-full max-w-sm"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
         role="dialog"
         tabIndex={-1}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Fund Wallet</h2>
-          <button onClick={onClose} className="text-neutral-500 hover:text-neutral-700">
+          <h2 className="text-lg font-semibold">Vendors</h2>
+          <button onClick={onClose} aria-label="Close" className="text-neutral-500 hover:text-neutral-700">
             <X size={20} />
           </button>
         </div>
-        <DepositForm email={email} />
+        <VendorListManager />
       </div>
     </button>
   )

@@ -20,4 +20,18 @@ note bottom of Sidebar
   from the main navigation links
   Logout button appears below the Profile icon
 end note
+note bottom of Main
+  Product listing form pulls vendors via API
+  and stores selected_user_vendor_id
+end note
+note bottom of Main
+  PersonalInfoModal updates user_profiles via updateProfile
+end note
+note bottom of Main
+  Dark themed personal info card shows name and email
+  with Edit and Vendors buttons.
+  The Vendors button opens VendorManagerModal,
+  and See More opens PersonalInfoViewModal.
+  Profile page embeds this card directly without an outer Card wrapper.
+end note
 @enduml

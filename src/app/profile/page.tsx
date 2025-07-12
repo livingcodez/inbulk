@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { User, Wallet, Settings, Bell } from 'lucide-react'
 import { WalletCard } from '@/components/profile/WalletCard'
-import Image from 'next/image'
+import { PersonalInfoSection } from '@/components/profile/PersonalInfoSection'
 import type { Session } from '@supabase/supabase-js' // Import Session type
 
 export default async function ProfilePage() {
@@ -72,55 +72,9 @@ export default async function ProfilePage() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <User className="h-5 w-5" />
-                    <span>Personal Information</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-8">
-                    <div className="relative h-24 w-24 overflow-hidden rounded-full">
-                      <Image
-                        src={profile?.avatar_url || '/avatars/default.jpg'}
-                        alt={profile?.full_name || 'Profile'}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="text-2xl font-semibold">{profile?.full_name || 'Not Available'}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {profile?.role || 'N/A'} Account
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="fullName" className="text-sm font-medium">Full Name</label>
-                      <input
-                        id="fullName"
-                        type="text"
-                        value={profile?.full_name || ''}
-                        className="w-full rounded-lg border bg-background px-3 py-2"
-                        readOnly
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium">Email</label>
-                      <input
-                        id="email"
-                        type="email"
-                        value={session.user.email || ''} // Use session.user.email as a fallback
-                        className="w-full rounded-lg border bg-background px-3 py-2"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="md:col-span-2">
+                <PersonalInfoSection />
+              </div>
 
               <Card>
                 <CardHeader>

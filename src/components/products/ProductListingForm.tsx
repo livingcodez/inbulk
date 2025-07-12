@@ -53,6 +53,9 @@ export interface ProductFormData {
   groupSize: number | null; // Target Group Size for the initial automatically created group (timed or untimed)
   countdownSecs: number | null; // Timed Group Countdown (seconds) - only if createTimedGroup is true
 
+  // Selected supplier from user-managed list
+  selectedVendorId: string;
+
   // Fields to be deprecated or re-evaluated from old interface:
   // price: number; // This will be calculated: actualCost / groupSize
   // min_participants: number | null; // Replaced by groupSize for autoGroup, or manual group settings elsewhere
@@ -81,6 +84,14 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
   const [createTimedGroupValue, setCreateTimedGroupValue] = useState<boolean>(false); // Default to false (untimed group)
   const [groupSizeInput, setGroupSizeInput] = useState<string>('5'); // Group size always needed
   const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400'); // For timed group
+  const [vendors, setVendors] = useState<{ id: string; name: string }[]>([])
+  const [selectedVendor, setSelectedVendor] = useState('')
+
+  useEffect(() => {
+    fetch('/api/user-vendors')
+      .then(res => (res.ok ? res.json() : []))
+      .then(setVendors)
+  }, [])
 
 
   const DELIVERY_TIME_OPTIONS = ["Instant", "1-3 Business Days", "3-7 Business Days", "1-2 Weeks", "Custom (Specify below)"];
@@ -223,6 +234,11 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       setLoading(false);
       return;
     }
+    if (!selectedVendor) {
+      setError('Please select a vendor.');
+      setLoading(false);
+      return;
+    }
     if (finalActualCost === null || finalActualCost <= 0) {
       setError("Actual Cost must be a positive number.");
       setLoading(false);
@@ -281,6 +297,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       createTimedGroup: createTimedGroupValue,
       groupSize: finalGroupSize, // Always pass groupSize
       countdownSecs: createTimedGroupValue ? finalCountdownSecs : null, // Pass countdownSecs only if timed group
+      selectedVendorId: selectedVendor,
     };
 
     try {
@@ -399,7 +416,25 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
                 </>
               )}
             </select>
-          </div>
+        </div>
+      </div>
+
+        {/* Vendor Selection */}
+        <div>
+          <label htmlFor="vendor" className="block text-sm font-medium text-gray-700 dark:text-neutral-300">Supplier</label>
+          <select
+            id="vendor"
+            name="vendor"
+            required
+            value={selectedVendor}
+            onChange={(e) => setSelectedVendor(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
+          >
+            <option value="" disabled>Select a vendor</option>
+            {vendors.map(v => (
+              <option key={v.id} value={v.id}>{v.name}</option>
+            ))}
+          </select>
         </div>
 
         {/* Conditional Subscription Details Section */}
