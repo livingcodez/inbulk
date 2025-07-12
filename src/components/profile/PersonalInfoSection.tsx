@@ -25,7 +25,7 @@ export function PersonalInfoSection() {
     <div className="relative overflow-hidden rounded-xl bg-neutral-900 text-white">
       <div className="p-4 space-y-4">
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>{profile?.full_name || 'Personal Information'}</span>
+          <span>{profile?.full_name || ''}</span>
           <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
         <div className="flex items-center gap-3">
