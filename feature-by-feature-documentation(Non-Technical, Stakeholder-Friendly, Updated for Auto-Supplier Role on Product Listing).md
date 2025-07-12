@@ -16,3 +16,4 @@
 - "Vendors" button opens the vendor manager modal.
 - The header above the avatar displays the user's name when available.
 - The green "See More" bar opens a modal showing phone and shipping address or a notice when none exist.
+- On the profile page, this personal info card now appears directly without an extra wrapper and no duplicate heading text.

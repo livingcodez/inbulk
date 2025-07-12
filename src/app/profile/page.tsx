@@ -72,17 +72,9 @@ export default async function ProfilePage() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <User className="h-5 w-5" />
-                    <span>Personal Information</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <PersonalInfoSection />
-                </CardContent>
-              </Card>
+              <div className="md:col-span-2">
+                <PersonalInfoSection />
+              </div>
 
               <Card>
                 <CardHeader>

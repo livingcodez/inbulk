@@ -9,3 +9,4 @@
 - `PersonalInfoSection` uses dark theme layout with Edit and Vendors buttons
 - `VendorManagerModal` wraps `VendorListManager`
 - `PersonalInfoSection` opens `PersonalInfoViewModal` when See More is clicked
+- `ProfilePage` embeds `PersonalInfoSection` directly without a surrounding `Card`

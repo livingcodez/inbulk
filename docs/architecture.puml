@@ -32,5 +32,6 @@ note bottom of Main
   with Edit and Vendors buttons.
   The Vendors button opens VendorManagerModal,
   and See More opens PersonalInfoViewModal.
+  Profile page embeds this card directly without an outer Card wrapper.
 end note
 @enduml
