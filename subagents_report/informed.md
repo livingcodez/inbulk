@@ -14,3 +14,4 @@
 2025-07-12 - Stakeholders informed about personal info reveal fix for UI-113.
 2025-07-12 - Stakeholders informed about sliding See More tab design for UI-114.
 2025-07-12 - Stakeholders informed about modal replacement of See More for UI-115.
+2025-07-12 - Stakeholders informed about new dark mode personal info card with vendor button for UI-116.

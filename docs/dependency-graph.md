@@ -6,4 +6,6 @@
 - `ProductListingForm` requires vendor selection
 - `PersonalInfoModal` uses `updateProfile` from SupabaseProvider
 - `PersonalInfoViewModal` reads phone and address from SupabaseProvider
+- `PersonalInfoSection` uses dark theme layout with Edit and Vendors buttons
+- `VendorManagerModal` wraps `VendorListManager`
 - `PersonalInfoSection` opens `PersonalInfoViewModal` when See More is clicked

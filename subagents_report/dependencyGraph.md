@@ -3,3 +3,4 @@ Personal info modal dependencies documented for UI-111.
 Personal info card reveal dependencies updated for UI-113.
 Sliding See More tab animation dependencies updated for UI-114.
 Personal info view modal dependency noted for UI-115.
+2025-07-12 - Added dark mode personal info card dependencies for UI-116.

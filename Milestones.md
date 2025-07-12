@@ -16,6 +16,7 @@
 - **UI-113** - Fix Personal Info Card Reveal and Remove Duplicate Avatar (status: draft)
 - **UI-114** - Fix and Style See More Reveal Animation (status: draft)
 - **UI-115** - Simplify Personal Info See More into Modal (status: draft)
+- **UI-116** - Dark Mode Personal Info Card with Vendor Button (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27
