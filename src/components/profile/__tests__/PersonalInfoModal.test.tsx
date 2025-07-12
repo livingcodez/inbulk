@@ -67,10 +67,11 @@ describe('PersonalInfoSection', () => {
     expect(screen.getByTestId('no-details')).toBeInTheDocument()
   })
 
-  it('edit button shows text', () => {
+  it('edit button is icon only', () => {
     render(<PersonalInfoSection />)
     const btn = screen.getByLabelText('Edit Personal Information')
-    expect(btn).toHaveTextContent(/edit personal info/i)
+    expect(btn).not.toHaveTextContent(/edit personal info/i)
+    expect(btn.querySelector('svg')).toBeInTheDocument()
   })
 
   it('opens vendor manager when Vendors clicked', () => {

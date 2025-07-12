@@ -25,7 +25,7 @@ export function PersonalInfoSection() {
     <div className="relative overflow-hidden rounded-xl bg-neutral-900 text-white">
       <div className="p-4 space-y-4">
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Personal Information</span>
+          <span>{profile?.full_name || 'Personal Information'}</span>
           <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
         <div className="flex items-center gap-3">
@@ -48,10 +48,9 @@ export function PersonalInfoSection() {
             variant="secondary"
             onClick={openEditModal}
             aria-label="Edit Personal Information"
-            className="flex-1 flex items-center gap-1"
+            className="flex-1 flex items-center justify-center"
           >
             <Pencil className="h-4 w-4" />
-            Edit Personal Info
           </Button>
           <Button
             size="sm"
