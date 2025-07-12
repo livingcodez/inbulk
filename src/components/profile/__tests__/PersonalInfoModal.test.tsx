@@ -31,6 +31,11 @@ describe('PersonalInfoSection', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
+  it('shows personal info label with icon', () => {
+    render(<PersonalInfoSection />)
+    expect(screen.getByText('Personal Info')).toBeInTheDocument()
+  })
+
   it('opens modal with details when See More clicked', () => {
     render(<PersonalInfoSection />)
     fireEvent.click(screen.getByText('See More'))

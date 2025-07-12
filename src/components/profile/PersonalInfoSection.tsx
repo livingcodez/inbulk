@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { Pencil, Users, Zap } from 'lucide-react'
+import { Pencil, Users, Zap, User } from 'lucide-react'
 import { useSupabase } from '@/contexts/SupabaseProvider'
 import { Button } from '@/components/ui/Button'
 import { PersonalInfoModal } from './PersonalInfoModal'
@@ -21,12 +21,22 @@ export function PersonalInfoSection() {
   const openVendorModal = () => setVendorOpen(true)
   const closeVendorModal = () => setVendorOpen(false)
 
+  let timeString = ''
+  try {
+    timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  } catch {
+    timeString = ''
+  }
+
   return (
     <div className="relative overflow-hidden rounded-xl bg-neutral-900 text-white">
       <div className="p-4 space-y-4">
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>{profile?.full_name || ''}</span>
-          <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <span className="flex items-center gap-1">
+            <User className="h-3.5 w-3.5" />
+            Personal Info
+          </span>
+          <span>{timeString}</span>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative h-16 w-16 overflow-hidden rounded-full">
