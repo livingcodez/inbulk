@@ -17,3 +17,4 @@
 2025-07-12 - Implemented VendorManagerModal and updated PersonalInfoSection layout for UI-116.
 2025-07-13 - Fixed deployment lint errors.
 2025-07-14 - Updated header and edit button for UI-117 with passing tests.
+2025-07-15 - Merged inner and outer personal info cards and removed fallback header for UI-118.

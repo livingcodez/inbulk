@@ -16,3 +16,4 @@
 - "Vendors" button opens the vendor manager modal.
 - The header above the avatar displays the user's name when available.
 - The green "See More" bar opens a modal showing phone and shipping address or a notice when none exist.
+- The inner and outer personal info cards are now merged so the "Personal Information" label appears only once.

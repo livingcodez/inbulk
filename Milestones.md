@@ -18,6 +18,7 @@
 - **UI-115** - Simplify Personal Info See More into Modal (status: draft)
 - **UI-116** - Dark Mode Personal Info Card with Vendor Button (status: draft)
 - **UI-117** - Show user name in Personal Info header and icon-only edit button (status: draft)
+- **UI-118** - Merge nested Personal Info cards and remove duplicate header (status: draft)
 
 ## MILESTONE-2 – Core Feature Enhancements
 - **Start:** 2023-10-27

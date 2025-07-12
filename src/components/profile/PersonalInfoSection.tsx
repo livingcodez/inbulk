@@ -22,46 +22,49 @@ export function PersonalInfoSection() {
   const closeVendorModal = () => setVendorOpen(false)
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-neutral-900 text-white">
-      <div className="p-4 space-y-4">
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>{profile?.full_name || 'Personal Information'}</span>
-          <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+    <div className="space-y-4">
+      <div className="flex justify-between text-xs text-muted-foreground">
+        <span>{profile?.full_name ?? ''}</span>
+        <span>
+          {new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="relative h-16 w-16 overflow-hidden rounded-full">
+          <Image
+            src={profile?.avatar_url || '/avatars/default.jpg'}
+            alt={profile?.full_name || 'Profile'}
+            fill
+            className="object-cover"
+          />
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative h-16 w-16 overflow-hidden rounded-full">
-            <Image
-              src={profile?.avatar_url || '/avatars/default.jpg'}
-              alt={profile?.full_name || 'Profile'}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">{profile?.full_name || 'Not Available'}</h3>
-            <p className="text-sm text-green-400">{session?.user.email || ''}</p>
-          </div>
+        <div>
+          <h3 className="text-lg font-semibold">{profile?.full_name || 'Not Available'}</h3>
+          <p className="text-sm text-green-400">{session?.user.email || ''}</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={openEditModal}
-            aria-label="Edit Personal Information"
-            className="flex-1 flex items-center justify-center"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={openVendorModal}
-            className="flex-1 flex items-center gap-1"
-          >
-            <Users className="h-4 w-4" />
-            Vendors
-          </Button>
-        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={openEditModal}
+          aria-label="Edit Personal Information"
+          className="flex-1 flex items-center justify-center"
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={openVendorModal}
+          className="flex-1 flex items-center gap-1"
+        >
+          <Users className="h-4 w-4" />
+          Vendors
+        </Button>
       </div>
       <button
         onClick={openViewModal}
