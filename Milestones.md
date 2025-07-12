@@ -31,3 +31,14 @@
 
 ## MILESTONE-4
 - **FEAT-VEND-MGMT-001** - User-Managed Vendor Lists and Vendor Selection in Product Listing (status: draft)
+
+## MILESTONE-3 – Build Stabilization
+- **Start:** 2025-07-13
+- **Target Finish:** 2025-07-20
+- **Status:** planned
+- **Objectives**
+  1. Fix ESLint deployment failures.
+### Task Roster
+| Task ID | Title | Status | Accountable | Due |
+|---------|-------|--------|-------------|-----|
+| CFG-001 | Fix ESLint errors blocking Vercel deployment | draft | agent-A-CFG001 | 2025-07-20 |
