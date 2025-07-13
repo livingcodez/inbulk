@@ -85,6 +85,32 @@ describe('PersonalInfoSection', () => {
     expect(screen.getByPlaceholderText('Vendor name')).toBeInTheDocument()
   })
 
+  it('opens avatar edit modal when badge clicked', () => {
+    render(<PersonalInfoSection />)
+    fireEvent.click(screen.getByLabelText('Edit Avatar'))
+    expect(screen.getByPlaceholderText('Image URL')).toBeInTheDocument()
+  })
+
+  it('refreshes avatar when profile url changes', () => {
+    const profile = {
+      full_name: 'Test User',
+      avatar_url: '/old.jpg',
+      phone_number: '123',
+      shipping_address: '123 Street',
+    }
+    mockUseSupabase.mockReturnValue({
+      profile,
+      session: { user: { email: 'test@example.com' } },
+      updateProfile: jest.fn((updates) => Object.assign(profile, updates)),
+    })
+    const { rerender } = render(<PersonalInfoSection />)
+    const img = screen.getByAltText('Test User') as HTMLImageElement
+    expect(img.src).toContain('%2Fold.jpg')
+    profile.avatar_url = '/new.jpg'
+    rerender(<PersonalInfoSection />)
+    expect(screen.getByAltText('Test User').getAttribute('src')).toContain('%2Fnew.jpg')
+  })
+
   it('saves updates and closes modal', async () => {
     render(<PersonalInfoSection />)
     fireEvent.click(screen.getByLabelText('Edit Personal Information'))

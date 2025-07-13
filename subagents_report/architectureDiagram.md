@@ -6,3 +6,5 @@ Diagram updated for view modal replacement in UI-115.
 2025-07-12 - Diagram updated with VendorManagerModal for UI-116.
 2025-07-13 - Architecture unaffected.
 2025-07-15 - Architecture unchanged aside from removing nested personal info card for UI-118.
+2025-07-17 - Diagram updated with AvatarEditModal for UI-120.
+2025-07-17 - Diagram updated with avatar badge outside thumbnail for UI-121.

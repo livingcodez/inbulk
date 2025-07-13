@@ -28,6 +28,13 @@ note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
 note bottom of Main
+  AvatarEditModal updates avatar_url via updateProfile
+end note
+note bottom of Main
+  Avatar badge positioned outside thumbnail
+  opens AvatarEditModal and refreshes avatar
+end note
+note bottom of Main
   Dark themed personal info card shows name and email
   with Edit and Vendors buttons.
   The Vendors button opens VendorManagerModal,
