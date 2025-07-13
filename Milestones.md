@@ -45,3 +45,14 @@
 | Task ID | Title | Status | Accountable | Due |
 |---------|-------|--------|-------------|-----|
 | CFG-001 | Fix ESLint errors blocking Vercel deployment | draft | agent-A-CFG001 | 2025-07-20 |
+
+## MILESTONE-5 – Profile Enhancements
+- **Start:** 2025-07-17
+- **Target Finish:** 2025-07-31
+- **Status:** planned
+- **Objectives**
+  1. Improve user profile customization.
+### Task Roster
+| Task ID | Title | Status | Accountable | Due |
+|---------|-------|--------|-------------|-----|
+| UI-120  | Editable Profile Avatar with URL Input | draft | agent-A1 | 2025-07-24 |
