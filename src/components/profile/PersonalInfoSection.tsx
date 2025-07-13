@@ -43,17 +43,19 @@ export function PersonalInfoSection() {
           <span>{timeString}</span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative h-16 w-16 overflow-hidden rounded-full">
-            <Image
-              src={profile?.avatar_url || '/avatars/default.jpg'}
-              alt={profile?.full_name || 'Profile'}
-              fill
-              className="object-cover"
-            />
+          <div className="relative">
+            <div className="relative h-16 w-16 overflow-hidden rounded-full">
+              <Image
+                src={profile?.avatar_url || '/avatars/default.jpg'}
+                alt={profile?.full_name || 'Profile'}
+                fill
+                className="object-cover"
+              />
+            </div>
             <button
               onClick={openAvatarModal}
               aria-label="Edit Avatar"
-              className="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-white"
+              className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-white"
             >
               <Pencil className="h-3 w-3" />
             </button>
