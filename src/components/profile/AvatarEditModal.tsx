@@ -67,7 +67,7 @@ export function AvatarEditModal({ isOpen, onClose }: AvatarEditModalProps) {
             placeholder="Image URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="w-full border rounded px-2 py-1"
+            className="w-full border rounded px-2 py-1 text-neutral-900 dark:text-white"
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex gap-2 pt-1">

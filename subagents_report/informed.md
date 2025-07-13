@@ -20,3 +20,4 @@
 2025-07-15 - Stakeholders informed about merged personal info card for UI-118.
 2025-07-16 - Stakeholders informed about Personal Info label with icon for UI-119.
 2025-07-17 - Stakeholders informed about avatar URL edit feature for UI-120.
+2025-07-17 - Stakeholders informed about new avatar badge position and refresh for UI-121.

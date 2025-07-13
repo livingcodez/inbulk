@@ -6,6 +6,10 @@ const nextConfig = {
   output: 'standalone',
   images: {
     domains: ['via.placeholder.com', 'placehold.co'],
+    remotePatterns: [
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
+    ],
   },
   webpack: (config) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');

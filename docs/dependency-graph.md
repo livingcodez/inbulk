@@ -11,3 +11,5 @@
 - `PersonalInfoSection` opens `PersonalInfoViewModal` when See More is clicked
 - `ProfilePage` embeds `PersonalInfoSection` directly without a surrounding `Card`
 - `AvatarEditModal` updates `user_profiles.avatar_url` via `updateProfile`
+- Avatar badge outside thumbnail opens `AvatarEditModal` and refreshed avatar
+- Next.js image config permits remote avatar URLs
