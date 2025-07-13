@@ -19,3 +19,5 @@
 2025-07-14 - Confirmed user name header and icon-only edit button for UI-117.
 2025-07-15 - Confirmed outer card replaced by inner design for UI-118.
 2025-07-16 - Confirmed Personal Info label with icon for UI-119.
+2025-07-17 - Confirmed avatar edit modal for UI-120.
+2025-07-17 - Confirmed avatar badge positioning and input visibility for UI-121.
