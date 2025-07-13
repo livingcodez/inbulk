@@ -6,3 +6,4 @@ Personal info view modal dependency noted for UI-115.
 2025-07-12 - Added dark mode personal info card dependencies for UI-116.
 2025-07-13 - No dependency graph changes for CFG-001.
 2025-07-15 - Removed outer card dependency; profile uses PersonalInfoSection directly for UI-118.
+2025-07-17 - Added AvatarEditModal dependency for UI-120.

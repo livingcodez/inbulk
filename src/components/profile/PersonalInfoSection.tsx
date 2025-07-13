@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/Button'
 import { PersonalInfoModal } from './PersonalInfoModal'
 import { PersonalInfoViewModal } from './PersonalInfoViewModal'
 import { VendorManagerModal } from './VendorManagerModal'
+import { AvatarEditModal } from './AvatarEditModal'
 
 export function PersonalInfoSection() {
   const { profile, session } = useSupabase()
   const [editOpen, setEditOpen] = useState(false)
   const [viewOpen, setViewOpen] = useState(false)
   const [vendorOpen, setVendorOpen] = useState(false)
+  const [avatarOpen, setAvatarOpen] = useState(false)
 
   const openEditModal = () => setEditOpen(true)
   const closeEditModal = () => setEditOpen(false)
@@ -20,6 +22,8 @@ export function PersonalInfoSection() {
   const closeViewModal = () => setViewOpen(false)
   const openVendorModal = () => setVendorOpen(true)
   const closeVendorModal = () => setVendorOpen(false)
+  const openAvatarModal = () => setAvatarOpen(true)
+  const closeAvatarModal = () => setAvatarOpen(false)
 
   let timeString = ''
   try {
@@ -46,6 +50,13 @@ export function PersonalInfoSection() {
               fill
               className="object-cover"
             />
+            <button
+              onClick={openAvatarModal}
+              aria-label="Edit Avatar"
+              className="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-white"
+            >
+              <Pencil className="h-3 w-3" />
+            </button>
           </div>
           <div>
             <h3 className="text-lg font-semibold">{profile?.full_name || 'Not Available'}</h3>
@@ -83,6 +94,7 @@ export function PersonalInfoSection() {
       <PersonalInfoModal isOpen={editOpen} onClose={closeEditModal} />
       <PersonalInfoViewModal isOpen={viewOpen} onClose={closeViewModal} />
       <VendorManagerModal isOpen={vendorOpen} onClose={closeVendorModal} />
+      <AvatarEditModal isOpen={avatarOpen} onClose={closeAvatarModal} />
     </div>
   )
 }
