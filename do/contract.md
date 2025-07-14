@@ -20,16 +20,16 @@
    * Read `taskGenerator.md`. `taskGenerator.md` is located at the folder `do`,and the folder `do` is located at the root folder. 
    * Replace the variable `{{y}}` with is value. the value of `{{y}}` for `taskGenerator.md` is `indexInstruction.md`. 
    * Execute the content of `taskGenerator.md`as a prompt.  
-   * Write the result of the execution to `taskDefinition.md`. `taskDefinition.md` is located at the folder `do`, the folder `do` is located at the root folder.
+   * overwrite the result of the execution to `taskDefinition.md`. `taskDefinition.md` is located at the folder `do`, the folder `do` is located at the root folder.
 
 2. (b) **Refine without regression**  
    * Read `implementWithoutRegression.md`. `implementWithoutRegression.md` is located at the folder `do`, the folder `do` is located at the root folder.
    * Replace the variable `{{y}}` with its value. the value of `{{y}}` for `implementWithoutRegression.md` is `taskDefinition.md`.   
    * Execute the content of `implementWithoutRegression.md` as a prompt.  
-   * Write the result of the execution to `RefinedUserPrompt.md`. `RefinedUserPrompt.md` is located at the folder `do`, the folder `do` is located at the root folder.
+   * Overwrite the result of the execution to `RefinedUserPrompt.md`. `RefinedUserPrompt.md` is located at the folder `do`, the folder `do` is located at the root folder.
 
 3. **Authorised output**  
-   * Execute `RefinedUserPrompt.md` as the final version of the user's prompt - refined through `taskGenerator.md` and `implementWithoutRegression.md`, and authorization it to make changes to this repo(changes outside) `do` folder.
+   * Execute the content of `RefinedUserPrompt.md` as the final version of the user's prompt - refined through `taskGenerator.md` and `implementWithoutRegression.md`.
 
 4. **Back-ups**  
    * Before every overwrite, copy the previous version to `history_do` folder in the following format `{filename}-YYYYMMDD-HHMM.md`. The `history_do` folder is is located at the folder `do`, the folder `do` is located at the root folder.
