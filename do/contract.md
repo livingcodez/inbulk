@@ -17,17 +17,13 @@
 2. **Generate tasks**  
    * Read `do/taskGenerator.md`.  
    * Replace `{{y}}` with the full content of `do/indexInstruction.md`.  
-   * Execute the substituted file as a prompt.  
+   * Execute the updated file as a prompt.  
    * Overwrite `do/taskDefinition.md` with the result (backup first).
 
 3. **Refine without regression**  
    * Read `do/implementWithoutRegression.md`.  
    * Replace `{{y}}` with the full content of `do/taskDefinition.md`.  
-   * Execute the substituted file as a prompt.  
-   * Overwrite `do/RefinedUserPrompt.md` with the result (backup first).
-
-4. **Authorised output**  
-   * Execute the content of `do/RefinedUserPrompt.md`.  
+   * Execute the updated file as a prompt.  
 
 5. **Back-ups**  
    * Before every overwrite, copy the previous version to `do/history_do/{filename}-YYYYMMDD-HHMM.md`.
@@ -41,5 +37,4 @@
    ├─ taskGenerator.md        ← constant x + variable y
    ├─ taskDefinition.md       ← generated
    ├─ implementWithoutRegression.md  ← constant x + variable y
-   ├─ RefinedUserPrompt.md    ← final authorised prompt
    └─ history_do/             ← automatic backups
