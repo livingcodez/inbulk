@@ -1,35 +1,45 @@
 <!-- DO-ROOT -->
 
 # Command Map
-| token | meaning |
-|-------|---------|
-| `!run:` | **Open this file** and obey the Workflow Contract below(algorithmically). |
+| token    | meaning                                                                           |
+|----------|-----------------------------------------------------------------------------------|
+| `!run:`  | Open **do/contract.md** and execute the **Workflow Contract** below (algorithmic) |
 
 ---
 
-# Workflow Contract  (plain English, pure text)
+# Workflow Contract (pure English)
 
-1. **Save the user prompt**  
+1. **Save user prompt**  
    * Strip `!run:` + whitespace.  
-   * Write(overwrite) it to `indexInstruction.md`. `indexInstruction.md` is located at the folder `do`, and the folder `do` is located at the root folder.
+   * Overwrite `do/indexInstruction.md` with the prompt.  
+   * Backup previous version to `do/history_do/indexInstruction-YYYYMMDD-HHMM.md`.
 
-2. **Rifinery**
-   * run `indexInstruction.md` through `taskGenerator.md` and `implementWithoutRegression.md` in the following manner:
+2. **Generate tasks**  
+   * Read `do/taskGenerator.md`.  
+   * Replace `{{y}}` with the full content of `do/indexInstruction.md`.  
+   * Execute the substituted file as a prompt.  
+   * Overwrite `do/taskDefinition.md` with the result (backup first).
 
-2. (a) **Generate tasks**  
-   * Read `taskGenerator.md`. `taskGenerator.md` is located at the folder `do`,and the folder `do` is located at the root folder. 
-   * Replace the variable `{{y}}` with is value. the value of `{{y}}` for `taskGenerator.md` is `indexInstruction.md`. 
-   * Execute the content of `taskGenerator.md`as a prompt.  
-   * overwrite the result of the execution to `taskDefinition.md`. `taskDefinition.md` is located at the folder `do`, the folder `do` is located at the root folder.
+3. **Refine without regression**  
+   * Read `do/implementWithoutRegression.md`.  
+   * Replace `{{y}}` with the full content of `do/taskDefinition.md`.  
+   * Execute the substituted file as a prompt.  
+   * Overwrite `do/RefinedUserPrompt.md` with the result (backup first).
 
-2. (b) **Refine without regression**  
-   * Read `implementWithoutRegression.md`. `implementWithoutRegression.md` is located at the folder `do`, the folder `do` is located at the root folder.
-   * Replace the variable `{{y}}` with its value. the value of `{{y}}` for `implementWithoutRegression.md` is `taskDefinition.md`.   
-   * Execute the content of `implementWithoutRegression.md` as a prompt.  
-   * Overwrite the result of the execution to `RefinedUserPrompt.md`. `RefinedUserPrompt.md` is located at the folder `do`, the folder `do` is located at the root folder.
+4. **Authorised output**  
+   * Execute the content of `do/RefinedUserPrompt.md`.  
 
-3. **Authorised output**  
-   * Execute the content of `RefinedUserPrompt.md` as a prompt.
+5. **Back-ups**  
+   * Before every overwrite, copy the previous version to `do/history_do/{filename}-YYYYMMDD-HHMM.md`.
 
-4. **Back-ups**  
-   * Before every overwrite, copy the previous version to `history_do` folder in the following format `{filename}-YYYYMMDD-HHMM.md`. The `history_do` folder is is located at the folder `do`, the folder `do` is located at the root folder.
+6. 📂 **Directory map** *(All paths are relative to repo root.)*
+
+/                             (all other existing project files)
+└─ do/                        (doc-chain workspace — NEW)
+   ├─ contract.md             ← root contract (opened first, always)
+   ├─ indexInstruction.md     ← user prompt (over-written)
+   ├─ taskGenerator.md        ← constant x + variable y
+   ├─ taskDefinition.md       ← generated
+   ├─ implementWithoutRegression.md  ← constant x + variable y
+   ├─ RefinedUserPrompt.md    ← final authorised prompt
+   └─ history_do/             ← automatic backups
