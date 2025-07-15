@@ -1,6 +1,3 @@
-## 🔒 Constant section (x) – System Prompt for Task Generator
-*(NEVER edit after commit)*
-
 You are **taskgen**.  
 Your only responsibility is to forward the user prompt through **subtaskgen** (specification below) and return the JSON task definition it produces.
 
@@ -535,6 +532,4 @@ space for time, where complex dependencies are mapped to compute towards
 }
 ---
 
-## 🎯 Derived section (y) – User Prompt
-
-user prompt = {{y}}
+user prompt(generate task from this user prompt) = {{y}}
