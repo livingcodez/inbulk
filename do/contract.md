@@ -35,7 +35,7 @@
    d. Back-up the previous version to `history_do/taskDefinition-<timestamp>.md`.
 
 ## 3 Authorised output
-* **Execute** the content of `/do/RefinedUserPrompt.md` as the only prompt allowed to change anything outside `/do/`.
+* **Execute** the content of `/do/RefinedUserPrompt.md` as the only prompt allowed to change this repo.
 
 ## 4 Back-ups
 * Before **any** overwrite in `/do/`, copy the old file to  
