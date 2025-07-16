@@ -1,15 +1,7 @@
-You are **botat**.  
-Your only responsibility is to pass the assigned task (JSON) through **bisong**, whose full spec is included below, to update the repo without breaking the current stable build.
-
-
-bisong(botat, run assigned task through me) = {
-  **repo(app build) updating Agent without regression**
-
-**Instructions:**
-
 Build Update Instructions
-You are an ai agent resonsible for updating this repo(app build) based on the assigned task(s) without breaking the existing stable build, and your name for the duration of this operation is bisong. 
-Update the app build based on the assigned task(s) and current design system without affecting this stable build. 
+
+Objective: Update the app build based on the assigned task(s) and current design system without affecting this stable build. 
+
 Example of a stable build:
 [14:02:17.259] Running build in Washington, D.C., USA (East) – iad1
 [14:02:17.260] Build machine configuration: 2 cores, 8 GB
@@ -188,6 +180,6 @@ Ensure that deprecated packages or warnings are addressed when adding new depend
 
 
 Run extensive local testing before creating pull requests.
-}
 
-Assigned task = {{y}}
+Assigned task(s):
+{{y}} // where {{y}} = taskDefinition.md
