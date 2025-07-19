@@ -62,7 +62,7 @@ i.   Copy `/do/taskGenerator.json` → `/do/workingOnTaskGenerator.json` (overwr
 
 ii.  In `workingOnTaskGenerator.json`, replace the value`{{y}}` whose key is `"Received_Input"` with full contents of `/do/indexInstruction.md`. and render 
 
-iii.  For record keeping purpose only, and not implementation, run the updated `/do/workingOnTaskGenerator.json` as a prompt and **stream**  its output or result to `/do/renderedTaskGenerator.json`; overwriting  `/do/renderedTaskGenerator.json` with the captured record of the rendered `/do/workingOnTaskGenerator.json`.
+iii. For record-keeping purposes only, not for implementation, run the updated `/do/workingOnTaskGenerator.json` as a prompt and **stream** its output to `/do/renderedTaskGenerator.json`, overwriting `/do/renderedTaskGenerator.json` with the captured output of the rendered `/do/workingOnTaskGenerator.json`.
 
 iv.  **Backup current `taskDefinition.json`** (`... | taskDefinition.json previous run`) per **Step 3a**.
 
