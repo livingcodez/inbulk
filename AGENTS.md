@@ -13,7 +13,7 @@
 | `cd inbulk/do/taskGenerator.json`           | **Framework** for task generation (constant).                                          |
 | `cd inbulk/do/workingOnTaskGenerator.json`  | Scratch space while filling the framework (never backed up; safe to delete/overwrite). |
 | `cd inbulk/do/renderedTaskGenerator.json`   | Scratch space for streamed result of `workingOnTaskGenerator`.                         |
-| `cd inbulk/do/taskDefinition.json`          | Final prompt that actually updates the repo (**seeded, never empty** by contract).     |
+| `cd inbulk/do/taskDefinition.json`          | Final prompt that actually updates the repo.     |
 | `cd inbulk/do/indexInstructionHistory.md`   | Append‑only history of prior `indexInstruction.md` versions.                           |
 | `cd inbulk/do/taskDefinitionHistory.md`     | Append‑only history of prior `taskDefinition.md` versions.                             |
 | `cd inbulk/do/CHANGELOG.md` *(recommended)* | One‑line entry per overwrite run (file, timestamp, short note).                        |
@@ -24,7 +24,7 @@
 
 ---
 
-## 🛠️ Workflow Contract (easy view)
+## 🛠️ Workflow (easy view)
 
 ### 0. Preflight + Save / Update the User Prompt
 
@@ -81,7 +81,6 @@ b. **Post‑run scratch cleanup (recommended):** Truncate scratch files (`cd inb
 /                            (rest of project)
 └─ inbulk/
    └─ do/
-      ├─ contract.md
       ├─ indexInstruction.md
       ├─ taskGenerator.json
       ├─ workingOnTaskGenerator.json
