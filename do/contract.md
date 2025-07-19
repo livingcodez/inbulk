@@ -62,7 +62,7 @@ i.   Copy `/do/taskGenerator.json` → `/do/workingOnTaskGenerator.json` (overwr
 
 ii.  In `workingOnTaskGenerator.json`, replace the value`{{y}}` whose key is `"Received_Input"` with full contents of `/do/indexInstruction.md`. and render 
 
-iii.  For record keeping purpose only, and not implementation, **stream** the updated `/do/workingOnTaskGenerator.json` to `/do/renderedTaskGenerator.json`; overwriting  `/do/renderedTaskGenerator.json` with the captured record or result of the updated `/do/workingOnTaskGenerator.json`.
+iii.  For record keeping purpose only, and not implementation, run the updated `/do/workingOnTaskGenerator.json` as a prompt and **stream**  its output or result to `/do/renderedTaskGenerator.json`; overwriting  `/do/renderedTaskGenerator.json` with the captured record of the rendered `/do/workingOnTaskGenerator.json`.
 
 iv.  **Backup current `taskDefinition.json`** (`... | taskDefinition.json previous run`) per **Step 3a**.
 
@@ -74,7 +74,7 @@ vi.  Log changelog entry: `... | taskDefinition.json regenerated from renderedTa
 
 ### 2. Run the Authorised Prompt
 
-a. **Execute** `/do/taskDefinition.json` *verbatim as a prompt*. This is the **only** prompt allowed to modify the repository(`.inbulk[current branch`] ).
+a. **Execute** implement `/do/taskDefinition.json` *verbatim as a prompt*. This is the **only** prompt allowed to modify this repository(`.inbulk[current branch]`).
 
 b. **Post-run scratch cleanup (recommended):** Truncate all scratch files (`workingOnTaskGenerator.json`, `renderedTaskGenerator.json`) to a short marker (e.g., `<!-- cleared after run YYYYMMDD-HHMMSS -->`) so stale instructions aren’t mistaken for live ones next run.
 
