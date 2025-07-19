@@ -1,3 +1,3 @@
-   1. parse this input to the "user input" array in `taskManager.json` with `"Received_Input"` as key and execute `taskManager.json`.
-   2. ask `taskManager.json` for the complete json object of the parsed "user input" based on taskManager.json's task generation framework and then overwrite `taskDefinitionStream`.json with the response from `taskManager.json`.
-   3. execute `taskDefinitionStream.json`.
+   1. parse "user input": into the array in `taskManager.json` with `"Received_Input"` as key and execute `taskManager.json`; overwriting the array with "user input":.
+   2. execute `taskManager.json` with respect to the parsed "user input": and based on `taskManager.json`'s task generation framework
+   3. for record keeping purpose, overwrite `taskDefinitionStream`.json with the complete task definition of the parsed  "user input":.
