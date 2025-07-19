@@ -122,7 +122,6 @@ f. **Zero-length file error handling:** treat a missing or zero-length `taskDefi
    ├─ taskDefinition.json
    ├─ indexInstructionHistory.md
    ├─ taskDefinitionHistory.md
-   ├─ recordOfImplementWithoutRegressionHistory.md
    ├─ CHANGELOG.md                # optional but recommended
    └─ .runlock                    # ephemeral lockfile during active run
 
