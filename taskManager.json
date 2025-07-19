@@ -585,7 +585,7 @@
       "Only mark docs-related deliverables complete after approval."
     ]
   },
-  "Received_Input": [
+  "Received_Input": ["user input"
     
   ]
 }

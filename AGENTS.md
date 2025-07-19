@@ -1,4 +1,3 @@
-   0. in taskManager.json the key  `"Received_Input"` represents any user input(string array) needed for the task generation job(executing `taskManager.json`).
-   1. ask `taskManager.json` for the complete json object of `"Received_Input"` based on taskManager.json's task generation framework and then overwrite `taskDefinitionStream`.json with the response from `taskManager.json`.
-   2. execute `taskDefinitionStream.json`.
-
+   1. parse this input to the "user input" array in `taskManager.json` with `"Received_Input"` as key and execute `taskManager.json`.
+   2. ask `taskManager.json` for the complete json object of the parsed "user input" based on taskManager.json's task generation framework and then overwrite `taskDefinitionStream`.json with the response from `taskManager.json`.
+   3. execute `taskDefinitionStream.json`.
