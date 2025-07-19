@@ -585,7 +585,7 @@
       "Only mark docs-related deliverables complete after approval."
     ]
   },
-  "Received_Input": ["user input"
-    
+  "Received_Input": [
+    "\"We ran into the following deployment error after our last update on the repo. Please fix it.\\ni think its related to the recent changes made to enable profile picture display with image url, and others.\\nDeployment errors:\\n✓ Ready in 3.8s\\n==> Your service is live 🎉\\n==> \\n==> ///////////////////////////////////////////////////////////\\n==> \\n==> Available at your primary URL https://inbulk.onrender.com\\n==> \\n==> ///////////////////////////////////////////////////////////\\nUsing the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.\\n ⚠ The \\\"images.domains\\\" configuration is deprecated. Please use \\\"images.remotePatterns\\\" configuration instead.\\n ⨯ The requested resource isn't a valid image for https://ibb.co/Sw3Brn3N received text/html; charset=utf-8\\nUsing the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.\\n ⨯ The requested resource isn't a valid image for https://ibb.co/Sw3Brn3N received text/html; charset=utf-8\\n ⨯ The requested resource isn't a valid image for https://ibb.co/Sw3Brn3N received text/html; charset=utf-8\\n ⨯ The requested resource isn't a valid image for https://ibb.co/Sw3Brn3N received text/html; charset=utf-8\\n\""
   ]
 }
