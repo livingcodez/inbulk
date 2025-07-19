@@ -1,8 +1,7 @@
 ## 🔑 What `!run:` does
 
-1. **Open** `/do/contract.md`.
-2. **Follow** the steps below **from the last file backwards** (start at `taskDefinition.md`, finish at `indexInstruction.md`).
-3. **Concurrency:** Only *one* run at a time. Acquire a run lock (see **Step 0a**) before proceeding.
+1. **Follow** the steps below **from the last file backwards** (start at `taskDefinition.md`, finish at `indexInstruction.md`).
+2. **Concurrency:** Only *one* run at a time. Acquire a run lock (see **Step 0a**) before proceeding.
 
 ---
 
