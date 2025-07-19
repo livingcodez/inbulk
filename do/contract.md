@@ -64,7 +64,7 @@ ii.  In `workingOnTaskGenerator.json`, replace the value`{{y}}` whose key is `"R
 
 iii.  For record keeping purpose only, and not implementation, **stream** the updated `/do/workingOnTaskGenerator.json` to `/do/renderedTaskGenerator.json`; overwriting  `/do/renderedTaskGenerator.json` with the captured record or result of the updated `/do/workingOnTaskGenerator.json`.
 
-iv.  **Backup current `taskDefinition.json`** (`... | taskDefinition.json previous run`) per **Step 4a**.
+iv.  **Backup current `taskDefinition.json`** (`... | taskDefinition.json previous run`) per **Step 3a**.
 
 v.   Overwrite `/do/taskDefinition.json` with `/do/renderedTaskGenerator.json`.
 
@@ -76,7 +76,7 @@ vi.  Log changelog entry: `... | taskDefinition.json regenerated from renderedTa
 
 a. **Execute** `/do/taskDefinition.json` *verbatim as a prompt*. This is the **only** prompt allowed to modify the repository(`.inbulk[current branch`] ).
 
-b. **Post-run scratch cleanup (recommended):** Truncate all scratch files (`workingOnTaskGenerator.json`, , `renderedTaskGenerator.json` to a short marker (e.g., `<!-- cleared after run YYYYMMDD-HHMMSS -->`) so stale instructions aren’t mistaken for live ones next run.
+b. **Post-run scratch cleanup (recommended):** Truncate all scratch files (`workingOnTaskGenerator.json`, `renderedTaskGenerator.json`) to a short marker (e.g., `<!-- cleared after run YYYYMMDD-HHMMSS -->`) so stale instructions aren’t mistaken for live ones next run.
 
 ---
 
@@ -105,7 +105,7 @@ c. **CHANGELOG:** Append one-line summary per overwrite:
 d. **Release run lock:** Remove `/do/.runlock` once backups and changelog writes succeed. If cleanup fails, warn and leave lock in place to prevent unsafe next run.
 
 e. **FS error handling:** If at any point a write fails, log an error entry in `CHANGELOG.md` (if writable) and abort the run; do **not** proceed to later steps with partial state.
-f. **Zero-length file error handling:** treat a missing or zero-length `taskDefinition.md` as an error condition: and abort the run; do **not** proceed to later steps with partial state.
+f. **Zero-length file error handling:** treat a missing or zero-length `taskDefinition.json` as an error condition: and abort the run; do **not** proceed to later steps with partial state.
 
 ---
 
