@@ -1,0 +1,88 @@
+Repository Tech Stack
+
+Next.js 15.3.3 · React 19 · TypeScript · TailwindCSS · Supabase (PostgreSQL)
+
+Task Definition JSON
+
+{
+  "taskId": "BF-002",
+  "title": "Harden profile avatar handling and session validation",
+  "taskType": "bug",
+  "updateType": "bug-fix",
+  "featureStage": "existing",
+  "scope": { "frontend": true, "backend": true, "integration": [] },
+  "priority": "P0",
+  "status": "draft",
+  "description": "Fix deployment warnings by switching session checks to supabase.auth.getUser(), removing deprecated image config and validating avatar URLs to ensure they reference direct image files.",
+  "acceptanceCriteria": [
+    "next.config.js no longer defines images.domains and build completes without warnings",
+    "layout.tsx, page.tsx and profile/page.tsx use getUser() for session verification",
+    "AvatarEditModal rejects non-image URLs with a user-facing error",
+    "Updated unit tests for new validation and auth calls pass",
+    "`npm run build` succeeds",
+    "Functional and feature docs updated with feedback checkpoint"
+  ],
+  "nonFunctional": {
+    "security": "Authenticated user check prevents spoofed sessions"
+  },
+  "riskLevel": "medium",
+  "rollbackPlan": "Revert commit or roll back to previous stable tag if authentication or image handling fails",
+  "migrationPlan": null,
+  "dependencies": [],
+  "deliverables": [
+    "next.config.js",
+    "src/app/layout.tsx",
+    "src/app/page.tsx",
+    "src/app/profile/page.tsx",
+    "src/components/profile/AvatarEditModal.tsx",
+    "updated tests",
+    "functional_representation.md",
+    "feature-by-feature-documentation(Non-Technical, Stakeholder-Friendly, Updated for Auto-Supplier Role on Product Listing).md",
+    "subagents_report/unit.md",
+    "subagents_report/dependencyGraph.md",
+    "subagents_report/securityAudit.md",
+    "subagents_report/feedback.md"
+  ],
+  "reviewers": ["agent-A1", "agent-R2"],
+  "estimate": "5 story points",
+  "version": "1.9.0",
+  "changelog": ["New bug fix task for avatar URL validation and secure user retrieval"],
+  "milestone": "MILESTONE-5",
+  "raci": {
+    "accountable": "agent-A1",
+    "responsible": "agent-R2",
+    "consulted": "agent-C1",
+    "informed": "agent-I1"
+  },
+  "testMatrix": { "unit": true, "integration": true, "e2e": false },
+  "docsMatrix": {
+    "dependencyGraph": true,
+    "architectureDiagram": false,
+    "dbSchemaBackup": false,
+    "securityAudit": true,
+    "functionalRepresentation": true,
+    "featureDocumentation": true,
+    "feedbackCheckpoint": true
+  },
+  "devBranch": "bugfix-avatar-url-validation",
+  "noRegression": true,
+  "regressionTestPlan": "Run updated unit and integration tests plus `npm run build` to ensure existing routes and features render correctly.",
+  "edgeCases": [
+    "User enters a link to an HTML page instead of a direct image",
+    "getUser() fails due to expired session"
+  ],
+  "created": "2025-07-19T00:00:00Z",
+  "due": "2025-07-22T23:00:00Z"
+}
+
+Task Details
+
+    Branch: bugfix-avatar-url-validation (set in devBranch).
+
+    Follow the No‑Regression Build Workflow: install deps, verify locally, produce production build, then open a PR.
+
+    Update Milestones.md under MILESTONE‑5 – Profile Enhancements with this task.
+
+    Append RACI, unit test results, dependency graph updates, security audit entries, and feedback requests to respective subagents_report files.
+
+    After updating docs, add an entry in subagents_report/feedback.md requesting confirmation that the new authentication logic and avatar validation behave as documented.
