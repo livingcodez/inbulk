@@ -35,7 +35,7 @@ export function AvatarEditModal({ isOpen, onClose }: AvatarEditModalProps) {
     }
     setLoading(true)
     try {
-      await updateProfile({ avatar_url: url.trim() })
+      await updateProfile({ avatar_url: url.trim(), avatar_original_url: url.trim() })
       onClose()
     } catch (err) {
       console.error('Failed to update avatar', err)

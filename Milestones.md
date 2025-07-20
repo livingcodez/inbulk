@@ -68,3 +68,4 @@
 | Task ID | Title | Status | Accountable | Due |
 |---------|-------|--------|-------------|-----|
 | UI-122  | Render thumbnails from non-direct image URLs via OG image lookup | draft | agent-A1 | 2025-07-28 |
+| UI-123  | Server-side thumbnail generation via /api/thumbnail | draft | agent-A1 | 2025-07-30 |

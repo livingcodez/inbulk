@@ -27,6 +27,9 @@ end note
 note bottom of Main
   ProductListingForm resolves indirect image URLs via
   /api/resolve-image before preview and submission
+note bottom of Main
+  /api/thumbnail streams resized avatars and saves original link
+end note
 end note
 note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
@@ -50,3 +53,4 @@ note bottom of Main
   Profile page embeds this card directly without an outer Card wrapper.
 end note
 @enduml
+

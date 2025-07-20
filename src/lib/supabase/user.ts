@@ -17,6 +17,7 @@ export async function updateUserProfile(userId: string, updates: {
   first_name?: string | null
   last_name?: string | null
   avatar_url?: string | null
+  avatar_original_url?: string | null
   role?: UserRole
   account_name?: string | null
   account_number?: string | null
@@ -42,6 +43,7 @@ export async function createUserProfile(profile: {
   first_name?: string | null
   last_name?: string | null
   avatar_url: string | null
+  avatar_original_url?: string | null
   role: UserRole
   account_name?: string | null
   account_number?: string | null
@@ -56,6 +58,7 @@ export async function createUserProfile(profile: {
       ...profile,
       wallet_balance: 0,
       holds: 0,
+      avatar_original_url: profile.avatar_original_url ?? null,
       account_name: profile.account_name ?? null,
       account_number: profile.account_number ?? null,
       bank_name: profile.bank_name ?? null,

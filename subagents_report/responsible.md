@@ -21,3 +21,5 @@
 2025-07-16 - Added Personal Info label with icon and updated tests for UI-119.
 2025-07-17 - Added AvatarEditModal with tests for UI-120.
 2025-07-17 - Positioned avatar edit badge outside thumbnail and ensured avatar refresh for UI-121.
+2025-07-22 - Implemented /api/thumbnail service and profile storage for UI-123.
+

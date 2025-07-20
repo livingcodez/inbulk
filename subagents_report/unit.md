@@ -24,3 +24,5 @@
 2025-07-20 - Added invalid URL validation test for BF-002.
 2025-07-20 - All unit tests and build pass for BF-002.
 2025-07-21 - Added unit tests for resolve-image API and integration for AddProductModal (UI-122).
+2025-07-22 - Added tests for thumbnail API (UI-123).
+

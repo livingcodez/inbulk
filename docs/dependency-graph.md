@@ -15,3 +15,5 @@
 - Next.js remotePatterns permit remote avatar URLs
 - Avatar URL input validates extension before updating profile
 - `resolve-image` API fetches OG images from provided URLs and ProductListingForm consumes it for thumbnail previews
+- `/api/thumbnail` streams resized images and stores original links
+

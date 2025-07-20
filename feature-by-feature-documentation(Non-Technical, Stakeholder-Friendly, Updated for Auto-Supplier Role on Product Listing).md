@@ -21,3 +21,5 @@
   - Avatar URL input checks for common image extensions and shows an error for invalid links.
   - Session checks now call `supabase.auth.getUser()` before accessing profile data.
   - ProductListingForm resolves indirect image links via a new `/api/resolve-image` service so thumbnails appear correctly.
+  - Images are proxied through `/api/thumbnail` which resizes them and keeps the original link.
+
