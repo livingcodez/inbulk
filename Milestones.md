@@ -56,3 +56,4 @@
 | Task ID | Title | Status | Accountable | Due |
 |---------|-------|--------|-------------|-----|
 | UI-120  | Editable Profile Avatar with URL Input | draft | agent-A1 | 2025-07-24 |
+| BF-002  | Fix avatar URL validation and replace insecure session retrieval | draft | agent-A1 | 2025-07-26 |

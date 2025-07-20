@@ -9,3 +9,5 @@
 7. Users can update their profile picture through an avatar edit modal that accepts an image URL.
 8. An edit badge sits slightly outside the avatar thumbnail and opens the modal.
 9. The avatar refreshes after saving a new URL and the input text remains visible in both themes.
+10. Avatar URL input rejects links without an image extension and shows an error message.
+11. Root layout and protected pages call `supabase.auth.getUser()` to verify the session before rendering.
