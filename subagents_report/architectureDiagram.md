@@ -8,3 +8,4 @@ Diagram updated for view modal replacement in UI-115.
 2025-07-15 - Architecture unchanged aside from removing nested personal info card for UI-118.
 2025-07-17 - Diagram updated with AvatarEditModal for UI-120.
 2025-07-17 - Diagram updated with avatar badge outside thumbnail for UI-121.
+2025-07-20 - Diagram shows getUser() session validation flow and avatar URL validation.

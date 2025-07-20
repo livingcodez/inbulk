@@ -11,6 +11,9 @@ jest.mock('@/contexts/SupabaseProvider', () => ({
 }))
 
 describe('AvatarEditModal', () => {
+  beforeEach(() => {
+    mockUpdateProfile.mockReset()
+  })
   it('does not render when closed', () => {
     render(<AvatarEditModal isOpen={false} onClose={jest.fn()} />)
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -31,5 +34,14 @@ describe('AvatarEditModal', () => {
     render(<AvatarEditModal isOpen={true} onClose={handleClose} />)
     fireEvent.click(screen.getByText('Cancel'))
     expect(handleClose).toHaveBeenCalled()
+  })
+
+  it('shows error on invalid url', async () => {
+    render(<AvatarEditModal isOpen={true} onClose={jest.fn()} />)
+    const input = screen.getByPlaceholderText('Image URL')
+    fireEvent.change(input, { target: { value: 'http://example.com' } })
+    fireEvent.click(screen.getByText('Save'))
+    expect(await screen.findByText('Must link directly to an image')).toBeInTheDocument()
+    expect(mockUpdateProfile).not.toHaveBeenCalled()
   })
 })

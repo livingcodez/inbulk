@@ -21,3 +21,5 @@
 2025-07-16 - Added unit test for Personal Info label rendering for UI-119.
 2025-07-17 - Added tests for AvatarEditModal open/close and update for UI-120.
 2025-07-17 - Added tests for avatar badge click and profile refresh for UI-121.
+2025-07-20 - Added invalid URL validation test for BF-002.
+2025-07-20 - All unit tests and build pass for BF-002.

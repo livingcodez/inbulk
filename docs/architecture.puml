@@ -35,6 +35,10 @@ note bottom of Main
   opens AvatarEditModal and refreshes avatar
 end note
 note bottom of Main
+  Root layout and profile page call getUser() to validate
+  the authenticated session before rendering
+end note
+note bottom of Main
   Dark themed personal info card shows name and email
   with Edit and Vendors buttons.
   The Vendors button opens VendorManagerModal,
