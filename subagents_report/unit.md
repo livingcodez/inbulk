@@ -23,3 +23,4 @@
 2025-07-17 - Added tests for avatar badge click and profile refresh for UI-121.
 2025-07-20 - Added invalid URL validation test for BF-002.
 2025-07-20 - All unit tests and build pass for BF-002.
+2025-07-21 - Added unit tests for resolve-image API and integration for AddProductModal (UI-122).

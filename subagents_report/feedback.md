@@ -12,3 +12,4 @@ Feedback: Please confirm the switch to a modal for UI-115.
 2025-07-17 | Avatar Edit | Please confirm avatar URL modal for UI-120.
 2025-07-17 | Avatar Badge | Please confirm new badge position, input contrast and preview refresh for UI-121.
 2025-07-20 | Avatar Validation | Please confirm invalid links show an error and session now uses getUser().
+2025-07-21 | Thumbnail Extraction | Please confirm new non-direct image thumbnail resolution for UI-122.
