@@ -23,6 +23,7 @@ export interface Database {
           first_name: string | null
           last_name: string | null
           avatar_url: string | null
+          avatar_original_url: string | null
           role: UserRole
           wallet_balance: number
           holds: number
@@ -41,6 +42,7 @@ export interface Database {
           first_name?: string | null
           last_name?: string | null
           avatar_url?: string | null
+          avatar_original_url?: string | null
           role?: UserRole
           wallet_balance?: number
           holds?: number
@@ -59,6 +61,7 @@ export interface Database {
           first_name?: string | null
           last_name?: string | null
           avatar_url?: string | null
+          avatar_original_url?: string | null
           role?: UserRole
           wallet_balance?: number
           holds?: number

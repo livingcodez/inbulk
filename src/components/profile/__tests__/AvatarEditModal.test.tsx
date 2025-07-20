@@ -25,7 +25,7 @@ describe('AvatarEditModal', () => {
     const input = screen.getByPlaceholderText('Image URL')
     fireEvent.change(input, { target: { value: 'http://img.com/pic.png' } })
     fireEvent.click(screen.getByText('Save'))
-    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ avatar_url: 'http://img.com/pic.png' }))
+    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ avatar_url: 'http://img.com/pic.png', avatar_original_url: 'http://img.com/pic.png' }))
     await waitFor(() => expect(handleClose).toHaveBeenCalled())
   })
 

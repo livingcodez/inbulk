@@ -21,3 +21,5 @@
 2025-07-16 - Confirmed Personal Info label with icon for UI-119.
 2025-07-17 - Confirmed avatar edit modal for UI-120.
 2025-07-17 - Confirmed avatar badge positioning and input visibility for UI-121.
+2025-07-22 - Confirmed server-side thumbnail proxy via /api/thumbnail for UI-123.
+
