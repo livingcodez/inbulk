@@ -1,3 +1,0 @@
-   1. parse "user input": into the array in `taskManager.json` with `"Received_Input"` as key before executing `taskManager.json`; overwriting the array with "user input":.
-   2. run the updated `taskManager.json` as the user's original prompt.
-   3. if the execution of the updated `taskManager.json` runs succesfull, stream the complete task definition for the parsed  "user input":. to `taskDefinitionStream`.json.
