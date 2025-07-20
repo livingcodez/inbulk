@@ -25,6 +25,10 @@ note bottom of Main
   and stores selected_user_vendor_id
 end note
 note bottom of Main
+  ProductListingForm resolves indirect image URLs via
+  /api/resolve-image before preview and submission
+end note
+note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
 note bottom of Main

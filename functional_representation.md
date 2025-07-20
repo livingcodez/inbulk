@@ -11,3 +11,4 @@
 9. The avatar refreshes after saving a new URL and the input text remains visible in both themes.
 10. Avatar URL input rejects links without an image extension and shows an error message.
 11. Root layout and protected pages call `supabase.auth.getUser()` to verify the session before rendering.
+12. Product listing form resolves indirect image links via `/api/resolve-image` so thumbnails preview correctly.

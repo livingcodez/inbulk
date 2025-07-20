@@ -14,3 +14,4 @@
 - Avatar badge outside thumbnail opens `AvatarEditModal` and refreshed avatar
 - Next.js remotePatterns permit remote avatar URLs
 - Avatar URL input validates extension before updating profile
+- `resolve-image` API fetches OG images from provided URLs and ProductListingForm consumes it for thumbnail previews

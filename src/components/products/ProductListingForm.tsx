@@ -86,12 +86,20 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
   const [countdownSecsInput, setCountdownSecsInput] = useState<string>('86400'); // For timed group
   const [vendors, setVendors] = useState<{ id: string; name: string }[]>([])
   const [selectedVendor, setSelectedVendor] = useState('')
+  const [imageInput, setImageInput] = useState(initialData?.image_url || '')
+  const [resolvedImage, setResolvedImage] = useState<string | null>(initialData?.image_url || null)
+  const [resolving, setResolving] = useState(false)
 
   useEffect(() => {
     fetch('/api/user-vendors')
       .then(res => (res.ok ? res.json() : []))
       .then(setVendors)
   }, [])
+
+  useEffect(() => {
+    setImageInput(initialData?.image_url || '')
+    setResolvedImage(initialData?.image_url || null)
+  }, [initialData?.image_url])
 
 
   const DELIVERY_TIME_OPTIONS = ["Instant", "1-3 Business Days", "3-7 Business Days", "1-2 Weeks", "Custom (Specify below)"];
@@ -172,6 +180,30 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     setSelectedDeliveryTime(newDeliveryTime);
   };
 
+  const resolveImage = async (url: string) => {
+    try {
+      const res = await fetch(`/api/resolve-image?url=${encodeURIComponent(url)}`)
+      if (res.ok) {
+        const data = await res.json()
+        return data.image as string
+      }
+    } catch (err) {
+      console.error('resolve-image', err)
+    }
+    return url
+  }
+
+  const handleImageBlur = async () => {
+    if (!imageInput) {
+      setResolvedImage(null)
+      return
+    }
+    setResolving(true)
+    const resolved = await resolveImage(imageInput)
+    setResolvedImage(resolved)
+    setResolving(false)
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -181,7 +213,11 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
     const formElements = e.currentTarget.elements;
     const formName = (formElements.namedItem('name') as HTMLInputElement)?.value.trim() || "";
     const formDescription = (formElements.namedItem('description') as HTMLTextAreaElement)?.value.trim() || "";
-    const formImageUrl = (formElements.namedItem('image_url') as HTMLInputElement)?.value.trim() || null;
+    const formImageUrl = imageInput.trim() || null;
+    let finalImageUrl = formImageUrl;
+    if (formImageUrl) {
+      finalImageUrl = resolvedImage || await resolveImage(formImageUrl);
+    }
 
     const parsedActualCost = parseFloat(actualCostInput); // actualCostInput is from state
     const finalActualCost = isNaN(parsedActualCost) || parsedActualCost <=0 ? null : parsedActualCost; // Ensure positive
@@ -290,7 +326,7 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
       subscriptionPassword: currentIsSoftwareSubscription ? formSubPassword : null,
       subscription2FAKey: currentIsSoftwareSubscription ? formSub2FAKey : null,
       actualCost: finalActualCost,
-      image_url: formImageUrl,
+      image_url: finalImageUrl,
       deliveryTime: selectedDeliveryTime,
       customDeliveryTimeDescription: (selectedDeliveryTime === "Custom (Specify below)" && !isSoftwareSubscription) ? (customDeliveryTimeDesc.trim() || null) : null,
       isFungible: isFungibleValue,
@@ -528,9 +564,14 @@ export function ProductListingForm({ onSubmit, initialData, onClose }: ProductLi
             name="image_url"
             id="image_url"
             placeholder="https://placehold.co/600x400.png"
-            defaultValue={initialData?.image_url || ''}
+            value={imageInput}
+            onChange={(e) => setImageInput(e.target.value)}
+            onBlur={handleImageBlur}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-neutral-50"
           />
+          {resolvedImage && (
+            <img src={resolvedImage} alt="Preview" className="mt-2 h-24 object-contain" />
+          )}
           <p className="mt-1 text-xs text-gray-500 dark:text-neutral-400">
             Provide a URL for the product image. If blank, a placeholder will be used.
           </p>
