@@ -15,27 +15,52 @@ export function AvatarEditModal({ isOpen, onClose }: AvatarEditModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const isValidImageUrl = (value: string) => /\.(png|jpe?g|gif|webp)$/i.test(value.split('?')[0])
+  const isDirectImage = (value: string) => /\.(png|jpe?g|gif|webp)$/i.test(value.split('?')[0])
 
   useEffect(() => {
     if (isOpen) {
-      setUrl(profile?.avatar_url || '')
+      setUrl(profile?.avatar_original_url || profile?.avatar_url || '')
       setError(null)
     }
-  }, [isOpen, profile?.avatar_url])
+  }, [isOpen, profile?.avatar_url, profile?.avatar_original_url])
+
+  const resolveImage = async (link: string): Promise<string | null> => {
+    try {
+      const res = await fetch(`/api/resolve-image?url=${encodeURIComponent(link)}`)
+      if (res.ok) {
+        const data = await res.json()
+        return data.image as string
+      }
+    } catch (err) {
+      console.error('resolve-image error', err)
+    }
+    return null
+  }
 
   const handleSave = async () => {
-    if (!url.trim()) {
+    const trimmed = url.trim()
+    if (!trimmed) {
       setError('Image URL required')
       return
     }
-    if (!isValidImageUrl(url.trim())) {
-      setError('Must link directly to an image')
-      return
+    let finalImage = trimmed
+    if (!isDirectImage(trimmed)) {
+      setLoading(true)
+      const resolved = await resolveImage(trimmed)
+      if (!resolved || !isDirectImage(resolved)) {
+        setLoading(false)
+        setError('Invalid or unreachable image')
+        return
+      }
+      finalImage = resolved
     }
+    const avatarPath = `/api/thumbnail?imageUrl=${encodeURIComponent(finalImage)}`
     setLoading(true)
     try {
-      await updateProfile({ avatar_url: url.trim(), avatar_original_url: url.trim() })
+      await updateProfile({
+        avatar_url: avatarPath,
+        avatar_original_url: trimmed,
+      })
       onClose()
     } catch (err) {
       console.error('Failed to update avatar', err)
