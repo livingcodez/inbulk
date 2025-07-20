@@ -10,4 +10,5 @@ Personal info view modal dependency noted for UI-115.
 2025-07-17 - Updated dependency graph for avatar badge positioning for UI-121.
 2025-07-20 - Avatar URL validation added and session retrieval now uses getUser.
 2025-07-22 - Documented thumbnail API dependencies for UI-123.
+2025-07-23 - AvatarEditModal now uses resolve-image and thumbnail APIs for BF-003.
 

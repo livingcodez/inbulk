@@ -35,7 +35,8 @@ note bottom of Main
   PersonalInfoModal updates user_profiles via updateProfile
 end note
 note bottom of Main
-  AvatarEditModal updates avatar_url via updateProfile
+  AvatarEditModal resolves indirect URLs via /api/resolve-image
+  then saves /api/thumbnail path through updateProfile
 end note
 note bottom of Main
   Avatar badge positioned outside thumbnail
