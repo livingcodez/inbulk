@@ -57,3 +57,14 @@
 |---------|-------|--------|-------------|-----|
 | UI-120  | Editable Profile Avatar with URL Input | draft | agent-A1 | 2025-07-24 |
 | BF-002  | Fix avatar URL validation and replace insecure session retrieval | draft | agent-A1 | 2025-07-26 |
+
+## MILESTONE-6 – Image Thumbnail Extraction
+- **Start:** 2025-07-21
+- **Target Finish:** 2025-07-31
+- **Status:** planned
+- **Objectives**
+  1. Allow non-direct image links to display thumbnails in product listings.
+### Task Roster
+| Task ID | Title | Status | Accountable | Due |
+|---------|-------|--------|-------------|-----|
+| UI-122  | Render thumbnails from non-direct image URLs via OG image lookup | draft | agent-A1 | 2025-07-28 |
