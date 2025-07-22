@@ -20,3 +20,4 @@
  - A small badge sits slightly outside the avatar thumbnail. Clicking it opens an edit modal for pasting an image URL. The input text is dark in light mode and white in dark mode, and the avatar preview refreshes after saving.
   - Avatar URL input checks for common image extensions and shows an error for invalid links.
   - Session checks now call `supabase.auth.getUser()` before accessing profile data.
+  - ProductListingForm resolves indirect image links via a new `/api/resolve-image` service so thumbnails appear correctly.
